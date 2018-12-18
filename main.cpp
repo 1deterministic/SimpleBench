@@ -18,16 +18,16 @@ int main(int argc, char** argv) {
     int number_of_threads = sysconf(_SC_NPROCESSORS_ONLN);
     
     // gets the scores fot the single and multithreaded tests
-    system("clear");
+    system("clear && printf '\e[3J'");
     printf("Allocating resources...\n");
     float singlethread_score = test_system(1);
     
-    system("clear");
+    system("clear && printf '\e[3J'");
     printf("Allocating resources...\n");
     float multithread_score = test_system(number_of_threads);
         
     // shows the system score
-    system("clear");
+    system("clear && printf '\e[3J'");
     printf("System Test results:\n\n");
     printf("Singlethread score: %.2f\n", singlethread_score);
     printf("Multithread score (%d threads): %.2f\n", number_of_threads, multithread_score);
@@ -36,6 +36,6 @@ int main(int argc, char** argv) {
     printf("Press enter to continue\n");
     getchar();
     
-    system("clear");
+    system("clear && printf '\e[3J'");
     return 0;
 }
