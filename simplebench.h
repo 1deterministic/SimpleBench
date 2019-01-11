@@ -70,6 +70,7 @@ FPUParams* get_gui_params_fpu_params(GUIParams*);
 void set_gui_params_mem_params(GUIParams*, MEMParams*);
 MEMParams* get_gui_params_mem_params(GUIParams*);
 void* gui(void*);
+//void erase_lines(int);
 
 // Chronometer type
 typedef struct chronometer Chronometer;

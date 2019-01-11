@@ -85,6 +85,17 @@ void print_progress(float current, float total) {
     }
 }
 
+// I'm NOT proud of this piece of code
+void erase_lines(int count) {
+    for (int i = 0; i < count; i++) {
+        // will erase 80 characters
+        printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
+        printf("                                                                                ");
+        printf("\033[1A");
+        printf("\r");
+    }
+}
+
 void* gui(void* params) {
     // converts back the params to the expected type
     GUIParams* gui_params = (GUIParams*) params;
@@ -96,20 +107,22 @@ void* gui(void* params) {
     
     // while the test is still in running, shows the current progress each second
     while (*alu_job > 0 || *fpu_job > 0 || *mem_job > 0) {
-        system("clear && printf '\e[3J'");
         printf("Testing the system with %d core(s):\n\n", *cores_used);
-        printf("ALU Test: %.2f%\n", 100.0 * ((float) (alu_job_size - *alu_job)) / ((float) alu_job_size));
+        printf("ALU Test: %.2f%%\n", 100.0 * ((float) (alu_job_size - *alu_job)) / ((float) alu_job_size));
         print_progress(*alu_job, alu_job_size);
-        printf("FPU Test: %.2f%\n", 100.0 * ((float) (fpu_job_size - *fpu_job)) / ((float) fpu_job_size));
+        printf("FPU Test: %.2f%%\n", 100.0 * ((float) (fpu_job_size - *fpu_job)) / ((float) fpu_job_size));
         print_progress(*fpu_job, fpu_job_size);
-        printf("MEM Test: %.2f%\n", 100.0 * ((float) (mem_job_size - *mem_job)) / ((float) mem_job_size));
+        printf("MEM Test: %.2f%%\n", 100.0 * ((float) (mem_job_size - *mem_job)) / ((float) mem_job_size));
         print_progress(*mem_job, mem_job_size);
         sleep(1);
+
+        erase_lines(8);
     }
-    
-    system("clear && printf '\e[3J'");
+
     printf("Finished the test with %d core(s)!\n", *cores_used);
-    sleep(1);
+    sleep(2);
+
+    erase_lines(1);
     
     return NULL;
 }
