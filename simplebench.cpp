@@ -13,6 +13,7 @@ float test_system(int number_of_threads) {
     // the score obtained
     float score = 0.0;
     
+    // the time taken to complete the test
     float total_time = 0.0;
     
     // parameters passed to the threads
@@ -55,14 +56,17 @@ float test_system(int number_of_threads) {
             return 0.0;
         }
     }
+    // waits for all compute threads to finish and stops the chronometer immediately
     wait_threads(thread_array);
     total_time += stop_chronometer(chronometer);
+    // once all threads finished, wait for the gui thread to finish too
     wait_threads(gui_thread_array);
     
+    // frees up all allocated threads
     thread_array = del_threads(thread_array);
     gui_thread_array = del_threads(gui_thread_array);
     
-    // free all manually allocated memory
+    // frees up all manually allocated memory
     alu_params = del_alu_params(alu_params);
     fpu_params = del_fpu_params(fpu_params);
     mem_params = del_mem_params(mem_params);
