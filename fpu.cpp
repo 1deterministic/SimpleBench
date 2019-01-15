@@ -156,12 +156,17 @@ void* fpu_test(void* params) {
     pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
     
     float result = 1.0;
+    bool exit = false;
     // repeats until all tasks were finished
-    while (*job_size > 0) {
+    while (true) {
         // picks one available job from the pool
         pthread_mutex_lock(lock);
-        *job_size = *job_size - 1;
+        if (*job_size > 0) *job_size = *job_size - 1; else exit = true;;
         pthread_mutex_unlock(lock);
+
+        // do not break inside the mutex lock area
+        if (exit)
+            break;
         
         for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
             for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {

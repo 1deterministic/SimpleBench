@@ -156,13 +156,22 @@ void* mem_test(void* params) {
     pthread_mutex_t* lock = get_mem_params_lock(mem_params);
     
     int line;
+    bool exit = false;
     // repeats until all tasks were finished
-    while (*job_size > 0) {
+    while (true) {
         // picks one available job from the pool
         pthread_mutex_lock(lock);
-        line = (mem_job_size - *job_size) % mem_matrix_size;
-        *job_size = *job_size - 1;
+        if (*job_size > 0) {
+            line = (mem_job_size - *job_size) % mem_matrix_size;
+            *job_size = *job_size - 1; 
+        } else {
+            exit = true;
+        }
         pthread_mutex_unlock(lock);
+
+        // do not break inside the mutex lock area
+        if (exit)
+            break;
         
         // copies an entire line of the matrix_a to the matrix_b
         memcpy(matrix_b[line], matrix_a[line], mem_matrix_size * sizeof(int));
