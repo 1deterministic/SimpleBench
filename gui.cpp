@@ -16,59 +16,59 @@ struct gui_prm {
 };
 
 // creates a GUIParams
-GUIParams* create_gui_params(ALUParams* alu_params, FPUParams* fpu_params, MEMParams* mem_params, int* cores) {
+int create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUParams* fpu_params, MEMParams* mem_params, int* cores) {
     // manually allocates memory to the ALUParams type
-    GUIParams* gui_params = (GUIParams*) malloc(sizeof(GUIParams));
+    *gui_params = (GUIParams*) malloc(sizeof(GUIParams));
     // returns right away if the allocation failed
-    if (gui_params == NULL)
-        return NULL;
+    if (*gui_params == NULL)
+        return 1;
     
     // fills the parameter values
-    gui_params->alu = alu_params;
-    gui_params->fpu = fpu_params;
-    gui_params->mem = mem_params;
-    gui_params->cores = cores;
+    set_gui_params_alu_params(gui_params, alu_params);
+    set_gui_params_fpu_params(gui_params, fpu_params);
+    set_gui_params_mem_params(gui_params, mem_params);
+    set_gui_params_cores(gui_params, cores);
     
     // returns the parameter
-    return gui_params;
+    return 0;
 }
 
 // deletes a GUIParams
-GUIParams* del_gui_params(GUIParams* gui_params) {
-    free (gui_params);
-    return NULL;
+int del_gui_params(GUIParams** gui_params) {
+    free (*gui_params);
+    return 0;
 }
 
-void set_gui_params_cores(GUIParams* gui_params, int* cores) {
-    gui_params->cores = cores;
+void set_gui_params_cores(GUIParams** gui_params, int* cores) {
+    (*gui_params)->cores = cores;
 }
 
-int* get_gui_params_cores(GUIParams* gui_params) {
-    return gui_params->cores;
+int* get_gui_params_cores(GUIParams** gui_params) {
+    return (*gui_params)->cores;
 }
 
-void set_gui_params_alu_params(GUIParams* gui_params, ALUParams* alu_params) {
-    gui_params->alu = alu_params;
+void set_gui_params_alu_params(GUIParams** gui_params, ALUParams* alu_params) {
+    (*gui_params)->alu = alu_params;
 }
 
-ALUParams* get_gui_params_alu_params(GUIParams* gui_params) {
-    return gui_params->alu;
+ALUParams* get_gui_params_alu_params(GUIParams** gui_params) {
+    return (*gui_params)->alu;
 }
 
-void set_gui_params_fpu_params(GUIParams* gui_params, FPUParams* fpu_params) {
-    gui_params->fpu = fpu_params;
+void set_gui_params_fpu_params(GUIParams** gui_params, FPUParams* fpu_params) {
+    (*gui_params)->fpu = fpu_params;
 }
 
-FPUParams* get_gui_params_fpu_params(GUIParams* gui_params) {
-    return gui_params->fpu;
+FPUParams* get_gui_params_fpu_params(GUIParams** gui_params) {
+    return (*gui_params)->fpu;
 }
 
-void set_gui_params_mem_params(GUIParams* gui_params, MEMParams* mem_params) {
-    gui_params->mem = mem_params;
+void set_gui_params_mem_params(GUIParams** gui_params, MEMParams* mem_params) {
+    (*gui_params)->mem = mem_params;
 }
 
-MEMParams* get_gui_params_mem_params(GUIParams* gui_params) {
-    return gui_params->mem;
+MEMParams* get_gui_params_mem_params(GUIParams** gui_params) {
+    return (*gui_params)->mem;
 }
 
 // shows the progress bar (helper to the gui thread)
@@ -98,12 +98,16 @@ void erase_lines(int count) {
 
 void* gui(void* params) {
     // converts back the params to the expected type
-    GUIParams* gui_params = (GUIParams*) params;
+    GUIParams** gui_params = (GUIParams**) &params;
+
+    ALUParams* alu_params = get_gui_params_alu_params(gui_params);
+    FPUParams* fpu_params = get_gui_params_fpu_params(gui_params);
+    MEMParams* mem_params = get_gui_params_mem_params(gui_params);
     
     int* cores_used = get_gui_params_cores(gui_params);
-    int* alu_job = get_alu_params_job_size(get_gui_params_alu_params(gui_params));
-    int* fpu_job = get_fpu_params_job_size(get_gui_params_fpu_params(gui_params));
-    int* mem_job = get_mem_params_job_size(get_gui_params_mem_params(gui_params));
+    int* alu_job = get_alu_params_job_size(&alu_params);
+    int* fpu_job = get_fpu_params_job_size(&fpu_params);
+    int* mem_job = get_mem_params_job_size(&mem_params);
     
     // while the test is still in running, shows the current progress each second
     while (*alu_job > 0 || *fpu_job > 0 || *mem_job > 0) {

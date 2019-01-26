@@ -16,12 +16,12 @@ struct mem_prm {
 };
 
 // creates a MEMParams type variable to be used in threads
-MEMParams* create_mem_params() {
+int create_mem_params(MEMParams** mem_params) {
     // manually allocates memory to the MEMParams type
-    MEMParams* mem_params = (MEMParams*) malloc(sizeof(MEMParams));
+    *mem_params = (MEMParams*) malloc(sizeof(MEMParams));
     // returns right away if the allocation failed
-    if (mem_params == NULL)
-        return NULL;
+    if (*mem_params == NULL)
+        return 1;
     
     // manually allocates memory to the task counter
     int* job_size = (int*) malloc(sizeof(int));
@@ -31,22 +31,22 @@ MEMParams* create_mem_params() {
     // manually allocates the matrices
     int** matrix_a = (int**) malloc(mem_matrix_size * sizeof(int*));
     if (matrix_a == NULL)
-        return NULL;
+        return 1;
     
     for (int index = 0; index < mem_matrix_size; index++) {
         matrix_a[index] = (int*) malloc(mem_matrix_size * sizeof(int));
         if (matrix_a[index] == NULL)
-            return NULL;
+            return 1;
     }
     
     int** matrix_b = (int**) malloc(mem_matrix_size * sizeof(int*));
     if (matrix_b == NULL)
-        return NULL;
+        return 1;
     
     for (int index = 0; index < mem_matrix_size; index++) {
         matrix_b[index] = (int*) malloc(mem_matrix_size * sizeof(int));
         if (matrix_b[index] == NULL)
-            return NULL;
+            return 1;
     }
     
     // fills the matrices
@@ -66,28 +66,28 @@ MEMParams* create_mem_params() {
     
     pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
     if (lock == NULL)
-        return NULL;
+        return 1;
     
     if (pthread_mutex_init(lock, NULL))
-        return NULL;
+        return 1;
     
     // fills the parameter values
-    mem_params->job_size = job_size;
-    mem_params->matrix_a = matrix_a;
-    mem_params->matrix_b = matrix_b;
-    mem_params->lock = lock;
+    set_mem_params_job_size(mem_params, job_size);
+    set_mem_params_matrix_a(mem_params, matrix_a);
+    set_mem_params_matrix_b(mem_params, matrix_b);
+    set_mem_params_lock(mem_params, lock);
     
     // returns the parameter
-    return mem_params;
+    return 0;
 }
 
 // deletes a MEMParams
-MEMParams* del_mem_params(MEMParams* mem_params) {
+int del_mem_params(MEMParams** mem_params) {
     // creates local references to the pointers inside params
-    int* job_size = mem_params->job_size;
-    int** matrix_a = mem_params->matrix_a;
-    int** matrix_b = mem_params->matrix_b;
-    pthread_mutex_t* lock = mem_params->lock;
+    int* job_size = get_mem_params_job_size(mem_params);
+    int** matrix_a = get_mem_params_matrix_a(mem_params);
+    int** matrix_b = get_mem_params_matrix_b(mem_params);
+    pthread_mutex_t* lock = get_mem_params_lock(mem_params);
     
     // frees up matrix_a
     for (int index = 0; index <  mem_matrix_size; index++) {
@@ -107,47 +107,47 @@ MEMParams* del_mem_params(MEMParams* mem_params) {
     // frees up the task counter
     free(job_size);
     // frees up the thread parameters
-    free (mem_params);
+    free (*mem_params);
     // returns the new empty ALUParams pointer
-    return NULL;
+    return 0;
 }
 
-void set_mem_params_job_size(MEMParams* mem_params, int* job_size) {
-    mem_params->job_size = job_size;
+void set_mem_params_job_size(MEMParams** mem_params, int* job_size) {
+    (*mem_params)->job_size = job_size;
 }
 
-int* get_mem_params_job_size(MEMParams* mem_params) {
-    return mem_params->job_size;
+int* get_mem_params_job_size(MEMParams** mem_params) {
+    return (*mem_params)->job_size;
 }
 
-void set_mem_params_matrix_a(MEMParams* mem_params, int** matrix_a) {
-    mem_params->matrix_a = matrix_a;
+void set_mem_params_matrix_a(MEMParams** mem_params, int** matrix_a) {
+    (*mem_params)->matrix_a = matrix_a;
 }
 
-int** get_mem_params_matrix_a(MEMParams* mem_params) {
-    return mem_params->matrix_a;
+int** get_mem_params_matrix_a(MEMParams** mem_params) {
+    return (*mem_params)->matrix_a;
 }
 
-void set_mem_params_matrix_b(MEMParams* mem_params, int** matrix_b) {
-    mem_params->matrix_b = matrix_b;
+void set_mem_params_matrix_b(MEMParams** mem_params, int** matrix_b) {
+    (*mem_params)->matrix_b = matrix_b;
 }
 
-int** get_mem_params_matrix_b(MEMParams* mem_params) {
-    return mem_params->matrix_b;
+int** get_mem_params_matrix_b(MEMParams** mem_params) {
+    return (*mem_params)->matrix_b;
 }
 
-void set_mem_params_lock(MEMParams* mem_params, pthread_mutex_t* lock) {
-    mem_params->lock = lock;
+void set_mem_params_lock(MEMParams** mem_params, pthread_mutex_t* lock) {
+    (*mem_params)->lock = lock;
 }
 
-pthread_mutex_t* get_mem_params_lock(MEMParams* mem_params) {
-    return mem_params->lock;
+pthread_mutex_t* get_mem_params_lock(MEMParams** mem_params) {
+    return (*mem_params)->lock;
 }
 
 // the function that will test the system memory
 void* mem_test(void* params) {
     // converts back the params to the expected type
-    MEMParams* mem_params = (MEMParams*) params;
+    MEMParams** mem_params = (MEMParams**) &params;
     
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);

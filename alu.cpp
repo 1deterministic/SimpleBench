@@ -16,12 +16,12 @@ struct alu_prm {
 };
 
 // creates an ALUParams type variable to be used in threads
-ALUParams* create_alu_params() {
+int create_alu_params(ALUParams** alu_params) {
     // manually allocates memory to the ALUParams type
-    ALUParams* alu_params = (ALUParams*) malloc(sizeof(ALUParams));
+    *alu_params = (ALUParams*) malloc(sizeof(ALUParams));
     // returns right away if the allocation failed
-    if (alu_params == NULL)
-        return NULL;
+    if (*alu_params == NULL)
+        return 1;
     
     // manually allocates memory to the task counter
     int* job_size = (int*) malloc(sizeof(int));
@@ -31,22 +31,22 @@ ALUParams* create_alu_params() {
     // manually allocates the matrices
     int** matrix_a = (int**) malloc(alu_matrix_size * sizeof(int*));
     if (matrix_a == NULL)
-        return NULL;
+        return 1;
     
     for (int index = 0; index < alu_matrix_size; index++) {
         matrix_a[index] = (int*) malloc(alu_matrix_size * sizeof(int));
         if (matrix_a[index] == NULL)
-            return NULL;
+            return 1;
     }
     
     int** matrix_b = (int**) malloc(alu_matrix_size * sizeof(int*));
     if (matrix_b == NULL)
-        return NULL;
+        return 1;
     
     for (int index = 0; index < alu_matrix_size; index++) {
         matrix_b[index] = (int*) malloc(alu_matrix_size * sizeof(int));
         if (matrix_b[index] == NULL)
-            return NULL;
+            return 1;
     }
         
     // fills the matrices
@@ -66,28 +66,28 @@ ALUParams* create_alu_params() {
     
     pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
     if (lock == NULL)
-        return NULL;
+        return 1;
     
     if (pthread_mutex_init(lock, NULL))
-        return NULL;
+        return 1;
     
     // fills the parameter values
-    alu_params->job_size = job_size;
-    alu_params->matrix_a = matrix_a;
-    alu_params->matrix_b = matrix_b;
-    alu_params->lock = lock;
+    set_alu_params_job_size(alu_params, job_size);
+    set_alu_params_matrix_a(alu_params, matrix_a);
+    set_alu_params_matrix_b(alu_params, matrix_b);
+    set_alu_params_lock(alu_params, lock);
     
     // returns the parameter
-    return alu_params;
+    return 0;
 }
 
 // deletes an ALUParams
-ALUParams* del_alu_params(ALUParams* alu_params) {
+int del_alu_params(ALUParams** alu_params) {
     // creates local references to the pointers inside params
-    int* job_size = alu_params->job_size;
-    int** matrix_a = alu_params->matrix_a;
-    int** matrix_b = alu_params->matrix_b;
-    pthread_mutex_t* lock = alu_params->lock;
+    int* job_size = get_alu_params_job_size(alu_params);
+    int** matrix_a = get_alu_params_matrix_a(alu_params);
+    int** matrix_b = get_alu_params_matrix_b(alu_params);
+    pthread_mutex_t* lock = get_alu_params_lock(alu_params);
     
     // frees up matrix_a
     for (int index = 0; index <  alu_matrix_size; index++) {
@@ -107,47 +107,47 @@ ALUParams* del_alu_params(ALUParams* alu_params) {
     // frees up the task counter
     free(job_size);
     // frees up the thread parameters
-    free (alu_params);
+    free (*alu_params);
     // returns the new empty ALUParams pointer
-    return NULL;
+    return 0;
 }
 
-void set_alu_params_job_size(ALUParams* alu_params, int* job_size) {
-    alu_params->job_size = job_size;
+void set_alu_params_job_size(ALUParams** alu_params, int* job_size) {
+    (*alu_params)->job_size = job_size;
 }
 
-int* get_alu_params_job_size(ALUParams* alu_params) {
-    return alu_params->job_size;
+int* get_alu_params_job_size(ALUParams** alu_params) {
+    return (*alu_params)->job_size;
 }
 
-void set_alu_params_matrix_a(ALUParams* alu_params, int** matrix_a) {
-    alu_params->matrix_a = matrix_a;
+void set_alu_params_matrix_a(ALUParams** alu_params, int** matrix_a) {
+    (*alu_params)->matrix_a = matrix_a;
 }
 
-int** get_alu_params_matrix_a(ALUParams* alu_params) {
-    return alu_params->matrix_a;
+int** get_alu_params_matrix_a(ALUParams** alu_params) {
+    return (*alu_params)->matrix_a;
 }
 
-void set_alu_params_matrix_b(ALUParams* alu_params, int** matrix_b) {
-    alu_params->matrix_b = matrix_b;
+void set_alu_params_matrix_b(ALUParams** alu_params, int** matrix_b) {
+    (*alu_params)->matrix_b = matrix_b;
 }
 
-int** get_alu_params_matrix_b(ALUParams* alu_params) {
-    return alu_params->matrix_b;
+int** get_alu_params_matrix_b(ALUParams** alu_params) {
+    return (*alu_params)->matrix_b;
 }
 
-void set_alu_params_lock(ALUParams* alu_params, pthread_mutex_t* lock) {
-    alu_params->lock = lock;
+void set_alu_params_lock(ALUParams** alu_params, pthread_mutex_t* lock) {
+    (*alu_params)->lock = lock;
 }
 
-pthread_mutex_t* get_alu_params_lock(ALUParams* alu_params) {
-    return alu_params->lock;
+pthread_mutex_t* get_alu_params_lock(ALUParams** alu_params) {
+    return (*alu_params)->lock;
 }
 
 // the function that will test the arythmetical and logical unit
 void* alu_test(void* params) {
     // converts back the params to the expected type
-    ALUParams* alu_params = (ALUParams*) params;
+    ALUParams** alu_params = (ALUParams**) &params;
     
     // creates local references to the pointers inside params
     int* job_size = get_alu_params_job_size(alu_params);
@@ -161,7 +161,7 @@ void* alu_test(void* params) {
     while (true) {
         // picks one available job from the pool
         pthread_mutex_lock(lock);
-        if (*job_size > 0) *job_size = *job_size - 1; else exit = true;;
+        if (*job_size > 0) *job_size = *job_size - 1; else exit = true;
         pthread_mutex_unlock(lock);
 
         // do not break inside the mutex lock area
