@@ -18,9 +18,9 @@ int create_chronometer(Chronometer** chronometer) {
     *chronometer = (Chronometer*) malloc(sizeof(Chronometer));
     // returns right away if the allocation failed
     if (*chronometer == NULL)
-        return 1;
+        return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
     
-    return 0;
+    return SUCCESS;
 }
 
 // starts a Chronometer
@@ -41,5 +41,5 @@ float stop_chronometer(Chronometer** chronometer) {
 int del_chronometer(Chronometer** chronometer) {
     free(*chronometer);
     
-    return 0;
+    return SUCCESS;
 }

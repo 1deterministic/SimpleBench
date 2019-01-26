@@ -18,7 +18,7 @@ int add_thread(Thread** thread_array, int core_number, void* function, void* par
     // manually allocate memory the size of Thread
     Thread* new_thread = (Thread*) malloc(sizeof(Thread));
     if (new_thread == NULL)
-        return 1;
+        return THREAD_MEMORY_ALLOCATION_ERROR;
     
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
@@ -27,13 +27,13 @@ int add_thread(Thread** thread_array, int core_number, void* function, void* par
     // start the thread with the received parameters
     if (pthread_create(&(new_thread->thread_instance), NULL, (void*(*)(void*)) function, params)) {
         free(new_thread);
-        return 1;
+        return THREAD_PTHREAD_CREATION_ERROR;
     }
     
     // makes this thread run on the specified core
     if (pthread_setaffinity_np(new_thread->thread_instance, sizeof(cpu_set_t), &cpuset)) {
         free(new_thread);
-        return 1;
+        return THREAD_PTHREAD_AFFINITY_ERROR;
     }
     
     // links the rest of the array to this thread
@@ -41,7 +41,7 @@ int add_thread(Thread** thread_array, int core_number, void* function, void* par
     *thread_array = new_thread;
     
     // returns this thread (which is now the new first element)
-    return 0;
+    return SUCCESS;
 }
 
 // frees up all threads in a thread array
@@ -58,7 +58,7 @@ int del_threads(Thread** thread_array) {
     }
     
     // returns the new empty array
-    return 0;
+    return SUCCESS;
 }
 
 // blocks the execution until all threads finish their tasks
@@ -69,7 +69,7 @@ int wait_threads(Thread** thread_array) {
     while (thread_element != NULL) {
         // "joins" the current thread
         if (pthread_join(thread_element->thread_instance, NULL))
-            return 1;
+            return THREAD_PTHREAD_JOIN_ERROR;
         
         // goes to the next
         thread_element = thread_element->next;

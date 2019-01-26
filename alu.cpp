@@ -19,34 +19,36 @@ struct alu_prm {
 int create_alu_params(ALUParams** alu_params) {
     // manually allocates memory to the ALUParams type
     *alu_params = (ALUParams*) malloc(sizeof(ALUParams));
-    // returns right away if the allocation failed
     if (*alu_params == NULL)
-        return 1;
+        return ALU_MEMORY_ALLOCATION_ERROR;
     
     // manually allocates memory to the task counter
     int* job_size = (int*) malloc(sizeof(int));
+    if (job_size == NULL)
+        return ALU_MEMORY_ALLOCATION_ERROR;
+
     // sets the task counter to be equal to the number of tasks
     *job_size = alu_job_size;
     
     // manually allocates the matrices
     int** matrix_a = (int**) malloc(alu_matrix_size * sizeof(int*));
     if (matrix_a == NULL)
-        return 1;
+        return ALU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < alu_matrix_size; index++) {
         matrix_a[index] = (int*) malloc(alu_matrix_size * sizeof(int));
         if (matrix_a[index] == NULL)
-            return 1;
+            return ALU_MEMORY_ALLOCATION_ERROR;
     }
     
     int** matrix_b = (int**) malloc(alu_matrix_size * sizeof(int*));
     if (matrix_b == NULL)
-        return 1;
+        return ALU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < alu_matrix_size; index++) {
         matrix_b[index] = (int*) malloc(alu_matrix_size * sizeof(int));
         if (matrix_b[index] == NULL)
-            return 1;
+            return ALU_MEMORY_ALLOCATION_ERROR;
     }
         
     // fills the matrices
@@ -66,10 +68,10 @@ int create_alu_params(ALUParams** alu_params) {
     
     pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
     if (lock == NULL)
-        return 1;
+        return ALU_PTHREAD_LOCK_CREATION_ERROR;
     
     if (pthread_mutex_init(lock, NULL))
-        return 1;
+        return ALU_PTHREAD_LOCK_INIT_ERROR;
     
     // fills the parameter values
     set_alu_params_job_size(alu_params, job_size);
@@ -77,8 +79,7 @@ int create_alu_params(ALUParams** alu_params) {
     set_alu_params_matrix_b(alu_params, matrix_b);
     set_alu_params_lock(alu_params, lock);
     
-    // returns the parameter
-    return 0;
+    return SUCCESS;
 }
 
 // deletes an ALUParams
@@ -108,8 +109,8 @@ int del_alu_params(ALUParams** alu_params) {
     free(job_size);
     // frees up the thread parameters
     free (*alu_params);
-    // returns the new empty ALUParams pointer
-    return 0;
+    
+    return SUCCESS;
 }
 
 void set_alu_params_job_size(ALUParams** alu_params, int* job_size) {

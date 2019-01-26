@@ -21,7 +21,7 @@ int create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUParams* 
     *gui_params = (GUIParams*) malloc(sizeof(GUIParams));
     // returns right away if the allocation failed
     if (*gui_params == NULL)
-        return 1;
+        return GUI_MEMORY_ALLOCATION_ERROR;
     
     // fills the parameter values
     set_gui_params_alu_params(gui_params, alu_params);
@@ -30,13 +30,13 @@ int create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUParams* 
     set_gui_params_cores(gui_params, cores);
     
     // returns the parameter
-    return 0;
+    return SUCCESS;
 }
 
 // deletes a GUIParams
 int del_gui_params(GUIParams** gui_params) {
     free (*gui_params);
-    return 0;
+    return SUCCESS;
 }
 
 void set_gui_params_cores(GUIParams** gui_params, int* cores) {

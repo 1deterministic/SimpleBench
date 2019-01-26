@@ -19,34 +19,36 @@ struct mem_prm {
 int create_mem_params(MEMParams** mem_params) {
     // manually allocates memory to the MEMParams type
     *mem_params = (MEMParams*) malloc(sizeof(MEMParams));
-    // returns right away if the allocation failed
     if (*mem_params == NULL)
-        return 1;
+        return MEM_MEMORY_ALLOCATION_ERROR;
     
     // manually allocates memory to the task counter
     int* job_size = (int*) malloc(sizeof(int));
+    if (job_size == NULL)
+        return MEM_MEMORY_ALLOCATION_ERROR;
+
     // sets the task counter to be equal to the number of tasks
     *job_size = mem_job_size;
     
     // manually allocates the matrices
     int** matrix_a = (int**) malloc(mem_matrix_size * sizeof(int*));
     if (matrix_a == NULL)
-        return 1;
+        return MEM_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < mem_matrix_size; index++) {
         matrix_a[index] = (int*) malloc(mem_matrix_size * sizeof(int));
         if (matrix_a[index] == NULL)
-            return 1;
+            return MEM_MEMORY_ALLOCATION_ERROR;
     }
     
     int** matrix_b = (int**) malloc(mem_matrix_size * sizeof(int*));
     if (matrix_b == NULL)
-        return 1;
+        return MEM_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < mem_matrix_size; index++) {
         matrix_b[index] = (int*) malloc(mem_matrix_size * sizeof(int));
         if (matrix_b[index] == NULL)
-            return 1;
+            return MEM_MEMORY_ALLOCATION_ERROR;
     }
     
     // fills the matrices
@@ -66,10 +68,10 @@ int create_mem_params(MEMParams** mem_params) {
     
     pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
     if (lock == NULL)
-        return 1;
+        return MEM_PTHREAD_LOCK_CREATION_ERROR;
     
     if (pthread_mutex_init(lock, NULL))
-        return 1;
+        return MEM_PTHREAD_LOCK_INIT_ERROR;
     
     // fills the parameter values
     set_mem_params_job_size(mem_params, job_size);
@@ -77,8 +79,7 @@ int create_mem_params(MEMParams** mem_params) {
     set_mem_params_matrix_b(mem_params, matrix_b);
     set_mem_params_lock(mem_params, lock);
     
-    // returns the parameter
-    return 0;
+    return SUCCESS;
 }
 
 // deletes a MEMParams
@@ -108,8 +109,8 @@ int del_mem_params(MEMParams** mem_params) {
     free(job_size);
     // frees up the thread parameters
     free (*mem_params);
-    // returns the new empty ALUParams pointer
-    return 0;
+    
+    return SUCCESS;
 }
 
 void set_mem_params_job_size(MEMParams** mem_params, int* job_size) {

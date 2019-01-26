@@ -19,34 +19,36 @@ struct fpu_prm {
 int create_fpu_params(FPUParams** fpu_params) {
     // manually allocates memory to the FPUParams type
     *fpu_params = (FPUParams*) malloc(sizeof(FPUParams));
-    // returns right away if the allocation failed
     if (*fpu_params == NULL)
-        return 1;
+        return FPU_MEMORY_ALLOCATION_ERROR;
     
     // manually allocates memory to the task counter
     int* job_size = (int*) malloc(sizeof(int));
+    if (job_size == NULL)
+        return FPU_MEMORY_ALLOCATION_ERROR;
+
     // sets the task counter to be equal to the number of tasks
     *job_size = fpu_job_size;
     
     // manually allocates the matrices
     float** matrix_a = (float**) malloc(fpu_matrix_size * sizeof(float*));
     if (matrix_a == NULL)
-        return 1;
+        return FPU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < fpu_matrix_size; index++) {
         matrix_a[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
         if (matrix_a[index] == NULL)
-            return 1;
+            return FPU_MEMORY_ALLOCATION_ERROR;
     }
     
     float** matrix_b = (float**) malloc(fpu_matrix_size * sizeof(float*));
     if (matrix_b == NULL)
-        return 1;
+        return FPU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < fpu_matrix_size; index++) {
         matrix_b[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
         if (matrix_b[index] == NULL)
-            return 1;
+            return FPU_MEMORY_ALLOCATION_ERROR;
     }
     
     // fills the matrices
@@ -66,10 +68,10 @@ int create_fpu_params(FPUParams** fpu_params) {
     
     pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
     if (lock == NULL)
-        return 1;
+        return FPU_PTHREAD_LOCK_CREATION_ERROR;
     
     if (pthread_mutex_init(lock, NULL))
-        return 1;
+        return FPU_PTHREAD_LOCK_INIT_ERROR;
     
     // fills the parameter values
     set_fpu_params_job_size(fpu_params, job_size);
@@ -77,11 +79,10 @@ int create_fpu_params(FPUParams** fpu_params) {
     set_fpu_params_matrix_b(fpu_params, matrix_b);
     set_fpu_params_lock(fpu_params, lock);
     
-    // returns the parameter
-    return 0;
+    return SUCCESS;
 }
 
-// deletes a ALUParams
+// deletes a FPUParams
 int del_fpu_params(FPUParams** fpu_params) {
     // creates local references to the pointers inside params
     int* job_size = (*fpu_params)->job_size;
@@ -108,8 +109,8 @@ int del_fpu_params(FPUParams** fpu_params) {
     free(job_size);
     // frees up the thread parameters
     free (*fpu_params);
-    // returns the new empty FPUParams pointer
-    return 0;
+
+    return SUCCESS;
 }
 
 void set_fpu_params_job_size(FPUParams** fpu_params, int* job_size) {
