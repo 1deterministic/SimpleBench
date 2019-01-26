@@ -16,7 +16,7 @@ struct fpu_prm {
 };
 
 // creates a FPUParams type variable to be used in threads
-int create_fpu_params(FPUParams** fpu_params) {
+ErrorCode create_fpu_params(FPUParams** fpu_params) {
     // manually allocates memory to the FPUParams type
     *fpu_params = (FPUParams*) malloc(sizeof(FPUParams));
     if (*fpu_params == NULL)
@@ -83,7 +83,7 @@ int create_fpu_params(FPUParams** fpu_params) {
 }
 
 // deletes a FPUParams
-int del_fpu_params(FPUParams** fpu_params) {
+ErrorCode del_fpu_params(FPUParams** fpu_params) {
     // creates local references to the pointers inside params
     int* job_size = (*fpu_params)->job_size;
     float** matrix_a = (*fpu_params)->matrix_a;

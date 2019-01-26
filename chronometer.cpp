@@ -14,11 +14,18 @@ struct chronometer {
 };
 
 // creates a Chronometer
-int create_chronometer(Chronometer** chronometer) {
+ErrorCode create_chronometer(Chronometer** chronometer) {
     *chronometer = (Chronometer*) malloc(sizeof(Chronometer));
     // returns right away if the allocation failed
     if (*chronometer == NULL)
         return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
+    
+    return SUCCESS;
+}
+
+// deletes a Chronometer
+ErrorCode del_chronometer(Chronometer** chronometer) {
+    free(*chronometer);
     
     return SUCCESS;
 }
@@ -35,11 +42,4 @@ float stop_chronometer(Chronometer** chronometer) {
     float delta_us = ((*chronometer)->stop.tv_sec - (*chronometer)->start.tv_sec) * 1000000 + ((*chronometer)->stop.tv_nsec - (*chronometer)->start.tv_nsec) / 1000;
     
     return (float) delta_us / 1000000.0;
-}
-
-// deletes a Chronometer
-int del_chronometer(Chronometer** chronometer) {
-    free(*chronometer);
-    
-    return SUCCESS;
 }

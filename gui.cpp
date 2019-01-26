@@ -16,7 +16,7 @@ struct gui_prm {
 };
 
 // creates a GUIParams
-int create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUParams* fpu_params, MEMParams* mem_params, int* cores) {
+ErrorCode create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUParams* fpu_params, MEMParams* mem_params, int* cores) {
     // manually allocates memory to the ALUParams type
     *gui_params = (GUIParams*) malloc(sizeof(GUIParams));
     // returns right away if the allocation failed
@@ -34,7 +34,7 @@ int create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUParams* 
 }
 
 // deletes a GUIParams
-int del_gui_params(GUIParams** gui_params) {
+ErrorCode del_gui_params(GUIParams** gui_params) {
     free (*gui_params);
     return SUCCESS;
 }

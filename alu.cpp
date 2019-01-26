@@ -16,7 +16,7 @@ struct alu_prm {
 };
 
 // creates an ALUParams type variable to be used in threads
-int create_alu_params(ALUParams** alu_params) {
+ErrorCode create_alu_params(ALUParams** alu_params) {
     // manually allocates memory to the ALUParams type
     *alu_params = (ALUParams*) malloc(sizeof(ALUParams));
     if (*alu_params == NULL)
@@ -83,7 +83,7 @@ int create_alu_params(ALUParams** alu_params) {
 }
 
 // deletes an ALUParams
-int del_alu_params(ALUParams** alu_params) {
+ErrorCode del_alu_params(ALUParams** alu_params) {
     // creates local references to the pointers inside params
     int* job_size = get_alu_params_job_size(alu_params);
     int** matrix_a = get_alu_params_matrix_a(alu_params);
