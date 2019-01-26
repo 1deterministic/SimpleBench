@@ -12,14 +12,14 @@ int alu_matrix_size = 256; // 256KB
 int fpu_matrix_size = 256; // 256KB
 int mem_matrix_size = 8192; // 256MB
 // size of the tasks put on alu and fpu units
-int alu_job_size = 64 * alu_matrix_size; // 64 times * 256 rows * 256 columns * (4 sums + 4 subtractions + 4 multiplies + 1 division) = 54,525,952 integer ops
-int fpu_job_size = 32 * fpu_matrix_size; // 32 times * 256 rows * 256 columns * (4 sums + 4 subtractions + 4 multiplies + 1 division) = 27,262,976 float ops
+int alu_job_size = 64 * alu_matrix_size; // 64 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 109,051,904 integer ops
+int fpu_job_size = 32 * fpu_matrix_size; // 32 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 54,525,952 floating point ops
 int mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns * 4 bytes per element = 8GB of data, 8192 rows * 4 bytes = 32KB each time
 
 // For ultra low spec machines
 // This configuration will use about 35MB of RAM
-// int mem_matrix_size = 2048; // 16MB
-// int mem_job_size = 512 * mem_matrix_size; // 512 times * 2048 rows * 2048 columns * 4 bytes per element = 8GB of data, 2048 rows * 4 bytes = 8KB each time
+//int mem_matrix_size = 2048; // 16MB
+//int mem_job_size = 512 * mem_matrix_size; // 512 times * 2048 rows * 2048 columns * 4 bytes per element = 8GB of data, 2048 rows * 4 bytes = 8KB each time
 
 // shows the system score
 void show_score(float singlethread_score, float multithread_score, int number_of_threads) {
