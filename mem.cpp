@@ -34,18 +34,16 @@ ErrorCode create_mem_params(MEMParams** mem_params) {
     int** matrix_a = (int**) malloc(mem_matrix_size * sizeof(int*));
     if (matrix_a == NULL)
         return MEM_MEMORY_ALLOCATION_ERROR;
-    
-    for (int index = 0; index < mem_matrix_size; index++) {
-        matrix_a[index] = (int*) malloc(mem_matrix_size * sizeof(int));
-        if (matrix_a[index] == NULL)
-            return MEM_MEMORY_ALLOCATION_ERROR;
-    }
-    
+
     int** matrix_b = (int**) malloc(mem_matrix_size * sizeof(int*));
     if (matrix_b == NULL)
         return MEM_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < mem_matrix_size; index++) {
+        matrix_a[index] = (int*) malloc(mem_matrix_size * sizeof(int));
+        if (matrix_a[index] == NULL)
+            return MEM_MEMORY_ALLOCATION_ERROR;
+
         matrix_b[index] = (int*) malloc(mem_matrix_size * sizeof(int));
         if (matrix_b[index] == NULL)
             return MEM_MEMORY_ALLOCATION_ERROR;
@@ -56,12 +54,6 @@ ErrorCode create_mem_params(MEMParams** mem_params) {
         for (int index_x = 0; index_x < mem_matrix_size; index_x++) {
             // add a random number between 1 and 10 - not using 0 to prevent having to deal with division by zero
             matrix_a[index_x][index_y] = (rand() % 9) + 1;
-        }
-    }
-    
-    for (int index_y = 0; index_y < mem_matrix_size; index_y++) {
-        for (int index_x = 0; index_x < mem_matrix_size; index_x++) {
-            // add a random number between 1 and 10 - not using 0 to prevent having to deal with division by zero
             matrix_b[index_x][index_y] = (rand() % 9) + 1;
         }
     }
@@ -90,16 +82,12 @@ ErrorCode del_mem_params(MEMParams** mem_params) {
     int** matrix_b = get_mem_params_matrix_b(mem_params);
     pthread_mutex_t* lock = get_mem_params_lock(mem_params);
     
-    // frees up matrix_a
+    // frees up the matrices
     for (int index = 0; index <  mem_matrix_size; index++) {
         free(matrix_a[index]);
-    }
-    free(matrix_a);
-    
-    // frees up matrix_b
-    for (int index = 0; index <  mem_matrix_size; index++) {
         free(matrix_b[index]);
     }
+    free(matrix_a);
     free(matrix_b);
     
     pthread_mutex_destroy(lock);

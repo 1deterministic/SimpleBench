@@ -34,34 +34,26 @@ ErrorCode create_fpu_params(FPUParams** fpu_params) {
     float** matrix_a = (float**) malloc(fpu_matrix_size * sizeof(float*));
     if (matrix_a == NULL)
         return FPU_MEMORY_ALLOCATION_ERROR;
-    
-    for (int index = 0; index < fpu_matrix_size; index++) {
-        matrix_a[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
-        if (matrix_a[index] == NULL)
-            return FPU_MEMORY_ALLOCATION_ERROR;
-    }
-    
+
     float** matrix_b = (float**) malloc(fpu_matrix_size * sizeof(float*));
     if (matrix_b == NULL)
         return FPU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < fpu_matrix_size; index++) {
+        matrix_a[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
+        if (matrix_a[index] == NULL)
+            return FPU_MEMORY_ALLOCATION_ERROR;
+
         matrix_b[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
         if (matrix_b[index] == NULL)
             return FPU_MEMORY_ALLOCATION_ERROR;
     }
-    
+
     // fills the matrices
     for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
             // add a random number between 0.1 and 1.0 - not using 0 to prevent having to deal with division by zero
             matrix_a[index_x][index_y] = (float) ((rand() % 9999) + 1) / 1000.0;
-        }
-    }
-    
-    for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
-        for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-            // add a random number between 0.1 and 1.0 - not using 0 to prevent having to deal with division by zero
             matrix_b[index_x][index_y] = (float) ((rand() % 9999) + 1) / 1000.0;
         }
     }
@@ -90,16 +82,12 @@ ErrorCode del_fpu_params(FPUParams** fpu_params) {
     float** matrix_b = (*fpu_params)->matrix_b;
     pthread_mutex_t* lock = (*fpu_params)->lock;
     
-    // frees up matrix_a
+    // frees up the matrices
     for (int index = 0; index <  fpu_matrix_size; index++) {
         free(matrix_a[index]);
-    }
-    free(matrix_a);
-    
-    // frees up matrix_b
-    for (int index = 0; index <  fpu_matrix_size; index++) {
         free(matrix_b[index]);
     }
+    free(matrix_a);
     free(matrix_b);
     
     pthread_mutex_destroy(lock);
