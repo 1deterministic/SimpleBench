@@ -1,5 +1,7 @@
 #include <pthread.h>
 
+#define SCORE_CALIBRATION_FACTOR 72.888054
+
 // makes these variables global
 extern int alu_matrix_size;
 extern int fpu_matrix_size;

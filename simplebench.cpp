@@ -56,7 +56,7 @@ float test_system(int number_of_threads, float handicap) {
     if ((*get_alu_params_job_size(&alu_params) <= 0) && (*get_fpu_params_job_size(&fpu_params) <= 0) && (*get_mem_params_job_size(&mem_params) <= 0)) {
         // callibrated so my PC at the time gets 100 points on average in the singlethread test (the multi is about 410)
         // Intel Xeon E1280 3.6GHz with 8GB RAM DDR3 1333MHz HyperX (1600 actually but the IMC does not support 1600MHz natively nor does my MB support memory OC)
-        test_score = handicap * 100 * 72.888054 / total_time;
+        test_score = handicap * 100 * SCORE_CALIBRATION_FACTOR / total_time;
     }
     
     // frees up all allocated threads
