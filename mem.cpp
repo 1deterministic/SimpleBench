@@ -16,7 +16,7 @@ struct mem_prm {
 };
 
 // creates a MEMParams type variable to be used in threads
-ErrorCode create_mem_params(MEMParams** mem_params) {
+MsgCode create_mem_params(MEMParams** mem_params) {
     // manually allocates memory to the MEMParams type
     *mem_params = (MEMParams*) malloc(sizeof(MEMParams));
     if (*mem_params == NULL)
@@ -75,7 +75,7 @@ ErrorCode create_mem_params(MEMParams** mem_params) {
 }
 
 // deletes a MEMParams
-ErrorCode del_mem_params(MEMParams** mem_params) {
+MsgCode del_mem_params(MEMParams** mem_params) {
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);
     int** matrix_a = get_mem_params_matrix_a(mem_params);

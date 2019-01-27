@@ -14,7 +14,7 @@ struct thd {
 };
 
 // this will add a thread to a thread array
-ErrorCode add_thread(Thread** thread_array, int core_number, void* function, void* params) {
+MsgCode add_thread(Thread** thread_array, int core_number, void* function, void* params) {
     // manually allocate memory the size of Thread
     Thread* new_thread = (Thread*) malloc(sizeof(Thread));
     if (new_thread == NULL)
@@ -45,7 +45,7 @@ ErrorCode add_thread(Thread** thread_array, int core_number, void* function, voi
 }
 
 // frees up all threads in a thread array
-ErrorCode del_threads(Thread** thread_array) {
+MsgCode del_threads(Thread** thread_array) {
     // auxiliary pointer
     Thread* thread_element;
     // will repeat until all threads were removed
@@ -62,7 +62,7 @@ ErrorCode del_threads(Thread** thread_array) {
 }
 
 // blocks the execution until all threads finish their tasks
-ErrorCode wait_threads(Thread** thread_array) {
+MsgCode wait_threads(Thread** thread_array) {
     // auxiliary pointer
     Thread* thread_element = *thread_array;
     // will repeat until all threads were "joined"

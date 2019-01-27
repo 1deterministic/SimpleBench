@@ -14,7 +14,7 @@ struct chronometer {
 };
 
 // creates a Chronometer
-ErrorCode create_chronometer(Chronometer** chronometer) {
+MsgCode create_chronometer(Chronometer** chronometer) {
     *chronometer = (Chronometer*) malloc(sizeof(Chronometer));
     // returns right away if the allocation failed
     if (*chronometer == NULL)
@@ -24,7 +24,7 @@ ErrorCode create_chronometer(Chronometer** chronometer) {
 }
 
 // deletes a Chronometer
-ErrorCode del_chronometer(Chronometer** chronometer) {
+MsgCode del_chronometer(Chronometer** chronometer) {
     free(*chronometer);
     
     return SUCCESS;
