@@ -107,7 +107,7 @@ void start_chronometer(Chronometer**);
 float stop_chronometer(Chronometer**);
 
 // benchmark function
-float test_system(int, float);
+MsgCode test_system(float*, int, float);
 
 // Strings file
 typedef const char* String;

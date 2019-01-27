@@ -6,7 +6,7 @@
 #include <string.h>
 
 // test function ======================================================
-float test_system(int number_of_threads, float handicap) {
+MsgCode test_system(float* score, int number_of_threads, float handicap) {
     // seed for the random number generator
     srand((unsigned) time(NULL));
 
@@ -70,5 +70,6 @@ float test_system(int number_of_threads, float handicap) {
     del_gui_params(&gui_params);
     del_chronometer(&chronometer);
 
-    return test_score;
+    *score = test_score;
+    return SUCCESS;
 }

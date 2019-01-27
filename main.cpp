@@ -34,15 +34,16 @@ int mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns 
 int main(int argc, char** argv) {
     float singlethread_score = 0.0;
     float multithread_score = 0.0;
+    int number_of_threads = 1;
 
-    int number_of_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    number_of_threads = sysconf(_SC_NPROCESSORS_ONLN);
     
     // gets the scores fot the single and multithreaded tests
-    singlethread_score = test_system(1, handicap);
+    test_system(&singlethread_score, 1, handicap);
     
     // skip the multithread test if the system only has 1
     if (number_of_threads > 1) {
-        multithread_score = test_system(number_of_threads, handicap);
+        test_system(&multithread_score, number_of_threads, handicap);
     } else {
         multithread_score = singlethread_score;
     }
