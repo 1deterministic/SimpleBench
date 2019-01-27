@@ -13,6 +13,9 @@ typedef unsigned int ErrorCode;
 
 #define SUCCESS 0
 
+// main file
+void show_score(float, float, int);
+
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100
 #define THREAD_PTHREAD_CREATION_ERROR 101

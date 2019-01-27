@@ -73,26 +73,41 @@ MEMParams* get_gui_params_mem_params(GUIParams** gui_params) {
 
 // shows the progress bar (helper to the gui thread)
 void print_progress(float current, float total) {
-    for (int i = 0; i < 32; i++) {
+    int width = 38;
+
+    for (int i = 0; i < width; i++) {
+        // the first character of the progress bar is [
         if (i == 0)
             printf("[");
-        if (i <= (int) 32.0 * ((float) (total - current)) / ((float) total))
+        // all subsequent chars are '=' until the current progression is reached
+        if (i <= (int) width * ((float) (total - current)) / ((float) total))
             printf("=");
+        // after that, fill with '-'
         else
-            printf(" ");
-        if (i == 31)
+            printf("-");
+        // close with ]
+        if (i == (width - 1))
             printf("]\n");
     }
 }
 
-// I'm NOT proud of this piece of code
 void erase_lines(int count) {
-    for (int i = 0; i < count; i++) {
-        // will erase 80 characters
-        printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
-        printf("                                                                                ");
-        printf("\033[1A");
+    int width = 80;
+
+    for (int i = 0; i <= count; i++) {
+        // returns the cursor to the begining of the line
         printf("\r");
+
+        // erases width characters
+        for (int j = 0; j < width; j++) {
+            printf(" ");
+        }
+
+        // moves the cursor up if it's not the last line to erase, else simply returns to the start of the line
+        if (i < count)
+            printf("\033[A");
+        else
+            printf("\r");   
     }
 }
 

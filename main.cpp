@@ -21,34 +21,34 @@ int mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns 
 //int mem_matrix_size = 2048; // 16MB
 //int mem_job_size = 512 * mem_matrix_size; // 512 times * 2048 rows * 2048 columns * 4 bytes per element = 8GB of data, 2048 rows * 4 bytes = 8KB each time
 
-// shows the system score
-void show_score(float singlethread_score, float multithread_score, int number_of_threads) {
-    if (singlethread_score > 0.0 && multithread_score > 0.0) {
-        printf("System Test results: simplebench version %s\n\n", BENCHMARK_VERSION);
-        printf("Singlethread score: %.2f\n", singlethread_score);
-        printf("Multithread score (%d threads): %.2f\n", number_of_threads, multithread_score);
-        printf("Multiplier: %.2fx\n", (singlethread_score > 0.0) ? multithread_score / singlethread_score : 0.0);
-    } else {
-        printf("An error occurred during the test!\n");
-    }
-}
-
 int main(int argc, char** argv) {
-    // gets the number of processors (threads actually) available to use
-    int number_of_threads = sysconf(_SC_NPROCESSORS_ONLN);
     float singlethread_score = 0.0;
     float multithread_score = 0.0;
+
+    int number_of_threads = sysconf(_SC_NPROCESSORS_ONLN);
     
     // gets the scores fot the single and multithreaded tests
     singlethread_score = test_system(1);
     
     // skip the multithread test if the system only has 1
-    if (number_of_threads > 1)
+    if (number_of_threads > 1) {
         multithread_score = test_system(number_of_threads);
-    else
+    } else {
         multithread_score = singlethread_score;
+    }
 
     show_score(singlethread_score, multithread_score, number_of_threads);
-
     return 0;
+}
+
+// shows the system score
+void show_score(float singlethread_score, float multithread_score, int number_of_threads) {
+    if (singlethread_score > 0.0 && multithread_score > 0.0) {
+        printf("%-20s: %10s\n\n", "SimpleBench Version", BENCHMARK_VERSION);
+        printf("%-20s: %10.2f\n", "Singlethread Score", singlethread_score);
+        printf("%-20s: %10.2f\n", "Multithread Score", multithread_score);
+        printf("%-20s: %10.2f\n", "Multiplier", (singlethread_score > 0.0) ? multithread_score / singlethread_score : 0.0);
+    } else {
+        printf("An error occurred during the test!\n");
+    }
 }
