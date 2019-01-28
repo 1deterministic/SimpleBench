@@ -29,6 +29,7 @@ typedef unsigned int MsgCode;
 #define MSG_MAIN_SHOW_SCORE_ERROR 1004
 void show_score(float, float, int);
 void load_test_config(MsgCode);
+void show_help(void);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100
@@ -128,7 +129,7 @@ void start_chronometer(Chronometer**);
 float stop_chronometer(Chronometer**);
 
 // benchmark function
-MsgCode test_system(float*, int, float);
+MsgCode test_system(float*, int, float, bool);
 
 // Strings file
 typedef const char* String;
