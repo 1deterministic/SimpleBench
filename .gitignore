@@ -1,5 +1,6 @@
 # not commit the executable by default
 /simplebench
+/simplebench32
 
 # Object files
 *.o
