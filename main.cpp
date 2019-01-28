@@ -41,6 +41,11 @@ int main(int argc, char** argv) {
         else if (strcmp(argv[i], "threads") == 0) {
             if (i + 1 < argc) {
                 number_of_threads = atoi(argv[i + 1]);
+                if (number_of_threads <= 0) {
+                    printf("Invalid number!\n");
+                    return 1;
+                }    
+
                 i++;
                 continue;
             } else {
