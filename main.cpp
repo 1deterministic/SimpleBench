@@ -19,34 +19,81 @@ int main(int argc, char** argv) {
     float singlethread_score = 0.0;
     float multithread_score = 0.0;
 
-    int number_of_threads = sysconf(_SC_NPROCESSORS_ONLN);
+    int threads = sysconf(_SC_NPROCESSORS_ONLN);
     MsgCode config = CONFIG_MODERN_HARDWARE;
-    bool nogui = false;
-    bool skipst = false;
-    bool skipmt = false;
+    bool show_gui = true;
+    bool st_test = true;
+    bool mt_test = true;
 
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "nogui") == 0) {
-            nogui = true;
-        }
-
-        else if (strcmp(argv[i], "oldhw") == 0) {
-            config = CONFIG_OLD_HARDWARE;
-        }
-
-        else if (strcmp(argv[i], "modernhw") == 0) {
-            config = CONFIG_MODERN_HARDWARE;
-        }
-
-        else if (strcmp(argv[i], "threads") == 0) {
+        if (strcmp(argv[i], CLI_SHOW_GUI) == 0) {
             if (i + 1 < argc) {
-                number_of_threads = atoi(argv[i + 1]);
-                if (number_of_threads <= 0) {
+                i++;
+                if (strcmp(argv[i], CLI_ON) == 0) {
+                    show_gui = true;
+                }
+                else if (strcmp(argv[i], CLI_OFF) == 0) {
+                    show_gui = false;
+                }
+                else {
+                    printf("Invalid on/off value: %s\n", argv[i]); 
+                    return 1;
+                }
+                continue;
+            } else {
+                printf("Missing on/off value!\n");
+                return 1;
+            }
+        }
+
+        if (strcmp(argv[i], CLI_ST_TEST) == 0) {
+            if (i + 1 < argc) {
+                i++;
+                if (strcmp(argv[i], CLI_ON) == 0) {
+                    st_test = true;
+                }
+                else if (strcmp(argv[i], CLI_OFF) == 0) {
+                    st_test = false;
+                }
+                else {
+                    printf("Invalid on/off value: %s\n", argv[i]); 
+                    return 1;
+                }
+                continue;
+            } else {
+                printf("Missing on/off value!\n");
+                return 1;
+            }
+        }
+
+        if (strcmp(argv[i], CLI_MT_TEST) == 0) {
+            if (i + 1 < argc) {
+                i++;
+                if (strcmp(argv[i], CLI_ON) == 0) {
+                    mt_test = true;
+                }
+                else if (strcmp(argv[i], CLI_OFF) == 0) {
+                    mt_test = false;
+                }
+                else {
+                    printf("Invalid on/off value: %s\n", argv[i]); 
+                    return 1;
+                }
+                continue;
+            } else {
+                printf("Missing on/off value!\n");
+                return 1;
+            }
+        }
+
+        else if (strcmp(argv[i], CLI_THREADS) == 0) {
+            if (i + 1 < argc) {
+                i++;
+                threads = atoi(argv[i]);
+                if (threads <= 0) {
                     printf("Invalid number!\n");
                     return 1;
                 }    
-
-                i++;
                 continue;
             } else {
                 printf("Missing thread count!\n");
@@ -54,21 +101,33 @@ int main(int argc, char** argv) {
             }
         }
 
-        else if (strcmp(argv[i], "skipst") == 0) {
-            skipst = true;
+        if (strcmp(argv[i], CLI_OLD_HARDWARE) == 0) {
+            if (i + 1 < argc) {
+                i++;
+                if (strcmp(argv[i], CLI_ON) == 0) {
+                    config = CONFIG_OLD_HARDWARE;
+                }
+                else if (strcmp(argv[i], CLI_OFF) == 0) {
+                   config = CONFIG_MODERN_HARDWARE;
+                }
+                else {
+                    printf("Invalid on/off value: %s\n", argv[i]); 
+                    return 1;
+                }
+                continue;
+            } else {
+                printf("Missing on/off value!\n");
+                return 1;
+            }
         }
 
-        else if (strcmp(argv[i], "skipmt") == 0) {
-            skipmt = true;
-        }
-
-        else if (strcmp(argv[i], "help") == 0) {
+        else if (strcmp(argv[i], CLI_HELP) == 0) {
             show_help();
             return 0;
         }
 
         else {
-            printf("Option not recognized: %s\n", argv[i]);
+            printf("Option not recognized: %s\nTry the option \"%s\" to show the help\n", argv[i], CLI_HELP);
             return 1;
         }
     }
@@ -76,25 +135,25 @@ int main(int argc, char** argv) {
     load_test_config(config);
     
     // gets the scores fot the single and multithreaded tests
-    if (!skipst)
-        test_system(&singlethread_score, 1, handicap, nogui);
+    if (st_test)
+        test_system(&singlethread_score, 1, handicap, show_gui);
     
     
-    if (!skipmt) {
+    if (mt_test) {
         // skip the multithread test if the system only has 1
-        if (number_of_threads > 1) {
-            test_system(&multithread_score, number_of_threads, handicap, nogui);
+        if (threads > 1) {
+            test_system(&multithread_score, threads, handicap, show_gui);
         } else {
             multithread_score = singlethread_score;
         }
     }
 
-    show_score(singlethread_score, multithread_score, number_of_threads);
+    show_score(singlethread_score, multithread_score, threads);
     return 0;
 }
 
 // shows the system score
-void show_score(float singlethread_score, float multithread_score, int number_of_threads) {
+void show_score(float singlethread_score, float multithread_score, int threads) {
     printf("%-20s: %10s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION), BENCHMARK_VERSION);
     printf("%-20s: %10.2f\n", get_string(MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE), singlethread_score);
     printf("%-20s: %10.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE), multithread_score);

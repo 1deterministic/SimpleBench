@@ -6,7 +6,7 @@
 #include <string.h>
 
 // test function ======================================================
-MsgCode test_system(float* score, int number_of_threads, float handicap, bool nogui) {
+MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
     // seed for the random number generator
     srand((unsigned) time(NULL));
 
@@ -34,13 +34,13 @@ MsgCode test_system(float* score, int number_of_threads, float handicap, bool no
     create_alu_params(&alu_params); 
     create_fpu_params(&fpu_params);
     create_mem_params(&mem_params); 
-    create_gui_params(&gui_params, alu_params, fpu_params, mem_params, &number_of_threads);
+    create_gui_params(&gui_params, alu_params, fpu_params, mem_params, &threads);
 
     // starts the gui thread
-    if (!nogui) add_thread(&gui_thread_array, 0, (void*) gui, (void*) gui_params);
+    if (show_gui) add_thread(&gui_thread_array, 0, (void*) gui, (void*) gui_params);
     
     start_chronometer(&chronometer);
-    for (int i=0; i<number_of_threads; i++) {
+    for (int i=0; i<threads; i++) {
         add_thread(&thread_array, i, (void*) alu_test, (void*) alu_params); 
         add_thread(&thread_array, i, (void*) fpu_test, (void*) fpu_params);
         add_thread(&thread_array, i, (void*) mem_test, (void*) mem_params);

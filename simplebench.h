@@ -5,6 +5,16 @@
 
 #define SCORE_CALIBRATION_FACTOR 72.888054
 
+#define CLI_ON "on"
+#define CLI_OFF "off"
+
+#define CLI_SHOW_GUI "--show-gui"
+#define CLI_ST_TEST "--st-test"
+#define CLI_MT_TEST "--mt-test"
+#define CLI_THREADS "--threads"
+#define CLI_OLD_HARDWARE "--old-hardware"
+#define CLI_HELP "--help"
+
 #define CONFIG_MODERN_HARDWARE 9990
 #define CONFIG_OLD_HARDWARE 9991
 
