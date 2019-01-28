@@ -37,6 +37,12 @@ typedef unsigned int MsgCode;
 #define MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE 1002
 #define MSG_MAIN_SHOW_SCORE_MULTIPLIER 1003
 #define MSG_MAIN_SHOW_SCORE_ERROR 1004
+#define MSG_GET_CLI_OPTIONS_INVALID_ONOFF 1005
+#define MSG_GET_CLI_OPTIONS_MISSING_ONOFF 1006
+#define MSG_GET_CLI_OPTIONS_INVALID_INT 1007
+#define MSG_GET_CLI_OPTIONS_MISSING_INT 1008
+#define MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION 1009
+MsgCode get_cli_options(int, char**, bool*, bool*, bool*, bool*, int*);
 void show_score(float, float, int);
 void load_test_config(MsgCode);
 void show_help(void);
