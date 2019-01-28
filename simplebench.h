@@ -1,6 +1,12 @@
 #include <pthread.h>
 
+// if I ever change this it means that scores from different versions are not comparable
+#define BENCHMARK_VERSION "1.0"
+
 #define SCORE_CALIBRATION_FACTOR 72.888054
+
+#define CONFIG_MODERN_HARDWARE 9990
+#define CONFIG_OLD_HARDWARE 9991
 
 // makes these variables global
 extern int alu_matrix_size;
@@ -20,7 +26,9 @@ typedef unsigned int MsgCode;
 #define MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE 1001
 #define MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE 1002
 #define MSG_MAIN_SHOW_SCORE_MULTIPLIER 1003
+#define MSG_MAIN_SHOW_SCORE_ERROR 1004
 void show_score(float, float, int);
+void load_test_config(MsgCode);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100
@@ -85,6 +93,17 @@ void* mem_test(void*);
 
 //GUIParams type
 #define GUI_MEMORY_ALLOCATION_ERROR 500
+#define GUI_SHOW_PROGRESS_BRACKET_OPEN 5000
+#define GUI_SHOW_PROGRESS_BRACKET_CLOSE 5001
+#define GUI_SHOW_PROGRESS_FILLED 5002
+#define GUI_SHOW_PROGRESS_NOT_FILLED 5003
+#define GUI_GUI_HEADER_1 5004
+#define GUI_GUI_HEADER_2 5005
+#define GUI_GUI_ALU_HEADER 5006
+#define GUI_GUI_FPU_HEADER 5007
+#define GUI_GUI_MEM_HEADER 5008
+#define GUI_GUI_FINISHED_MSG_1 5009
+#define GUI_GUI_FINISHED_MSG_2 5010
 typedef struct gui_prm GUIParams;
 MsgCode create_gui_params(GUIParams**, ALUParams*, FPUParams*, MEMParams*, int*);
 MsgCode del_gui_params(GUIParams**);
@@ -96,6 +115,8 @@ void set_gui_params_fpu_params(GUIParams**, FPUParams*);
 FPUParams* get_gui_params_fpu_params(GUIParams**);
 void set_gui_params_mem_params(GUIParams**, MEMParams*);
 MEMParams* get_gui_params_mem_params(GUIParams**);
+void print_progress(float, float);
+void erase_lines(int);
 void* gui(void*);
 
 // Chronometer type

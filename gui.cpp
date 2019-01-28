@@ -78,16 +78,16 @@ void print_progress(float current, float total) {
     for (int i = 0; i < width; i++) {
         // the first character of the progress bar is [
         if (i == 0)
-            printf("[");
+            printf("%s", get_string(GUI_SHOW_PROGRESS_BRACKET_OPEN));
         // all subsequent chars are '=' until the current progression is reached
         if (i <= (int) width * ((float) (total - current)) / ((float) total))
-            printf("=");
+            printf("%s", get_string(GUI_SHOW_PROGRESS_FILLED));
         // after that, fill with '-'
         else
-            printf("-");
+            printf("%s", get_string(GUI_SHOW_PROGRESS_NOT_FILLED));
         // close with ]
         if (i == (width - 1))
-            printf("]\n");
+            printf("%s\n", get_string(GUI_SHOW_PROGRESS_BRACKET_CLOSE));
     }
 }
 
@@ -126,19 +126,22 @@ void* gui(void* params) {
     
     // while the test is still in running, shows the current progress each second
     while (*alu_job > 0 || *fpu_job > 0 || *mem_job > 0) {
-        printf("Testing the system with %d core(s):\n\n", *cores_used);
-        printf("ALU Test: %.2f%%\n", 100.0 * ((float) (alu_job_size - *alu_job)) / ((float) alu_job_size));
-        print_progress(*alu_job, alu_job_size);
-        printf("FPU Test: %.2f%%\n", 100.0 * ((float) (fpu_job_size - *fpu_job)) / ((float) fpu_job_size));
-        print_progress(*fpu_job, fpu_job_size);
-        printf("MEM Test: %.2f%%\n", 100.0 * ((float) (mem_job_size - *mem_job)) / ((float) mem_job_size));
-        print_progress(*mem_job, mem_job_size);
-        sleep(1);
+        printf("%s%d%s\n\n", get_string(GUI_GUI_HEADER_1), *cores_used, get_string(GUI_GUI_HEADER_2));
 
+        printf("%s%5.2f%%\n", get_string(GUI_GUI_ALU_HEADER), 100.0 * ((float) (alu_job_size - *alu_job)) / ((float) alu_job_size));
+        print_progress(*alu_job, alu_job_size);
+
+        printf("%s%5.2f%%\n", get_string(GUI_GUI_FPU_HEADER), 100.0 * ((float) (fpu_job_size - *fpu_job)) / ((float) fpu_job_size));
+        print_progress(*fpu_job, fpu_job_size);
+
+        printf("%s%5.2f%%\n", get_string(GUI_GUI_MEM_HEADER), 100.0 * ((float) (mem_job_size - *mem_job)) / ((float) mem_job_size));
+        print_progress(*mem_job, mem_job_size);
+
+        sleep(1);
         erase_lines(8);
     }
 
-    printf("Finished the test with %d core(s)!\n", *cores_used);
+    printf("%s%d%s\n", get_string(GUI_GUI_FINISHED_MSG_1), *cores_used, get_string(GUI_GUI_FINISHED_MSG_2));
     sleep(2);
 
     erase_lines(1);

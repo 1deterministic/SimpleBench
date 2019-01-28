@@ -30,6 +30,19 @@ String get_string(MsgCode msgcode) {
         case MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE: return "SingleThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE: return "MultiThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTIPLIER: return "Multiplier";
+        case MSG_MAIN_SHOW_SCORE_ERROR: return "An error occurred during the test!";
+
+        case GUI_SHOW_PROGRESS_BRACKET_OPEN: return "[";
+        case GUI_SHOW_PROGRESS_BRACKET_CLOSE: return "]";
+        case GUI_SHOW_PROGRESS_FILLED: return "=";
+        case GUI_SHOW_PROGRESS_NOT_FILLED: return "-";
+        case GUI_GUI_HEADER_1: return "Testing the system with ";
+        case GUI_GUI_HEADER_2: return " core(s):";
+        case GUI_GUI_ALU_HEADER: return "ALU Test: ";
+        case GUI_GUI_FPU_HEADER: return "FPU Test: ";
+        case GUI_GUI_MEM_HEADER: return "MEM Test: ";
+        case GUI_GUI_FINISHED_MSG_1: return "Finished the test with ";
+        case GUI_GUI_FINISHED_MSG_2: return " core(s)!";
     };
 
     return "undefined";
