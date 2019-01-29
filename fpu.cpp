@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <limits.h>
+#include <float.h>
 
 // struct of the FPUParams type
 struct fpu_prm {
@@ -52,9 +54,9 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
     // fills the matrices
     for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-            // add a random number between 0.1 and 1.0 - not using 0 to prevent having to deal with division by zero
-            matrix_a[index_x][index_y] = (float) ((rand() % 9999) + 1) / 1000.0;
-            matrix_b[index_x][index_y] = (float) ((rand() % 9999) + 1) / 1000.0;
+            // not using 0 to prevent having to deal with division by zero
+            matrix_a[index_x][index_y] = 0.1 + ((FLT_MAX - 1.0) * ((float) rand()) / ((float) RAND_MAX));
+            matrix_b[index_x][index_y] = 0.1 + ((FLT_MAX - 1.0) * ((float) rand()) / ((float) RAND_MAX));
         }
     }
     

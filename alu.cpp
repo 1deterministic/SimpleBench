@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <limits.h>
 
 // struct of the ALUParams type
 struct alu_prm {
@@ -52,9 +53,9 @@ MsgCode create_alu_params(ALUParams** alu_params) {
     // fills the matrices
     for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-            // add a random number between 1 and 10 - not using 0 to prevent having to deal with division by zero
-            matrix_a[index_x][index_y] = (rand() % 9) + 1;
-            matrix_b[index_x][index_y] = (rand() % 9) + 1;
+            // not using 0 to prevent having to deal with division by zero
+            matrix_a[index_x][index_y] = (rand() % (INT_MAX - 1)) + 1;
+            matrix_b[index_x][index_y] = (rand() % (INT_MAX - 1)) + 1;
         }
     }
 
