@@ -2,6 +2,8 @@
 /simplebench
 /simplebench32
 
+/.vscode/
+
 # Object files
 *.o
 *.ko

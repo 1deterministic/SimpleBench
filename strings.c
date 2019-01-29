@@ -1,12 +1,4 @@
-// Strings used by the program ========================================
-
 #include "simplebench.h"
-#include <stdlib.h>
-#include <pthread.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdbool.h>
 
 String get_string(MsgCode msgcode) {
     switch (msgcode) {
