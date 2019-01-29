@@ -90,8 +90,8 @@ MsgCode del_mem_params(MEMParams** mem_params) {
         free(matrix_a[index]);
         free(matrix_b[index]);
     }
-    free(matrix_a);
-    free(matrix_b);
+    // free(matrix_a);
+    // free(matrix_b);
     
     pthread_mutex_destroy(lock);
     free(lock);
