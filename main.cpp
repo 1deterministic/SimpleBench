@@ -143,9 +143,12 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
             }
         }
 
-        else if (strcmp(argv[i], CLI_HELP) == 0) {
-            show_help();
-            return SUCCESS;
+        else if (strcmp(argv[i], CLI_VERSION) == 0) {
+            return MSG_GET_CLI_OPTIONS_VERSION;
+        }
+
+        else if (strcmp(argv[i], CLI_HELP) == 0) {            
+            return MSG_HELP_TEXT;
         }
 
         else {
@@ -191,8 +194,4 @@ void load_test_config(MsgCode config) {
             break;
         }            
     };
-}
-
-void show_help(void) {
-    printf("Help should be here!\n");
 }

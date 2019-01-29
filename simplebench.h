@@ -14,6 +14,7 @@
 #define CLI_THREADS "--threads"
 #define CLI_OLD_HARDWARE "--old-hardware"
 #define CLI_HELP "--help"
+#define CLI_VERSION "--version"
 
 #define CONFIG_MODERN_HARDWARE 9990
 #define CONFIG_OLD_HARDWARE 9991
@@ -42,10 +43,11 @@ typedef unsigned int MsgCode;
 #define MSG_GET_CLI_OPTIONS_INVALID_INT 1007
 #define MSG_GET_CLI_OPTIONS_MISSING_INT 1008
 #define MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION 1009
+#define MSG_GET_CLI_OPTIONS_VERSION 1010
+#define MSG_HELP_TEXT 1011
 MsgCode get_cli_options(int, char**, bool*, bool*, bool*, bool*, int*);
 void show_score(float, float, int);
 void load_test_config(MsgCode);
-void show_help(void);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100

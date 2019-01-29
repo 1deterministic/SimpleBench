@@ -36,6 +36,7 @@ String get_string(MsgCode msgcode) {
         case MSG_GET_CLI_OPTIONS_INVALID_INT: return "Invalid number!";
         case MSG_GET_CLI_OPTIONS_MISSING_INT: return "Missing thread count!";
         case MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION: return "Option not recognized!";
+        case MSG_GET_CLI_OPTIONS_VERSION: return "SimpleBench benchmark version: " BENCHMARK_VERSION;
 
         case GUI_SHOW_PROGRESS_BRACKET_OPEN: return "[";
         case GUI_SHOW_PROGRESS_BRACKET_CLOSE: return "]";
@@ -48,6 +49,17 @@ String get_string(MsgCode msgcode) {
         case GUI_GUI_MEM_HEADER: return "MEM Test: ";
         case GUI_GUI_FINISHED_MSG_1: return "Finished the test with ";
         case GUI_GUI_FINISHED_MSG_2: return " core(s)!";
+
+        case MSG_HELP_TEXT: return
+        "SimpleBench - a quick benchmark to evaluate the core system performance\n\n"
+        "--show-gui [on/off]: enable/disable the text feedback during the tests\n"
+        "--st-test [on/off]: enable/disable the singlethread test\n"
+        "--mt-test [on/off]: enable/disable the multithread test\n"
+        "--threads [integer greater than zero]: sets the number of threads to run with\n"
+        "--old-hardware [on/off]: enable/disable a configuration better suited to old hardware\n"
+        "--version: shows the benchmark version (not the program version)\n"
+        "--help: shows this screen"
+        ;
     };
 
     return "undefined";
