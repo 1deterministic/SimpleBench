@@ -33,7 +33,9 @@ int main(int argc, char** argv) {
     if (code) {printf("%s\n", get_string(code)); return code;}
 
     if (old_hardware)
-        load_test_config(CONFIG_OLD_HARDWARE);
+        config = CONFIG_OLD_HARDWARE;
+        
+    load_test_config(config);
     
     // gets the scores fot the single and multithreaded tests
     if (st_test) {
