@@ -3,7 +3,12 @@
 // if I ever change this it means that scores from different versions are not comparable
 #define BENCHMARK_VERSION "1.0"
 
-#define SCORE_CALIBRATION_FACTOR 72.888054
+// the time my machine (at the time) took to complete the single threaded test
+// Intel Xeon E3 1280 3.6/3.9GHz (stock)
+// HyperX 8GB DDR3 1333MHz Single Channel
+// running live on the Arch iso 2019-01, linux kernel 4.20
+// generic build
+#define SCORE_CALIBRATION_FACTOR 71.486664
 
 #define CLI_ON "on"
 #define CLI_OFF "off"
