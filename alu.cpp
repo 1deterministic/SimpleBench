@@ -81,10 +81,10 @@ MsgCode del_alu_params(ALUParams** alu_params) {
         return SUCCESS;
 
     // creates local references to the pointers inside params
-    int* job_size = (*alu_params)->job_size;
-    int** matrix_a = (*alu_params)->matrix_a;
-    int** matrix_b = (*alu_params)->matrix_b;
-    pthread_mutex_t* lock = (*alu_params)->lock;
+    int* job_size = get_alu_params_job_size(alu_params);
+    int** matrix_a = get_alu_params_matrix_a(alu_params);
+    int** matrix_b = get_alu_params_matrix_b(alu_params);
+    pthread_mutex_t* lock = get_alu_params_lock(alu_params);
     
     // frees up the matrices
     for (int index = 0; index < alu_matrix_size; index++) {

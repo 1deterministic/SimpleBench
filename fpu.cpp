@@ -82,10 +82,10 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
         return SUCCESS;
 
     // creates local references to the pointers inside params
-    int* job_size = (*fpu_params)->job_size;
-    float** matrix_a = (*fpu_params)->matrix_a;
-    float** matrix_b = (*fpu_params)->matrix_b;
-    pthread_mutex_t* lock = (*fpu_params)->lock;
+    int* job_size = get_fpu_params_job_size(fpu_params);
+    float** matrix_a = get_fpu_params_matrix_a(fpu_params);
+    float** matrix_b = get_fpu_params_matrix_b(fpu_params);
+    pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
     
     // frees up the matrices
     for (int index = 0; index < fpu_matrix_size; index++) {
