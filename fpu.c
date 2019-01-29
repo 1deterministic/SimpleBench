@@ -8,6 +8,7 @@
 #include <string.h>
 #include <limits.h>
 #include <float.h>
+#include <stdbool.h>
 
 // struct of the FPUParams type
 struct fpu_prm {

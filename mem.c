@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <limits.h>
+#include <stdbool.h>
 
 // struct of the MEMParams type
 struct mem_prm {
@@ -138,6 +139,8 @@ pthread_mutex_t* get_mem_params_lock(MEMParams** mem_params) {
 
 // the function that will test the system memory
 void* mem_test(void* params) {
+    srand((unsigned) time(NULL));
+
     // converts back the params to the expected type
     MEMParams** mem_params = (MEMParams**) &params;
     
@@ -166,7 +169,12 @@ void* mem_test(void* params) {
             break;
         
         // copies an entire line of the matrix_a to the matrix_b
-        memcpy(matrix_b[line], matrix_a[line], mem_matrix_size * sizeof(int));
+        // 4 times to decrease the overhead of the loop
+        // random lines to prevent caching
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
     }
     
     return NULL;

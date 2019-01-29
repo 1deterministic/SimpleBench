@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <limits.h>
+#include <stdbool.h>
 
 // struct of the ALUParams type
 struct alu_prm {

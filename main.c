@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 // normalizes the score
 float handicap;
@@ -218,7 +219,7 @@ void load_test_config(MsgCode config) {
             mem_matrix_size = 8192; // 256MB
             alu_job_size = 64 * alu_matrix_size; // 64 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 109,051,904 integer ops
             fpu_job_size = 32 * fpu_matrix_size; // 32 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 54,525,952 floating point ops
-            mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns * 4 bytes per element = 8GB of data, 8192 rows * 4 bytes = 32KB each time
+            mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns * 4 lines each time * 4 bytes per element = 32GB of data
             break;
         }
 
@@ -228,9 +229,9 @@ void load_test_config(MsgCode config) {
             alu_matrix_size = 256; // 256KB
             fpu_matrix_size = 256; // 256KB
             mem_matrix_size = 2048; // 16MB
-            alu_job_size = 4 * alu_matrix_size; // 4 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 6,815,744 integer ops = handicap * modern hardware integer ops
-            fpu_job_size = 2 * fpu_matrix_size; // 2 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 3,407,872 floating point ops = handicap * modern hardware floating point ops
-            mem_job_size = 32 * mem_matrix_size; // 32 times * 2048 rows * 2048 columns * 4 bytes per element = 512MB of data, 2048 rows * 4 bytes = 8KB each time = handicap * modern hardware amount of data
+            alu_job_size = 4 * alu_matrix_size; // 4 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 6,815,744 integer ops
+            fpu_job_size = 2 * fpu_matrix_size; // 2 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 3,407,872 floating point ops
+            mem_job_size = 32 * mem_matrix_size; // 32 times * 2048 rows * 2048 columns * 4 lines each time * 4 bytes per element = 2GB of data
             break;
         }            
     };

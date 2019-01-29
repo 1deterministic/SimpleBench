@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
+#include <sched.h>
 
 // struct of the Thread type
 struct thd {

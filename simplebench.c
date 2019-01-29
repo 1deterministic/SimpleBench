@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
 
 // test function ======================================================
 MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
