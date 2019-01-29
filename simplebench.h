@@ -56,6 +56,7 @@ typedef struct thd Thread;
 MsgCode add_thread(Thread**, int, void*, void*);
 MsgCode del_threads(Thread**);
 MsgCode wait_threads(Thread**);
+MsgCode stop_threads(Thread**);
 
 // ALUParams type
 #define ALU_MEMORY_ALLOCATION_ERROR 200
@@ -146,6 +147,7 @@ float stop_chronometer(Chronometer**);
 
 // benchmark function
 MsgCode test_system(float*, int, float, bool);
+void cleanup(Thread**, Thread**, ALUParams**, FPUParams**, MEMParams**, GUIParams**,  Chronometer**);
 
 // Strings file
 typedef const char* String;

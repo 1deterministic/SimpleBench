@@ -76,6 +76,9 @@ MsgCode create_mem_params(MEMParams** mem_params) {
 
 // deletes a MEMParams
 MsgCode del_mem_params(MEMParams** mem_params) {
+    if (*mem_params == NULL)
+        return SUCCESS;
+
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);
     int** matrix_a = get_mem_params_matrix_a(mem_params);
@@ -83,7 +86,7 @@ MsgCode del_mem_params(MEMParams** mem_params) {
     pthread_mutex_t* lock = get_mem_params_lock(mem_params);
     
     // frees up the matrices
-    for (int index = 0; index <  mem_matrix_size; index++) {
+    for (int index = 0; index < mem_matrix_size; index++) {
         free(matrix_a[index]);
         free(matrix_b[index]);
     }

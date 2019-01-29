@@ -31,6 +31,11 @@ String get_string(MsgCode msgcode) {
         case MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE: return "MultiThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTIPLIER: return "Multiplier";
         case MSG_MAIN_SHOW_SCORE_ERROR: return "An error occurred during the test!";
+        case MSG_GET_CLI_OPTIONS_INVALID_ONOFF: return "Invalid on/off value!";
+        case MSG_GET_CLI_OPTIONS_MISSING_ONOFF: return "Missing on/off value!";
+        case MSG_GET_CLI_OPTIONS_INVALID_INT: return "Invalid number!";
+        case MSG_GET_CLI_OPTIONS_MISSING_INT: return "Missing thread count!";
+        case MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION: return "Option not recognized!";
 
         case GUI_SHOW_PROGRESS_BRACKET_OPEN: return "[";
         case GUI_SHOW_PROGRESS_BRACKET_CLOSE: return "]";

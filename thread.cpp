@@ -22,7 +22,7 @@ MsgCode add_thread(Thread** thread_array, int core_number, void* function, void*
     
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
-    CPU_SET(core_number, &cpuset);
+    CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
     
     // start the thread with the received parameters
     if (pthread_create(&(new_thread->thread_instance), NULL, (void*(*)(void*)) function, params)) {
@@ -32,6 +32,7 @@ MsgCode add_thread(Thread** thread_array, int core_number, void* function, void*
     
     // makes this thread run on the specified core
     if (pthread_setaffinity_np(new_thread->thread_instance, sizeof(cpu_set_t), &cpuset)) {
+        pthread_cancel(new_thread->thread_instance);
         free(new_thread);
         return THREAD_PTHREAD_AFFINITY_ERROR;
     }
@@ -40,7 +41,6 @@ MsgCode add_thread(Thread** thread_array, int core_number, void* function, void*
     new_thread->next = *thread_array;
     *thread_array = new_thread;
     
-    // returns this thread (which is now the new first element)
     return SUCCESS;
 }
 
@@ -75,5 +75,22 @@ MsgCode wait_threads(Thread** thread_array) {
         thread_element = thread_element->next;
     }
 
+    return SUCCESS;
+}
+
+// stops currently running threads
+MsgCode stop_threads(Thread** thread_array) {
+    // auxiliary pointer
+    Thread* thread_element;
+    // will repeat until all threads were removed
+    while (*thread_array!= NULL) {
+        // changes the pointers
+        thread_element = *thread_array;
+        *thread_array = (*thread_array)->next;
+
+        pthread_cancel(thread_element->thread_instance);
+    }
+    
+    // returns the new empty array
     return SUCCESS;
 }

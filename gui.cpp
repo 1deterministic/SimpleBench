@@ -35,6 +35,9 @@ MsgCode create_gui_params(GUIParams** gui_params, ALUParams* alu_params, FPUPara
 
 // deletes a GUIParams
 MsgCode del_gui_params(GUIParams** gui_params) {
+    if (*gui_params == NULL)
+        return SUCCESS;
+
     free (*gui_params);
     return SUCCESS;
 }

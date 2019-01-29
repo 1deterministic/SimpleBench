@@ -16,6 +16,8 @@ int fpu_job_size;
 int mem_job_size;
 
 int main(int argc, char** argv) {
+    MsgCode code = SUCCESS;
+
     float singlethread_score = 0.0;
     float multithread_score = 0.0;
 
@@ -27,27 +29,30 @@ int main(int argc, char** argv) {
     bool mt_test = true;
     bool old_hardware = false;
 
-    get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &old_hardware, &threads);
+    code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &old_hardware, &threads);
+    if (code) {printf("%s\n", get_string(code)); return code;}
 
     if (old_hardware)
         load_test_config(CONFIG_OLD_HARDWARE);
     
     // gets the scores fot the single and multithreaded tests
-    if (st_test)
-        test_system(&singlethread_score, 1, handicap, show_gui);
-    
+    if (st_test) {
+        code = test_system(&singlethread_score, 1, handicap, show_gui);
+        if (code) {printf("%s\n", get_string(code)); return code;}
+    }
     
     if (mt_test) {
         // skip the multithread test if the system only has 1
         if (threads > 1) {
-            test_system(&multithread_score, threads, handicap, show_gui);
+            code = test_system(&multithread_score, threads, handicap, show_gui);
+            if (code) {printf("%s\n", get_string(code)); return code;}
         } else {
             multithread_score = singlethread_score;
         }
     }
 
     show_score(singlethread_score, multithread_score, threads);
-    return 0;
+    return code;
 }
 
 // reads the options received via CLI
@@ -63,12 +68,10 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
                     *show_gui = false;
                 }
                 else {
-                    printf("Invalid on/off value: %s\n", argv[i]); 
                     return MSG_GET_CLI_OPTIONS_INVALID_ONOFF;
                 }
                 continue;
             } else {
-                printf("Missing on/off value!\n");
                 return MSG_GET_CLI_OPTIONS_MISSING_ONOFF;
             }
         }
@@ -83,12 +86,10 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
                     *st_test = false;
                 }
                 else {
-                    printf("Invalid on/off value: %s\n", argv[i]); 
                     return MSG_GET_CLI_OPTIONS_INVALID_ONOFF;
                 }
                 continue;
             } else {
-                printf("Missing on/off value!\n");
                 return MSG_GET_CLI_OPTIONS_MISSING_ONOFF;
             }
         }
@@ -103,12 +104,10 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
                     *mt_test = false;
                 }
                 else {
-                    printf("Invalid on/off value: %s\n", argv[i]); 
                     return MSG_GET_CLI_OPTIONS_INVALID_ONOFF;
                 }
                 continue;
             } else {
-                printf("Missing on/off value!\n");
                 return MSG_GET_CLI_OPTIONS_MISSING_ONOFF;
             }
         }
@@ -117,13 +116,11 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
             if (i + 1 < argc) {
                 i++;
                 *threads = atoi(argv[i]);
-                if (threads <= 0) {
-                    printf("Invalid number!\n");
+                if (*threads <= 0) {
                     return MSG_GET_CLI_OPTIONS_INVALID_INT;
                 }    
                 continue;
             } else {
-                printf("Missing thread count!\n");
                 return MSG_GET_CLI_OPTIONS_MISSING_INT;
             }
         }
@@ -138,12 +135,10 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
                     *old_hardware = false;
                 }
                 else {
-                    printf("Invalid on/off value: %s\n", argv[i]); 
                     return MSG_GET_CLI_OPTIONS_INVALID_ONOFF;
                 }
                 continue;
             } else {
-                printf("Missing on/off value!\n");
                 return MSG_GET_CLI_OPTIONS_MISSING_ONOFF;
             }
         }
@@ -154,7 +149,6 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
         }
 
         else {
-            printf("Option not recognized: %s\nTry the option \"%s\" to show the help\n", argv[i], CLI_HELP);
             return MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION;
         }
     }
