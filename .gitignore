@@ -1,6 +1,8 @@
 # not commit the executable by default
-/simplebench
-/simplebench32
+/linux/simplebench
+/linux/simplebench32
+/windows/simplebench.exe
+/windows/simplebench32.exe
 
 /.vscode/
 
