@@ -126,6 +126,32 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td></td><!--CLI Options-->
         <td>generic</td><!--Build-->
     </tr>
+    <tr> <!--Intel Core i5 3317U-->
+        <td>1.0</td><!--Version-->
+        <td>70.64</td><!--ST Score-->
+        <td>152.78</td><!--MT Score-->
+        <td>2.16</td><!--Multiplier-->
+        <td>AMD64</td><!--Architecture-->
+        <td>Intel</td><!--CPU Vendor-->
+        <td>Core i5 3317U</td><!--CPU Model-->
+        <td>1700</td><!--CPU Base Clock-->
+        <td>2400</td><!--CPU Boost Clock-->
+        <td>2</td><!--CPU Cores-->
+        <td>4</td><!--CPU Threads-->
+        <td>15</td><!--CPU TDP-->
+        <td>3072</td><!--CPU LLC-->
+        <td></td><!--RAM Vendor-->
+        <td></td><!--RAM Model-->
+        <td>1600</td><!--RAM Clock-->
+        <td>2</td><!--RAM Channels-->
+        <td>8192</td><!--RAM Capacity-->
+        <td></td><!--RAM Latency-->
+        <td>Deepin 15.7</td><!--Operating System-->
+        <td>2018/08</td><!--OS Update-->
+        <td>Linux 4.15</td><!--Kernel-->
+        <td></td><!--CLI Options-->
+        <td>generic</td><!--Build-->
+    </tr>
     <tr> <!--Template-->
         <td></td><!--Version-->
         <td></td><!--ST Score-->
