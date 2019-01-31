@@ -93,16 +93,12 @@ void print_progress(float current, float total) {
 }
 
 void erase_lines(int count) {
-    int width = 80;
-
     for (int i = 0; i <= count; i++) {
         // returns the cursor to the begining of the line
         printf("\r");
 
-        // erases width characters
-        for (int j = 0; j < width; j++) {
-            printf(" ");
-        }
+        // erases the current line
+        printf("\e[K");
 
         // moves the cursor up if it's not the last line to erase, else simply returns to the start of the line
         if (i < count)
