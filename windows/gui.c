@@ -93,23 +93,24 @@ void print_progress(float current, float total) {
 }
 
 void erase_lines(int count) {
-    int width = 80;
+    system("cls");
+    // int width = 80;
 
-    for (int i = 0; i <= count; i++) {
-        // returns the cursor to the begining of the line
-        printf("\r");
+    // for (int i = 0; i <= count; i++) {
+    //     // returns the cursor to the begining of the line
+    //     printf("\r");
 
-        // erases width characters
-        for (int j = 0; j < width; j++) {
-            printf(" ");
-        }
+    //     // erases width characters
+    //     for (int j = 0; j < width; j++) {
+    //         printf(" ");
+    //     }
 
-        // moves the cursor up if it's not the last line to erase, else simply returns to the start of the line
-        if (i < count)
-            printf("\033[A");
-        else
-            printf("\r");   
-    }
+    //     // moves the cursor up if it's not the last line to erase, else simply returns to the start of the line
+    //     if (i < count)
+    //         printf("\033[A");
+    //     else
+    //         printf("\r");   
+    // }
 }
 
 void* gui(void* params) {

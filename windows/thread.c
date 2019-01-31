@@ -10,7 +10,7 @@ struct thd {
 };
 
 // this will add a thread to a thread array
-MsgCode add_thread(Thread** thread_array, int core_number, void* function, void* params) {
+MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* function, void* params) {
     // manually allocate memory the size of Thread
     Thread* new_thread = (Thread*) malloc(sizeof(Thread));
     if (new_thread == NULL)
@@ -31,6 +31,12 @@ MsgCode add_thread(Thread** thread_array, int core_number, void* function, void*
         TerminateThread(new_thread->thread_instance, 0);
         free(new_thread);
         return THREAD_PTHREAD_AFFINITY_ERROR;
+    }
+
+    if (!SetThreadPriority(new_thread->thread_instance, priority)) {
+        TerminateThread(new_thread->thread_instance, 0);
+        free(new_thread);
+        return THREAD_PTHREAD_PRIORITY_ERROR;
     }
     
     // links the rest of the array to this thread

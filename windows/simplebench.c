@@ -47,19 +47,19 @@ MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
 
     // starts the gui thread
     if (show_gui) {
-        code = add_thread(&gui_thread_array, 0, (void*) gui, (void*) gui_params);
+        code = add_thread(&gui_thread_array, 0, THREAD_PRIORITY_ABOVE_NORMAL, (void*) gui, (void*) gui_params);
         if (code) {cleanup(&thread_array, &gui_thread_array, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer); return code;}
     }
   
     start_chronometer(&chronometer);
     for (int i=0; i<threads; i++) {
-        code = add_thread(&thread_array, i, (void*) alu_test, (void*) alu_params);
+        code = add_thread(&thread_array, i, THREAD_PRIORITY_NORMAL, (void*) alu_test, (void*) alu_params);
         if (code) {stop_threads(&gui_thread_array); stop_threads(&thread_array); cleanup(&thread_array, &gui_thread_array, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer); return code;}
 
-        code = add_thread(&thread_array, i, (void*) fpu_test, (void*) fpu_params);
+        code = add_thread(&thread_array, i, THREAD_PRIORITY_NORMAL, (void*) fpu_test, (void*) fpu_params);
         if (code) {stop_threads(&gui_thread_array); stop_threads(&thread_array); cleanup(&thread_array, &gui_thread_array, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer); return code;}
 
-        code = add_thread(&thread_array, i, (void*) mem_test, (void*) mem_params);
+        code = add_thread(&thread_array, i, THREAD_PRIORITY_NORMAL, (void*) mem_test, (void*) mem_params);
         if (code) {stop_threads(&gui_thread_array); stop_threads(&thread_array); cleanup(&thread_array, &gui_thread_array, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer); return code;}
     }
     // waits for all compute threads to finish and stops the chronometer immediately

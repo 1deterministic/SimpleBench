@@ -7,6 +7,7 @@ String get_string(MsgCode msgcode) {
         case THREAD_PTHREAD_CREATION_ERROR: return "Thread creation error!";
         case THREAD_PTHREAD_AFFINITY_ERROR: return "Thread affinity setting error!";
         case THREAD_PTHREAD_JOIN_ERROR: return "Thread join error!";
+        case THREAD_PTHREAD_PRIORITY_ERROR: return "Thread priority setting error!";
         case ALU_MEMORY_ALLOCATION_ERROR: return "ALU test memory allocation error!";
         case ALU_PTHREAD_LOCK_CREATION_ERROR: return "ALU test lock creation error!";
         case ALU_PTHREAD_LOCK_INIT_ERROR: return "ALU test lock initialization error!";

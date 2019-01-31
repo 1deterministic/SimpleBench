@@ -62,8 +62,9 @@ void load_test_config(MsgCode);
 #define THREAD_PTHREAD_CREATION_ERROR 101
 #define THREAD_PTHREAD_AFFINITY_ERROR 102
 #define THREAD_PTHREAD_JOIN_ERROR 103
+#define THREAD_PTHREAD_PRIORITY_ERROR 104
 typedef struct thd Thread;
-MsgCode add_thread(Thread**, int, void*, void*);
+MsgCode add_thread(Thread**, int, int, void*, void*);
 MsgCode del_threads(Thread**);
 MsgCode wait_threads(Thread**);
 MsgCode stop_threads(Thread**);
