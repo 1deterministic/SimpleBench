@@ -82,6 +82,10 @@ MsgCode add_thread(Thread**, int, int, void*, void*);
 MsgCode del_threads(Thread**);
 MsgCode wait_threads(Thread**);
 MsgCode stop_threads(Thread**);
+void set_thread_instance(Thread**, void*);
+void* get_thread_instance(Thread**);
+void set_next(Thread**, Thread*);
+Thread* get_next(Thread**);
 
 // ALUParams type
 #define ALU_MEMORY_ALLOCATION_ERROR 200

@@ -27,8 +27,9 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
         return THREAD_MEMORY_ALLOCATION_ERROR;
 
     #ifdef __linux__
-        new_thread->thread_instance = (void*) ((pthread_t*) malloc(sizeof(pthread_t)));
-        if (new_thread->thread_instance == NULL)
+        //new_thread->thread_instance = (void*) ((pthread_t*) malloc(sizeof(pthread_t)));
+        pthread_t* thread_instance = (pthread_t*) malloc(sizeof(pthread_t));
+        if (thread_instance == NULL)
             return THREAD_MEMORY_ALLOCATION_ERROR;
         
         cpu_set_t cpuset;
@@ -36,52 +37,50 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
         CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
         
         // start the thread with the received parameters
-        if (pthread_create(new_thread->thread_instance, NULL, (void*(*)(void*)) function, params)) {
+        if (pthread_create(thread_instance, NULL, function, params)) {
             free(new_thread);
             return THREAD_PTHREAD_CREATION_ERROR;
         }
         
         // makes this thread run on the specified core
-        if (pthread_setaffinity_np(*((pthread_t*) new_thread->thread_instance), sizeof(cpu_set_t), &cpuset)) {
-            pthread_cancel(*((pthread_t*) new_thread->thread_instance));
+        if (pthread_setaffinity_np(*thread_instance, sizeof(cpu_set_t), &cpuset)) {
+            pthread_cancel(*thread_instance);
             free(new_thread);
             return THREAD_PTHREAD_AFFINITY_ERROR;
         }
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        new_thread->thread_instance = (void*) ((HANDLE*) malloc(sizeof(HANDLE)));
-        if (new_thread->thread_instance == NULL)
+        HANDLE* thread_instance = (HANDLE*) malloc(sizeof(HANDLE));
+        if (thread_instance == NULL)
             return THREAD_PTHREAD_CREATION_ERROR;
 
         SYSTEM_INFO info; 
         GetSystemInfo(&info);
         
         // start the thread with the received parameters
-        *((HANDLE*) new_thread->thread_instance) = CreateThread(NULL, 0, function, params, 0, NULL);
-        if (!*((HANDLE*) new_thread->thread_instance)) {
+        *thread_instance = CreateThread(NULL, 0, function, params, 0, NULL);
+        if (!*thread_instance) {
             free(new_thread);
             return THREAD_PTHREAD_CREATION_ERROR;
         }
         
         // makes this thread run on the specified core
-        if (!SetThreadAffinityMask(*((HANDLE*) new_thread->thread_instance), 1 << (core_number % info.dwNumberOfProcessors))) {
-            TerminateThread(*((HANDLE*) new_thread->thread_instance), 0);
+        if (!SetThreadAffinityMask(*thread_instance, 1 << (core_number % info.dwNumberOfProcessors))) {
+            TerminateThread(*thread_instance, 0);
             free(new_thread);
             return THREAD_PTHREAD_AFFINITY_ERROR;
         }
 
-        if (!SetThreadPriority(*((HANDLE*) new_thread->thread_instance), priority)) {
-            TerminateThread(*((HANDLE*) new_thread->thread_instance), 0);
+        if (!SetThreadPriority(*thread_instance, priority)) {
+            TerminateThread(*thread_instance, 0);
             free(new_thread);
             return THREAD_PTHREAD_PRIORITY_ERROR;
         }
-
     #endif
     
-    // links the rest of the array to this thread
-    new_thread->next = *thread_array;
+    set_thread_instance(&new_thread, thread_instance);
+    set_next(&new_thread, *thread_array);
     *thread_array = new_thread;
-    
     return SUCCESS;
 }
 
@@ -117,12 +116,15 @@ MsgCode wait_threads(Thread** thread_array) {
     // will repeat until all threads were "joined"
     while (thread_element != NULL) {
         #ifdef __linux__
+            pthread_t* thread_instance = get_thread_instance(&thread_element);
             // "joins" the current thread
-            if (pthread_join(*((pthread_t*) thread_element->thread_instance), NULL))
+            if (pthread_join(*thread_instance, NULL))
                 return THREAD_PTHREAD_JOIN_ERROR;
 
         #elif __MINGW64__ || __MINGW32__ || _WIN32
-             if(WaitForSingleObject(*((HANDLE*) thread_element->thread_instance), INFINITE) == WAIT_FAILED)
+            HANDLE* thread_instance = get_thread_instance(&thread_element);
+            // "joins" the current thread
+            if(WaitForSingleObject(*thread_instance, INFINITE) == WAIT_FAILED)
                 return THREAD_PTHREAD_JOIN_ERROR;
                 
         #endif
@@ -141,10 +143,12 @@ MsgCode stop_threads(Thread** thread_array) {
     // will repeat until all threads were removed
     while (thread_element!= NULL) {
         #ifdef __linux__
-            pthread_cancel(*((pthread_t*) thread_element->thread_instance));
+            pthread_t* thread_instance = get_thread_instance(&thread_element);
+            pthread_cancel(*thread_instance);
 
         #elif __MINGW64__ || __MINGW32__ || _WIN32
-            TerminateThread(*((HANDLE*) thread_element->thread_instance), 0);
+            HANDLE* thread_instance = get_thread_instance(&thread_element);
+            TerminateThread(*thread_instance, 0);
 
         #endif
 
@@ -154,4 +158,20 @@ MsgCode stop_threads(Thread** thread_array) {
     
     // returns the new empty array
     return SUCCESS;
+}
+
+void set_thread_instance(Thread** thread_element, void* thread_instance) {
+    (*thread_element)->thread_instance = thread_instance;
+}
+
+void* get_thread_instance(Thread** thread_element) {
+    return (*thread_element)->thread_instance;
+}
+
+void set_next(Thread** thread_element, Thread* next) {
+    (*thread_element)->next = next;
+}
+
+Thread* get_next(Thread** thread_element) {
+    return (*thread_element)->next;
 }
