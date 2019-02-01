@@ -92,16 +92,18 @@ MsgCode del_threads(Thread** thread_array) {
     while (*thread_array != NULL) {
         // stores the current thread on a separate variable and advances the thread array to the next element
         thread_element = *thread_array;
-        *thread_array = (*thread_array)->next;
+        *thread_array = get_next(&thread_element);
         
         #ifdef __linux__
+            pthread_t* thread_instance = get_thread_instance(&thread_element);
         #elif __MINGW64__ || __MINGW32__ || _WIN32
-            CloseHandle(*((HANDLE*) thread_element->thread_instance));
+            HANDLE* thread_instance = get_thread_instance(&thread_element);
+            CloseHandle(*thread_instance);
 
         #endif
 
         // frees up the current thread
-        free(thread_element->thread_instance);
+        free(thread_instance);
         free(thread_element);
     }
     
@@ -117,13 +119,11 @@ MsgCode wait_threads(Thread** thread_array) {
     while (thread_element != NULL) {
         #ifdef __linux__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
-            // "joins" the current thread
             if (pthread_join(*thread_instance, NULL))
                 return THREAD_PTHREAD_JOIN_ERROR;
 
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             HANDLE* thread_instance = get_thread_instance(&thread_element);
-            // "joins" the current thread
             if(WaitForSingleObject(*thread_instance, INFINITE) == WAIT_FAILED)
                 return THREAD_PTHREAD_JOIN_ERROR;
                 

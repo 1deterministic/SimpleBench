@@ -26,24 +26,27 @@ MsgCode create_chronometer(Chronometer** chronometer) {
         return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
 
     #ifdef __linux__
-        (*chronometer)->start = (void*) ((struct timespec*) malloc(sizeof(struct timespec)));
-        if ((*chronometer)->start == NULL)
+        struct timespec* start = (struct timespec*) malloc(sizeof(struct timespec));
+        if (start == NULL)
             return 1;
 
-        (*chronometer)->stop = (void*) ((struct timespec*) malloc(sizeof(struct timespec)));
-        if ((*chronometer)->stop == NULL)
+        struct timespec* stop = (struct timespec*) malloc(sizeof(struct timespec));
+        if (stop == NULL)
             return 1;
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        (*chronometer)->start = (void*) ((DWORD*) malloc(sizeof(DWORD)));
-        if ((*chronometer)->start == NULL)
+        DWORD* start = (DWORD*) malloc(sizeof(DWORD));
+        if (start == NULL)
             return 1;
 
-        (*chronometer)->stop = (void*) ((DWORD*) malloc(sizeof(DWORD)));
-        if ((*chronometer)->stop == NULL)
+        DWORD* stop = (DWORD*) malloc(sizeof(DWORD));
+        if (stop == NULL)
             return 1;
 
     #endif
+
+    set_chronometer_start(chronometer, start);
+    set_chronometer_stop(chronometer, stop);
     
     return SUCCESS;
 }
@@ -60,10 +63,12 @@ MsgCode del_chronometer(Chronometer** chronometer) {
 // starts a Chronometer
 void start_chronometer(Chronometer** chronometer) {
     #ifdef __linux__
-        clock_gettime(CLOCK_MONOTONIC_RAW, ((struct timespec*) (*chronometer)->start));
+        struct timespec* start = get_chronometer_start(chronometer);
+        clock_gettime(CLOCK_MONOTONIC_RAW, start);
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        *((DWORD*) (*chronometer)->start) = GetTickCount();
+        DWORD* start = get_chronometer_start(chronometer);
+        *start = GetTickCount();
 
     #endif
 }
@@ -71,16 +76,39 @@ void start_chronometer(Chronometer** chronometer) {
 // stops a Chronometer
 float stop_chronometer(Chronometer** chronometer) {
     float time_delta;
+
     #ifdef __linux__
-        clock_gettime(CLOCK_MONOTONIC_RAW, ((struct timespec*) (*chronometer)->stop));
-        float delta_us = (((struct timespec*) (*chronometer)->stop)->tv_sec - ((struct timespec*) (*chronometer)->start)->tv_sec) * 1000000 + (((struct timespec*) (*chronometer)->stop)->tv_nsec - ((struct timespec*) (*chronometer)->start)->tv_nsec) / 1000;
-        time_delta = (float) delta_us / 1000000.0;
+        struct timespec* start = get_chronometer_start(chronometer);
+        struct timespec* stop = get_chronometer_stop(chronometer);
+
+        clock_gettime(CLOCK_MONOTONIC_RAW, stop);
+
+        time_delta = (float) ((stop->tv_sec - start->tv_sec) * 1000000 + (stop->tv_nsec - start->tv_nsec) / 1000) / 1000000.0;
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        *((DWORD*) (*chronometer)->stop) = GetTickCount();
-        time_delta = (float) (*((DWORD*) (*chronometer)->stop) - *((DWORD*) (*chronometer)->start)) / 1000.0;
+        DWORD* start = get_chronometer_start(chronometer);
+        DWORD* stop = get_chronometer_stop(chronometer);
+
+        *stop = GetTickCount();
+        time_delta = (float) (*stop - *start) / 1000.0;
 
     #endif
 
     return time_delta;
+}
+
+void set_chronometer_start(Chronometer** chronometer, void* start) {
+    (*chronometer)->start = start;
+}
+
+void* get_chronometer_start(Chronometer** chronometer) {
+    return (*chronometer)->start;
+}
+
+void set_chronometer_stop(Chronometer** chronometer, void* stop) {
+    (*chronometer)->stop = stop;
+}
+
+void* get_chronometer_stop(Chronometer** chronometer) {
+    return (*chronometer)->stop;
 }

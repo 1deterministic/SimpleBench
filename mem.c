@@ -63,7 +63,7 @@ MsgCode create_mem_params(MEMParams** mem_params) {
     }
 
     #ifdef __linux__
-        void* lock = (void*) ((pthread_mutex_t*) malloc(sizeof(pthread_mutex_t)));
+        pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL)
             return MEM_PTHREAD_LOCK_CREATION_ERROR;
         
@@ -71,12 +71,12 @@ MsgCode create_mem_params(MEMParams** mem_params) {
             return MEM_PTHREAD_LOCK_INIT_ERROR;
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        void* lock = (void*) ((HANDLE*) malloc(sizeof(HANDLE)));
+        HANDLE* lock = (HANDLE*) malloc(sizeof(HANDLE));
         if (lock == NULL)
             return MEM_PTHREAD_LOCK_CREATION_ERROR;
         
-        *((HANDLE*) lock) = CreateMutex(NULL, FALSE, NULL);
-        if (*((HANDLE*) lock) == NULL)
+        *lock = CreateMutex(NULL, FALSE, NULL);
+        if (*lock == NULL)
             return MEM_PTHREAD_LOCK_INIT_ERROR;
 
     #endif
@@ -99,24 +99,24 @@ MsgCode del_mem_params(MEMParams** mem_params) {
     int* job_size = get_mem_params_job_size(mem_params);
     int** matrix_a = get_mem_params_matrix_a(mem_params);
     int** matrix_b = get_mem_params_matrix_b(mem_params);
-    void* lock = get_mem_params_lock(mem_params);
+    #ifdef __linux__
+        pthread_mutex_t* lock = get_mem_params_lock(mem_params);
+        pthread_mutex_destroy(lock);
+
+    #elif __MINGW64__ || __MINGW32__ || _WIN32
+        HANDLE* lock = get_mem_params_lock(mem_params);
+        CloseHandle(*lock);
+
+    #endif
+    free(lock);
     
     // frees up the matrices
     for (int index = 0; index < mem_matrix_size; index++) {
         free(matrix_a[index]);
         free(matrix_b[index]);
     }
-    // free(matrix_a);
-    // free(matrix_b);
-    
-    #ifdef __linux__
-        pthread_mutex_destroy(lock);
-
-    #elif __MINGW64__ || __MINGW32__ || _WIN32  
-        CloseHandle(*((HANDLE*) lock));
-
-    #endif
-    free(lock);
+    free(matrix_a);
+    free(matrix_b);
     
     // frees up the task counter
     free(job_size);
@@ -169,7 +169,13 @@ void* mem_test(void* params) {
     int* job_size = get_mem_params_job_size(mem_params);
     int** matrix_a = get_mem_params_matrix_a(mem_params);
     int** matrix_b = get_mem_params_matrix_b(mem_params);
-    void* lock = get_mem_params_lock(mem_params);
+    #ifdef __linux__
+        pthread_mutex_t* lock = get_mem_params_lock(mem_params);
+
+    #elif __MINGW64__ || __MINGW32__ || _WIN32
+        HANDLE* lock = get_mem_params_lock(mem_params);
+
+    #endif
     
     int line;
     bool exit = false;
@@ -187,7 +193,7 @@ void* mem_test(void* params) {
             pthread_mutex_unlock(lock);
 
         #elif __MINGW64__ || __MINGW32__ || _WIN32
-            switch(WaitForSingleObject(*((HANDLE*) lock), INFINITE)) {
+            switch(WaitForSingleObject(*lock, INFINITE)) {
                 case WAIT_OBJECT_0: {
                     if (*job_size > 0) {
                         line = (mem_job_size - *job_size) % mem_matrix_size;
@@ -195,7 +201,7 @@ void* mem_test(void* params) {
                     } else {
                         exit = true;
                     }
-                    ReleaseMutex(*((HANDLE*) lock));
+                    ReleaseMutex(*lock);
                     break;    
                 }
                 case WAIT_ABANDONED: exit = true; break;

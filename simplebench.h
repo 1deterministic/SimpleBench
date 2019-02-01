@@ -1,8 +1,4 @@
 #ifdef __linux__
-#elif __MINGW64__ || __MINGW32__ || _WIN32
-#endif
-
-#ifdef __linux__
     #define _GNU_SOURCE
     #include <pthread.h>
     #define THREAD_PRIORITY_ABOVE_NORMAL 0
@@ -173,6 +169,10 @@ MsgCode create_chronometer(Chronometer**);
 MsgCode del_chronometer(Chronometer**);
 void start_chronometer(Chronometer**);
 float stop_chronometer(Chronometer**);
+void set_chronometer_start(Chronometer**, void*);
+void* get_chronometer_start(Chronometer**);
+void set_chronometer_stop(Chronometer**, void*);
+void* get_chronometer_stop(Chronometer**);
 
 // benchmark function
 MsgCode test_system(float*, int, float, bool);

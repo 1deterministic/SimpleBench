@@ -63,21 +63,22 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
     }
     
     #ifdef __linux__
-        void* lock = (void*) ((pthread_mutex_t*) malloc(sizeof(pthread_mutex_t)));
+        pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL)
-            return FPU_PTHREAD_LOCK_CREATION_ERROR;
+            return MEM_PTHREAD_LOCK_CREATION_ERROR;
         
         if (pthread_mutex_init(lock, NULL))
-            return FPU_PTHREAD_LOCK_INIT_ERROR;
+            return MEM_PTHREAD_LOCK_INIT_ERROR;
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        void* lock = (void*) ((HANDLE*) malloc(sizeof(HANDLE)));
+        HANDLE* lock = (HANDLE*) malloc(sizeof(HANDLE));
         if (lock == NULL)
-            return FPU_PTHREAD_LOCK_CREATION_ERROR;
+            return MEM_PTHREAD_LOCK_CREATION_ERROR;
         
-        *((HANDLE*) lock) = CreateMutex(NULL, FALSE, NULL);
-        if (*((HANDLE*) lock) == NULL)
-            return FPU_PTHREAD_LOCK_INIT_ERROR;
+        *lock = CreateMutex(NULL, FALSE, NULL);
+        if (*lock == NULL)
+            return MEM_PTHREAD_LOCK_INIT_ERROR;
+
     #endif
     
     // fills the parameter values
@@ -98,24 +99,24 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
     int* job_size = get_fpu_params_job_size(fpu_params);
     float** matrix_a = get_fpu_params_matrix_a(fpu_params);
     float** matrix_b = get_fpu_params_matrix_b(fpu_params);
-    void* lock = get_fpu_params_lock(fpu_params);
+    #ifdef __linux__
+        pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
+        pthread_mutex_destroy(lock);
+
+    #elif __MINGW64__ || __MINGW32__ || _WIN32
+        HANDLE* lock = get_fpu_params_lock(fpu_params);
+        CloseHandle(*lock);
+
+    #endif
+    free(lock);
     
     // frees up the matrices
     for (int index = 0; index < fpu_matrix_size; index++) {
         free(matrix_a[index]);
         free(matrix_b[index]);
     }
-    // free(matrix_a);
-    // free(matrix_b);
-
-    #ifdef __linux__
-        pthread_mutex_destroy(lock);
-
-    #elif __MINGW64__ || __MINGW32__ || _WIN32
-        CloseHandle(*((HANDLE*) lock));
-
-    #endif
-    free(lock);
+    free(matrix_a);
+    free(matrix_b);
     
     // frees up the task counter
     free(job_size);
@@ -166,7 +167,13 @@ void* fpu_test(void* params) {
     int* job_size = get_fpu_params_job_size(fpu_params);
     float** matrix_a = get_fpu_params_matrix_a(fpu_params);
     float** matrix_b = get_fpu_params_matrix_b(fpu_params);
-    void* lock = get_fpu_params_lock(fpu_params);
+    #ifdef __linux__
+        pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
+
+    #elif __MINGW64__ || __MINGW32__ || _WIN32
+        HANDLE* lock = get_fpu_params_lock(fpu_params);
+
+    #endif
     
     float result = 1.0;
     bool exit = false;
@@ -179,8 +186,8 @@ void* fpu_test(void* params) {
             pthread_mutex_unlock(lock);
 
         #elif __MINGW64__ || __MINGW32__ || _WIN32
-            switch(WaitForSingleObject(*((HANDLE*) lock), INFINITE)) {
-                case WAIT_OBJECT_0: if (*job_size > 0) *job_size = *job_size - 1; else exit = true; ReleaseMutex(*((HANDLE*) lock)); break;
+            switch(WaitForSingleObject(*lock, INFINITE)) {
+                case WAIT_OBJECT_0: if (*job_size > 0) *job_size = *job_size - 1; else exit = true; ReleaseMutex(*lock); break;
                 case WAIT_ABANDONED: exit = true; break;
                 default: exit = true; break;
             }
