@@ -7,8 +7,6 @@
 /.vscode/
 
 # old code for reference
-/linux/
-/windows/
 
 # Object files
 *.o
