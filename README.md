@@ -180,4 +180,10 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
 </table>
 
+This is how the benchmark scales on the reference system with cores/threads
+![Image](screenshots/ct-scaling.png)
+
+This is how the benchmark scales on the reference system with frequency
+![Image](screenshots/f-scaling.png)
+
 ## [1deterministic](https://github.com/1deterministic), 2019
