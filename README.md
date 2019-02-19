@@ -152,6 +152,58 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td></td><!--CLI Options-->
         <td>generic</td><!--Build-->
     </tr>
+        <tr> <!--Intel Celeron 430-->
+        <td>1.0</td><!--Version-->
+        <td>32.46</td><!--ST Score-->
+        <td>32.46</td><!--MT Score-->
+        <td>1.00</td><!--Multiplier-->
+        <td>AMD64</td><!--Architecture-->
+        <td>Intel</td><!--CPU Vendor-->
+        <td>Celeron 430</td><!--CPU Model-->
+        <td>1800</td><!--CPU Base Clock-->
+        <td>1800</td><!--CPU Boost Clock-->
+        <td>1</td><!--CPU Cores-->
+        <td>1</td><!--CPU Threads-->
+        <td>35</td><!--CPU TDP-->
+        <td>512</td><!--CPU LLC-->
+        <td>Markvision</td><!--RAM Vendor-->
+        <td></td><!--RAM Model-->
+        <td>667</td><!--RAM Clock-->
+        <td>1</td><!--RAM Channels-->
+        <td>2048</td><!--RAM Capacity-->
+        <td></td><!--RAM Latency-->
+        <td>CentOS 7.6</td><!--Operating System-->
+        <td>2019/02</td><!--OS Update-->
+        <td>Linux 3.10</td><!--Kernel-->
+        <td></td><!--CLI Options-->
+        <td>generic</td><!--Build-->
+    </tr>
+    <tr> <!--Intel Celeron 847-->
+        <td>1.0</td><!--Version-->
+        <td>30.08</td><!--ST Score-->
+        <td>59.02</td><!--MT Score-->
+        <td>1.96</td><!--Multiplier-->
+        <td>AMD64</td><!--Architecture-->
+        <td>Intel</td><!--CPU Vendor-->
+        <td>Celeron 847</td><!--CPU Model-->
+        <td>1100</td><!--CPU Base Clock-->
+        <td>1100</td><!--CPU Boost Clock-->
+        <td>2</td><!--CPU Cores-->
+        <td>2</td><!--CPU Threads-->
+        <td>17</td><!--CPU TDP-->
+        <td>2048</td><!--CPU LLC-->
+        <td></td><!--RAM Vendor-->
+        <td></td><!--RAM Model-->
+        <td>1333</td><!--RAM Clock-->
+        <td>1</td><!--RAM Channels-->
+        <td>4096</td><!--RAM Capacity-->
+        <td></td><!--RAM Latency-->
+        <td>Arch Linux</td><!--Operating System-->
+        <td>2019/02</td><!--OS Update-->
+        <td>Linux 4.20</td><!--Kernel-->
+        <td></td><!--CLI Options-->
+        <td>generic</td><!--Build-->
+    </tr>
     <tr> <!--Template-->
         <td></td><!--Version-->
         <td></td><!--ST Score-->
