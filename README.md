@@ -25,7 +25,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
 <table id="Scores 1.0">
     <tr> <!--Table header-->
         <th>Version</th>
-        <th>Build<th>
+        <th>Build</th>
         <th>ST Score</th>
         <th>MT Score</th>
         <th>Multiplier</th>
