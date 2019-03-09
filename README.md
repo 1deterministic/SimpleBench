@@ -12,6 +12,7 @@ It supports the following options:
 --threads [integer greater than zero]: sets the number of threads to run with
 --old-hardware [on/off]: enable/disable a configuration better suited to old hardware
 --version: shows the benchmark version (not the program version)
+--build: shows the program version, changes here have no effect on the score system
 --help: shows this screen
 ```
 
@@ -24,6 +25,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
 <table id="Scores 1.0">
     <tr> <!--Table header-->
         <th>Version</th>
+        <th>Build<th>
         <th>ST Score</th>
         <th>MT Score</th>
         <th>Multiplier</th>
@@ -50,6 +52,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
     <tr> <!--Intel Xeon E3 1280-->
         <td>1.0</td><!--Version-->
+        <td>1-Linux-64</td><!--Build-->
         <td>99.47</td><!--ST Score-->
         <td>394.04</td><!--MT Score-->
         <td>3.96</td><!--Multiplier-->
@@ -76,6 +79,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr> 
     <tr> <!--Intel Core i5 2410M-->
         <td>1.0</td><!--Version-->
+        <td>1-Linux-64</td><!--Build-->
         <td>75.19</td><!--ST Score-->
         <td>151.48</td><!--MT Score-->
         <td>2.01</td><!--Multiplier-->
@@ -102,6 +106,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
     <tr> <!--VIA C7-->
         <td>1.0</td><!--Version-->
+        <td>1-Linux-32</td><!--Build-->
         <td>6.53</td><!--ST Score-->
         <td>6.53</td><!--MT Score-->
         <td>1.0</td><!--Multiplier-->
@@ -128,6 +133,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
     <tr> <!--Intel Core i5 3317U-->
         <td>1.0</td><!--Version-->
+        <td>1-Linux-64</td><!--Build-->
         <td>70.64</td><!--ST Score-->
         <td>152.78</td><!--MT Score-->
         <td>2.16</td><!--Multiplier-->
@@ -154,6 +160,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
         <tr> <!--Intel Celeron 430-->
         <td>1.0</td><!--Version-->
+        <td>1-Linux-64</td><!--Build-->
         <td>32.46</td><!--ST Score-->
         <td>32.46</td><!--MT Score-->
         <td>1.00</td><!--Multiplier-->
@@ -180,6 +187,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
     <tr> <!--Intel Celeron 847-->
         <td>1.0</td><!--Version-->
+        <td>1-Linux-64</td><!--Build-->
         <td>30.08</td><!--ST Score-->
         <td>59.02</td><!--MT Score-->
         <td>1.96</td><!--Multiplier-->
@@ -206,6 +214,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     </tr>
     <tr> <!--Template-->
         <td></td><!--Version-->
+        <td></td><!--Build-->
         <td></td><!--ST Score-->
         <td></td><!--MT Score-->
         <td></td><!--Multiplier-->

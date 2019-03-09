@@ -21,6 +21,7 @@ String get_string(MsgCode msgcode) {
         case CHRONOMETER_MEMORY_ALLOCATION_ERROR: return "Chronometer memory allocation error!";
 
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION: return "SimpleBench Version";
+        case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD: return "SimpleBench Build";
         case MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE: return "SingleThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE: return "MultiThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTIPLIER: return "Multiplier";
@@ -31,6 +32,7 @@ String get_string(MsgCode msgcode) {
         case MSG_GET_CLI_OPTIONS_MISSING_INT: return "Missing thread count!";
         case MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION: return "Option not recognized!";
         case MSG_GET_CLI_OPTIONS_VERSION: return "SimpleBench benchmark version: " BENCHMARK_VERSION;
+        case MSG_GET_CLI_OPTIONS_BUILD: return "SimpleBench build version: " BUILD_VERSION;
 
         case GUI_SHOW_PROGRESS_BRACKET_OPEN: return "[";
         case GUI_SHOW_PROGRESS_BRACKET_CLOSE: return "]";
@@ -52,6 +54,7 @@ String get_string(MsgCode msgcode) {
         "--threads [integer greater than zero]: sets the number of threads to run with\n"
         "--old-hardware [on/off]: enable/disable a configuration better suited to old hardware\n"
         "--version: shows the benchmark version (not the program version)\n"
+        "--build: shows the program version, changes here have no effect on the score system\n"
         "--help: shows this screen"
         ;
     };

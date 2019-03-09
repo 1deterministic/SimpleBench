@@ -14,6 +14,22 @@
 // if I ever change this it means that scores from different versions are not comparable
 #define BENCHMARK_VERSION "1.0"
 
+// this is the actual program version
+//#ifdef __linux__
+#ifdef __i386__
+    #define BUILD_VERSION "1-Linux-32"
+#elif __x86_64__
+    #define BUILD_VERSION "1-Linux-64"
+#elif __MINGW32__
+    #define BUILD_VERSION "1-Windows-32-MINGW"
+#elif __MINGW64__
+    #define BUILD_VERSION "1-Windows-64-MINGW"
+#elif _WIN32
+    #define BUILD_VERSION "1-Windows-32"
+#elif _WIN64
+    #define BUILD_VERSION "1-Windows-64"
+#endif
+
 // the time my machine (at the time) took to complete the single threaded test
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
@@ -33,6 +49,7 @@
 #define CLI_OLD_HARDWARE "--old-hardware"
 #define CLI_HELP "--help"
 #define CLI_VERSION "--version"
+#define CLI_BUILD "--build"
 
 #define CONFIG_MODERN_HARDWARE 9990
 #define CONFIG_OLD_HARDWARE 9991
@@ -52,6 +69,7 @@ typedef unsigned int MsgCode;
 
 // main file
 #define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION 1000
+#define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD 1013
 #define MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE 1001
 #define MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE 1002
 #define MSG_MAIN_SHOW_SCORE_MULTIPLIER 1003
@@ -62,7 +80,8 @@ typedef unsigned int MsgCode;
 #define MSG_GET_CLI_OPTIONS_MISSING_INT 1008
 #define MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION 1009
 #define MSG_GET_CLI_OPTIONS_VERSION 1010
-#define MSG_HELP_TEXT 1011
+#define MSG_GET_CLI_OPTIONS_BUILD 1011
+#define MSG_HELP_TEXT 1012
 MsgCode get_cli_options(int, char**, bool*, bool*, bool*, bool*, int*);
 void show_score(float, float, int);
 void load_test_config(MsgCode);
