@@ -15,19 +15,26 @@
 #define BENCHMARK_VERSION "1.1"
 
 // this is the actual program version
-//#ifdef __linux__
-#ifdef __i386__
-    #define BUILD_VERSION "1-Linux-32"
-#elif __x86_64__
-    #define BUILD_VERSION "1-Linux-64"
-#elif __MINGW32__
-    #define BUILD_VERSION "1-Windows-32-MINGW"
-#elif __MINGW64__
-    #define BUILD_VERSION "1-Windows-64-MINGW"
+#ifdef __linux__
+    #ifdef __i386__
+        #define BUILD_VERSION "1-Linux-32"
+    #elif __x86_64__
+        #define BUILD_VERSION "1-Linux-64"
+    #endif
+
+#elif __MINGW32__ || __MINGW64__
+    #ifdef __i386__
+        #define BUILD_VERSION "1-Windows-32-MINGW"
+    #elif __x86_64__
+        #define BUILD_VERSION "1-Windows-64-MINGW"
+    #endif
+
 #elif _WIN32
-    #define BUILD_VERSION "1-Windows-32"
-#elif _WIN64
-    #define BUILD_VERSION "1-Windows-64"
+    #ifdef _M_IX86
+        #define BUILD_VERSION "1-Windows-32-MSVC"
+    #elif _M_AMD64
+        #define BUILD_VERSION "1-Windows-64-MSVC"
+    #endif
 #endif
 
 // the time my machine (at the time) took to complete the single threaded test
