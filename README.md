@@ -40,25 +40,10 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <th>MT Score</th>
         <th>Multiplier</th>
         <th>Architecture</th>
-        <th>CPU Vendor</th>
-        <th>CPU Model</th>
-        <th>CPU Base Clock</th>
-        <th>CPU Boost Clock</th>
-        <th>CPU Cores</th>
-        <th>CPU Threads</th>
-        <th>CPU TDP</th>
-        <th>CPU LLC</th>
-        <th>RAM Vendor</th>
-        <th>RAM Model</th>
-        <th>RAM Clock</th>
-        <th>RAM Channels</th>
-        <th>RAM Capacity</th>
-        <th>RAM Latency</th>
+        <th>CPU</th>
+        <th>RAM</th>
         <th>Operating System</th>
-        <th>OS Update</th>
-        <th>Kernel</th>
         <th>CLI Options</th>
-        <th>Build</th>
     </tr>
     <tr> <!--Template-->
         <td></td><!--Version-->
@@ -67,25 +52,10 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td></td><!--MT Score-->
         <td></td><!--Multiplier-->
         <td></td><!--Architecture-->
-        <td></td><!--CPU Vendor-->
-        <td></td><!--CPU Model-->
-        <td></td><!--CPU Base Clock-->
-        <td></td><!--CPU Boost Clock-->
-        <td></td><!--CPU Cores-->
-        <td></td><!--CPU Threads-->
-        <td></td><!--CPU TDP-->
-        <td></td><!--CPU LLC-->
-        <td></td><!--RAM Vendor-->
-        <td></td><!--RAM Model-->
-        <td></td><!--RAM Clock-->
-        <td></td><!--RAM Channels-->
-        <td></td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
+        <td></td><!--CPU-->
+        <td></td><!--RAM-->
         <td></td><!--Operating System-->
-        <td></td><!--OS Update-->
-        <td></td><!--Kernel-->
         <td></td><!--CLI Options-->
-        <td></td><!--Build-->
     </tr>
 </table>
 
