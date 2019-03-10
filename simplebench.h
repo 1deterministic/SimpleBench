@@ -78,6 +78,7 @@ typedef unsigned int MsgCode;
 // main file
 #define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION 1000
 #define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD 1013
+#define MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL 1014
 #define MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE 1001
 #define MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE 1002
 #define MSG_MAIN_SHOW_SCORE_MULTIPLIER 1003
@@ -91,7 +92,7 @@ typedef unsigned int MsgCode;
 #define MSG_GET_CLI_OPTIONS_BUILD 1011
 #define MSG_HELP_TEXT 1012
 MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*);
-void show_score(float, float, int);
+void show_score(float, float, int, int);
 void load_test_config(int);
 
 // Thread type

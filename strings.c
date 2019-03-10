@@ -22,6 +22,7 @@ String get_string(MsgCode msgcode) {
 
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION: return "SimpleBench Version";
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD: return "SimpleBench Build";
+        case MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL: return "Hardware Level";
         case MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE: return "SingleThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE: return "MultiThread Score";
         case MSG_MAIN_SHOW_SCORE_MULTIPLIER: return "Multiplier";
