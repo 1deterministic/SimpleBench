@@ -32,31 +32,80 @@ Also, the algorithm is not complex so the compiler optimizations will basically 
 
 These are the systems I benchmarked so far (I plan to include more systems in the future).
 
-<table id="Scores 1.1">
+<table id="Scores">
     <tr> <!--Table header-->
-        <th>Version</th>
-        <th>Build</th>
-        <th>Hardware Level</th>
         <th>ST Score</th>
         <th>MT Score</th>
         <th>Multiplier</th>
-        <th>Architecture</th>
-        <th>CPU</th>
-        <th>RAM</th>
+        <th>CPU Vendor</th>
+        <th>CPU Model</th>
+        <th>CPU Cores</th>
+        <th>CPU Threads</th>
+        <th>CPU All Core Turbo</th>
+        <th>CPU Single Core Turbo</th>
+        <th>CPU Cache</th>
+        <th>RAM Vendor</th>
+        <th>RAM Model</th>
+        <th>RAM Amount</th>
+        <th>RAM Channels</th>
+        <th>RAM Frequency</th>
+        <th>RAM Timings</th>
         <th>Operating System</th>
+        <th>OS Update</th>
+        <th>OS Kernel</th>
+        <th>Hardware Level</th>
+        <th>Version</th>
+        <th>Build</th>
         <th>CLI Options</th>
     </tr>
+    <tr> <!--Intel Xeon E3 1280-->
+        <td>100.14</td><!--ST Score-->
+        <td>426.92</td><!--MT Score-->
+        <td>4.26</td><!--Multiplier-->
+        <td>Intel</td><!--CPU Vendor-->
+        <td>Xeon E3 1280</td><!--CPU Model-->
+        <td>4</td><!--CPU Cores-->
+        <td>8</td><!--CPU Threads-->
+        <td>3600MHz</td><!--CPU All Core Turbo-->
+        <td>3900MHz</td><!--CPU Single Core Turbo-->
+        <td>8MB</td><!--CPU Cache-->
+        <td>HyperX</td><!--RAM Vendor-->
+        <td>Fury</td><!--RAM Model-->
+        <td>8GB</td><!--RAM Amount-->
+        <td>1</td><!--RAM Channels-->
+        <td>1333MHz</td><!--RAM Frequency-->
+        <td>8-8-8-18</td><!--RAM Timings-->
+        <td>Arch Linux</td><!--Operating System-->
+        <td>2019-03</td><!--OS Update-->
+        <td>Linux 5.0</td><!--OS Kernel-->
+        <td>5</td><!--Hardware Level-->
+        <td>A0</td><!--Version-->
+        <td>1-Linux-64</td><!--Build-->
+        <td></td><!--CLI Options-->
+    </tr>
     <tr> <!--Template-->
-        <td></td><!--Version-->
-        <td></td><!--Build-->
-        <td></td><!--Hardware Level-->
         <td></td><!--ST Score-->
         <td></td><!--MT Score-->
         <td></td><!--Multiplier-->
-        <td></td><!--Architecture-->
-        <td></td><!--CPU-->
-        <td></td><!--RAM-->
+        <td></td><!--CPU Vendor-->
+        <td></td><!--CPU Model-->
+        <td></td><!--CPU Cores-->
+        <td></td><!--CPU Threads-->
+        <td></td><!--CPU All Core Turbo-->
+        <td></td><!--CPU Single Core Turbo-->
+        <td></td><!--CPU Cache-->
+        <td></td><!--RAM Vendor-->
+        <td></td><!--RAM Model-->
+        <td></td><!--RAM Amount-->
+        <td></td><!--RAM Channels-->
+        <td></td><!--RAM Frequency-->
+        <td></td><!--RAM Timings-->
         <td></td><!--Operating System-->
+        <td></td><!--OS Update-->
+        <td></td><!--OS Kernel-->
+        <td></td><!--Hardware Level-->
+        <td></td><!--Version-->
+        <td></td><!--Build-->
         <td></td><!--CLI Options-->
     </tr>
 </table>
