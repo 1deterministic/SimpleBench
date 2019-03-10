@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 // if I ever change this it means that scores from different versions are not comparable
-#define BENCHMARK_VERSION "1.1"
+#define BENCHMARK_VERSION "A0"
 
 // this is the actual program version
 #ifdef __linux__
@@ -37,13 +37,12 @@
     #endif
 #endif
 
-// the time my machine (at the time) took to complete the single threaded test
+// the time my machine (at the time) took to complete the single threaded test for hardware level 5
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
 // running Arch Linux 2019-03, linux kernel 5.0
-// generic build, hardware level 5
-// cli options: "--mt-test off"
-#define SCORE_CALIBRATION_FACTOR 75.407265
+// generic build, cli options: "--mt-test off"
+#define SCORE_CALIBRATION_FACTOR 148.173203
 
 #define CLI_ON "on"
 #define CLI_OFF "off"

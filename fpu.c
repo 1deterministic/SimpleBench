@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <float.h>
 #include <stdbool.h>
+#include <math.h>
 
 #ifdef __linux__
     #include <pthread.h>
@@ -199,28 +200,22 @@ void* fpu_test(void* params) {
         
         for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
             for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-                // executes all 4 basic operations
-                result += matrix_a[index_x][index_y] + matrix_b[index_x][index_y];
-                result += matrix_a[index_y][index_x] + matrix_b[index_y][index_x];
-                result += matrix_a[index_x][index_x] + matrix_b[index_x][index_x];
-                result += matrix_a[index_y][index_y] + matrix_b[index_y][index_y];
-                
-                result -= matrix_a[index_x][index_y] - matrix_b[index_x][index_y];
-                result -= matrix_a[index_y][index_x] - matrix_b[index_y][index_x];
-                result -= matrix_a[index_x][index_x] - matrix_b[index_x][index_x];
-                result -= matrix_a[index_y][index_y] - matrix_b[index_y][index_y];
-                
-                result *= matrix_a[index_x][index_y] * matrix_b[index_x][index_y];
-                result *= matrix_a[index_y][index_x] * matrix_b[index_y][index_x];
-                result *= matrix_a[index_x][index_x] * matrix_b[index_x][index_x];
-                result *= matrix_a[index_y][index_y] * matrix_b[index_y][index_y];
-                
-                // will help using the branch prediction (as the division is slow)
-                if (matrix_a[index_x][index_y] > matrix_b[index_x][index_y]) {
-                    result /= matrix_a[index_x][index_y] / matrix_b[index_x][index_y];
-                } else {
-                    result /= matrix_b[index_x][index_y] / matrix_a[index_x][index_y];
-                }
+                result = sin(matrix_a[index_x][index_y]);
+                result = sin(matrix_b[index_x][index_y]);
+                result = sin(matrix_a[index_x][index_x]);
+                result = sin(matrix_b[index_x][index_x]);
+                result = cos(matrix_a[index_y][index_x]);
+                result = cos(matrix_b[index_y][index_x]);
+                result = cos(matrix_a[index_y][index_y]);
+                result = cos(matrix_b[index_y][index_y]);
+                result = sqrt(matrix_a[index_x][index_y]);
+                result = sqrt(matrix_b[index_x][index_y]);
+                result = sqrt(matrix_a[index_y][index_x]);
+                result = sqrt(matrix_b[index_y][index_x]);
+                result = sqrt(matrix_a[index_x][index_x]);
+                result = sqrt(matrix_b[index_x][index_x]);
+                result = sqrt(matrix_a[index_y][index_y]);
+                result = sqrt(matrix_b[index_y][index_y]);
             }
         }
     }

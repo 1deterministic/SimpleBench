@@ -75,7 +75,7 @@ MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
     }
 
     cleanup(&thread_array, &gui_thread_array, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer);
-
+    // printf("TOTAL TIME: %f\n", total_time); // For calibration only
     *score = test_score;
     return SUCCESS;
 }
