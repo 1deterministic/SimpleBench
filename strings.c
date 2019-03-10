@@ -47,14 +47,18 @@ String get_string(MsgCode msgcode) {
         case GUI_GUI_FINISHED_MSG_2: return " core(s)!";
 
         case MSG_HELP_TEXT: return
-        "SimpleBench - a quick benchmark to evaluate the core system performance\n\n"
+        "SimpleBench - a quick benchmark to evaluate the core system performance\n"
         "--show-gui [on/off]: enable/disable the text feedback during the tests\n"
         "--st-test [on/off]: enable/disable the singlethread test\n"
         "--mt-test [on/off]: enable/disable the multithread test\n"
         "--threads [integer greater than zero]: sets the number of threads to run with\n"
-        "--hardware-level [1-2]: chooses how taxing the benchmark will be\n"
-        "      1: uses ~35MB of RAM\n"
-        "      2: uses ~515MB of RAM\n"
+        "--hardware-level [integer greater than zero]: chooses how taxing the benchmark will be\n"
+        "      1: 128MB of RAM, 256KB of cache, standard duration\n"
+        "      2: 512MB of RAM, 1MB of cache, 4 times longer\n"
+        "      3: 2GB of RAM, 4MB of cache, 16 times longer\n"
+        "       :\n"
+        "      * every increase of 1 in the hardware level quadruples the requirements\n"
+        "      * there is some overhead in RAM requirement, you should have at least the amount required plus 5% FREE\n"
         "--version: shows the benchmark version (not the program version)\n"
         "--build: shows the program version, changes here have no effect on the score system\n"
         "--help: shows this screen"

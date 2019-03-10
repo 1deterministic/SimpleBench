@@ -6,13 +6,18 @@ SimpleBench is a quick benchmarking tool I wrote to evaluate the performance of 
 
 It supports the following options:
 ```
+SimpleBench - a quick benchmark to evaluate the core system performance
 --show-gui [on/off]: enable/disable the text feedback during the tests
 --st-test [on/off]: enable/disable the singlethread test
 --mt-test [on/off]: enable/disable the multithread test
 --threads [integer greater than zero]: sets the number of threads to run with
---hardware-level [1-2]: chooses how taxing the benchmark will be
-      1: uses ~35MB of RAM
-      2: uses ~515MB of RAM
+--hardware-level [integer greater than zero]: chooses how taxing the benchmark will be
+      1: 128MB of RAM, 256KB of cache, standard duration
+      2: 512MB of RAM, 1MB of cache, 4 times longer
+      3: 2GB of RAM, 4MB of cache, 16 times longer
+       :
+      * every increase of 1 in the hardware level quadruples the requirements
+      * there is some overhead in RAM requirement, you should have at least the amount required plus 5% FREE
 --version: shows the benchmark version (not the program version)
 --build: shows the program version, changes here have no effect on the score system
 --help: shows this screen
@@ -24,7 +29,7 @@ Also, the algorithm is not complex so the compiler optimizations will basically 
 
 These are the systems I benchmarked so far (I plan to include more systems in the future).
 
-<table id="Scores 1.0">
+<table id="Scores 1.1">
     <tr> <!--Table header-->
         <th>Version</th>
         <th>Build</th>
@@ -51,168 +56,6 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <th>Kernel</th>
         <th>CLI Options</th>
         <th>Build</th>
-    </tr>
-    <tr> <!--Intel Xeon E3 1280-->
-        <td>1.0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
-        <td>99.47</td><!--ST Score-->
-        <td>394.04</td><!--MT Score-->
-        <td>3.96</td><!--Multiplier-->
-        <td>AMD64</td><!--Architecture-->
-        <td>Intel</td><!--CPU Vendor-->
-        <td>Xeon E3 1280</td><!--CPU Model-->
-        <td>3600</td><!--CPU Base Clock-->
-        <td>3900</td><!--CPU Boost Clock-->
-        <td>4</td><!--CPU Cores-->
-        <td>8</td><!--CPU Threads-->
-        <td>95</td><!--CPU TDP-->
-        <td>8192</td><!--CPU LLC-->
-        <td>HyperX</td><!--RAM Vendor-->
-        <td>Fury</td><!--RAM Model-->
-        <td>1333</td><!--RAM Clock-->
-        <td>1</td><!--RAM Channels-->
-        <td>8192</td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
-        <td>Arch Linux</td><!--Operating System-->
-        <td>2019/01</td><!--OS Update-->
-        <td>Linux 4.20</td><!--Kernel-->
-        <td></td><!--CLI Options-->
-        <td>generic</td><!--Build-->
-    </tr> 
-    <tr> <!--Intel Core i5 2410M-->
-        <td>1.0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
-        <td>75.19</td><!--ST Score-->
-        <td>151.48</td><!--MT Score-->
-        <td>2.01</td><!--Multiplier-->
-        <td>AMD64</td><!--Architecture-->
-        <td>Intel</td><!--CPU Vendor-->
-        <td>Core i5 2410M</td><!--CPU Model-->
-        <td>2300</td><!--CPU Base Clock-->
-        <td>2900</td><!--CPU Boost Clock-->
-        <td>2</td><!--CPU Cores-->
-        <td>4</td><!--CPU Threads-->
-        <td>35</td><!--CPU TDP-->
-        <td>3072</td><!--CPU LLC-->
-        <td>Kingston/Smart</td><!--RAM Vendor-->
-        <td></td><!--RAM Model-->
-        <td>1333</td><!--RAM Clock-->
-        <td>2</td><!--RAM Channels-->
-        <td>12288</td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
-        <td>Arch Linux</td><!--Operating System-->
-        <td>2019/01</td><!--OS Update-->
-        <td>Linux 4.20</td><!--Kernel-->
-        <td></td><!--CLI Options-->
-        <td>generic</td><!--Build-->
-    </tr>
-    <tr> <!--VIA C7-->
-        <td>1.0</td><!--Version-->
-        <td>1-Linux-32</td><!--Build-->
-        <td>6.53</td><!--ST Score-->
-        <td>6.53</td><!--MT Score-->
-        <td>1.00</td><!--Multiplier-->
-        <td>x86</td><!--Architecture-->
-        <td>VIA</td><!--CPU Vendor-->
-        <td>C7</td><!--CPU Model-->
-        <td>1600</td><!--CPU Base Clock-->
-        <td>1600</td><!--CPU Boost Clock-->
-        <td>1</td><!--CPU Cores-->
-        <td>1</td><!--CPU Threads-->
-        <td>15</td><!--CPU TDP-->
-        <td>128</td><!--CPU LLC-->
-        <td>Kingston</td><!--RAM Vendor-->
-        <td></td><!--RAM Model-->
-        <td>667</td><!--RAM Clock-->
-        <td>1</td><!--RAM Channels-->
-        <td>2048</td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
-        <td>Arch32</td><!--Operating System-->
-        <td>2019/01</td><!--OS Update-->
-        <td>Linux 4.20</td><!--Kernel-->
-        <td></td><!--CLI Options-->
-        <td>generic</td><!--Build-->
-    </tr>
-    <tr> <!--Intel Core i5 3317U-->
-        <td>1.0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
-        <td>70.64</td><!--ST Score-->
-        <td>152.78</td><!--MT Score-->
-        <td>2.16</td><!--Multiplier-->
-        <td>AMD64</td><!--Architecture-->
-        <td>Intel</td><!--CPU Vendor-->
-        <td>Core i5 3317U</td><!--CPU Model-->
-        <td>1700</td><!--CPU Base Clock-->
-        <td>2400</td><!--CPU Boost Clock-->
-        <td>2</td><!--CPU Cores-->
-        <td>4</td><!--CPU Threads-->
-        <td>15</td><!--CPU TDP-->
-        <td>3072</td><!--CPU LLC-->
-        <td></td><!--RAM Vendor-->
-        <td></td><!--RAM Model-->
-        <td>1600</td><!--RAM Clock-->
-        <td>2</td><!--RAM Channels-->
-        <td>8192</td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
-        <td>Deepin 15.7</td><!--Operating System-->
-        <td>2018/08</td><!--OS Update-->
-        <td>Linux 4.15</td><!--Kernel-->
-        <td></td><!--CLI Options-->
-        <td>generic</td><!--Build-->
-    </tr>
-        <tr> <!--Intel Celeron 430-->
-        <td>1.0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
-        <td>32.46</td><!--ST Score-->
-        <td>32.46</td><!--MT Score-->
-        <td>1.00</td><!--Multiplier-->
-        <td>AMD64</td><!--Architecture-->
-        <td>Intel</td><!--CPU Vendor-->
-        <td>Celeron 430</td><!--CPU Model-->
-        <td>1800</td><!--CPU Base Clock-->
-        <td>1800</td><!--CPU Boost Clock-->
-        <td>1</td><!--CPU Cores-->
-        <td>1</td><!--CPU Threads-->
-        <td>35</td><!--CPU TDP-->
-        <td>512</td><!--CPU LLC-->
-        <td>Markvision</td><!--RAM Vendor-->
-        <td></td><!--RAM Model-->
-        <td>667</td><!--RAM Clock-->
-        <td>1</td><!--RAM Channels-->
-        <td>2048</td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
-        <td>CentOS 7.6</td><!--Operating System-->
-        <td>2019/02</td><!--OS Update-->
-        <td>Linux 3.10</td><!--Kernel-->
-        <td></td><!--CLI Options-->
-        <td>generic</td><!--Build-->
-    </tr>
-    <tr> <!--Intel Celeron 847-->
-        <td>1.0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
-        <td>30.08</td><!--ST Score-->
-        <td>59.02</td><!--MT Score-->
-        <td>1.96</td><!--Multiplier-->
-        <td>AMD64</td><!--Architecture-->
-        <td>Intel</td><!--CPU Vendor-->
-        <td>Celeron 847</td><!--CPU Model-->
-        <td>1100</td><!--CPU Base Clock-->
-        <td>1100</td><!--CPU Boost Clock-->
-        <td>2</td><!--CPU Cores-->
-        <td>2</td><!--CPU Threads-->
-        <td>17</td><!--CPU TDP-->
-        <td>2048</td><!--CPU LLC-->
-        <td></td><!--RAM Vendor-->
-        <td></td><!--RAM Model-->
-        <td>1333</td><!--RAM Clock-->
-        <td>1</td><!--RAM Channels-->
-        <td>4096</td><!--RAM Capacity-->
-        <td></td><!--RAM Latency-->
-        <td>Arch Linux</td><!--Operating System-->
-        <td>2019/02</td><!--OS Update-->
-        <td>Linux 4.20</td><!--Kernel-->
-        <td></td><!--CLI Options-->
-        <td>generic</td><!--Build-->
     </tr>
     <tr> <!--Template-->
         <td></td><!--Version-->

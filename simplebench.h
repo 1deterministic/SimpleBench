@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 // if I ever change this it means that scores from different versions are not comparable
-#define BENCHMARK_VERSION "1.0"
+#define BENCHMARK_VERSION "1.1"
 
 // this is the actual program version
 //#ifdef __linux__
@@ -33,11 +33,10 @@
 // the time my machine (at the time) took to complete the single threaded test
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
-// running live on the Arch iso 2019-01, linux kernel 4.20
+// running Arch Linux 2019-03, linux kernel 5.0
 // generic build
-// last calibrated for the benchmark version 1.0 hardware level 2
-// cli options: "--skip-mt on --show-gui off"
-#define SCORE_CALIBRATION_FACTOR 74.689919
+// cli options: "--mt-test off --hardware-level 3"
+#define SCORE_CALIBRATION_FACTOR 75.407265
 
 #define CLI_ON "on"
 #define CLI_OFF "off"
@@ -51,7 +50,10 @@
 #define CLI_VERSION "--version"
 #define CLI_BUILD "--build"
 
-#define DEFAULT_CONFIG_HARDWARE 2
+#define DEFAULT_CONFIG_HARDWARE 3
+#define DEFAULT_SHOW_GUI true
+#define DEFAULT_ST_TEST true
+#define DEFAULT_MT_TEST true
 
 // makes these variables global
 extern int alu_matrix_size;
@@ -83,7 +85,7 @@ typedef unsigned int MsgCode;
 #define MSG_HELP_TEXT 1012
 MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*);
 void show_score(float, float, int);
-MsgCode load_test_config(int);
+void load_test_config(int);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100

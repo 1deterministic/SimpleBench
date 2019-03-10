@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
 #ifdef __linux__
     #include <unistd.h>
@@ -39,15 +40,14 @@ int main(int argc, char** argv) {
     #endif
     
     int hardware_level = DEFAULT_CONFIG_HARDWARE;
-    bool show_gui = true;
-    bool st_test = true;
-    bool mt_test = true;
+    bool show_gui = DEFAULT_SHOW_GUI;
+    bool st_test = DEFAULT_ST_TEST;
+    bool mt_test = DEFAULT_MT_TEST;
 
     code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads);
     if (code) {printf("%s\n", get_string(code)); return code;}
 
-    code = load_test_config(hardware_level);
-    if (code) {printf("%s\n", get_string(code)); return code;}
+    load_test_config(hardware_level);
     
     // gets the scores fot the single and multithreaded tests
     if (st_test) {
@@ -221,32 +221,12 @@ void show_score(float singlethread_score, float multithread_score, int threads) 
 }
 
 // loads the test config
-MsgCode load_test_config(int config) {
-    switch (config) {
-        // This configuration will use about 515MB of RAM
-        case 2: {
-            handicap = 1.0;
-            alu_matrix_size = 256; // 256KB
-            fpu_matrix_size = 256; // 256KB
-            mem_matrix_size = 8192; // 256MB
-            alu_job_size = 64 * alu_matrix_size; // 64 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 109,051,904 integer ops
-            fpu_job_size = 32 * fpu_matrix_size; // 32 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 54,525,952 floating point ops
-            mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns * 4 lines each time * 4 bytes per element = 32GB of data
-            return SUCCESS;
-        }
-
-        // This configuration will use about 35MB of RAM
-        case 1: {
-            handicap = 0.0625;
-            alu_matrix_size = 256; // 256KB
-            fpu_matrix_size = 256; // 256KB
-            mem_matrix_size = 2048; // 16MB
-            alu_job_size = 4 * alu_matrix_size; // 4 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 6,815,744 integer ops
-            fpu_job_size = 2 * fpu_matrix_size; // 2 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 3,407,872 floating point ops
-            mem_job_size = 32 * mem_matrix_size; // 32 times * 2048 rows * 2048 columns * 4 lines each time * 4 bytes per element = 2GB of data
-            return SUCCESS;
-        }            
-    };
-
-    return MSG_GET_CLI_OPTIONS_INVALID_INT;
+void load_test_config(int config) {
+    handicap = 0.0625 * pow(4, config - 1);
+    alu_matrix_size = 128 * pow(2, config - 1);
+    fpu_matrix_size = 128 * pow(2, config - 1);
+    mem_matrix_size = 4096 * pow(2, config - 1);
+    alu_job_size = 4096;
+    fpu_job_size = 2048;
+    mem_job_size = 65536;
 }
