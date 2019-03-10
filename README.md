@@ -111,7 +111,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td>1-Linux-32</td><!--Build-->
         <td>6.53</td><!--ST Score-->
         <td>6.53</td><!--MT Score-->
-        <td>1.0</td><!--Multiplier-->
+        <td>1.00</td><!--Multiplier-->
         <td>x86</td><!--Architecture-->
         <td>VIA</td><!--CPU Vendor-->
         <td>C7</td><!--CPU Model-->
@@ -242,11 +242,5 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td></td><!--Build-->
     </tr>
 </table>
-
-This is how the benchmark scales on the reference system with cores/threads
-![Image](screenshots/ct-scaling.png)
-
-This is how the benchmark scales on the reference system with frequency
-![Image](screenshots/f-scaling.png)
 
 ## [1deterministic](https://github.com/1deterministic), 2019
