@@ -36,6 +36,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     <tr> <!--Table header-->
         <th>Version</th>
         <th>Build</th>
+        <th>Hardware Level</th>
         <th>ST Score</th>
         <th>MT Score</th>
         <th>Multiplier</th>
@@ -48,6 +49,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
     <tr> <!--Template-->
         <td></td><!--Version-->
         <td></td><!--Build-->
+        <td></td><!--Hardware Level-->
         <td></td><!--ST Score-->
         <td></td><!--MT Score-->
         <td></td><!--Multiplier-->

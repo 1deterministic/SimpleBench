@@ -41,8 +41,8 @@
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
 // running Arch Linux 2019-03, linux kernel 5.0
-// generic build
-// cli options: "--mt-test off --hardware-level 5"
+// generic build, hardware level 5
+// cli options: "--mt-test off"
 #define SCORE_CALIBRATION_FACTOR 75.407265
 
 #define CLI_ON "on"
