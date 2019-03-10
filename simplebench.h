@@ -35,7 +35,7 @@
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
 // running live on the Arch iso 2019-01, linux kernel 4.20
 // generic build
-// last calibrated for the benchmark version 1.0
+// last calibrated for the benchmark version 1.0 hardware level 2
 // cli options: "--skip-mt on --show-gui off"
 #define SCORE_CALIBRATION_FACTOR 74.689919
 
@@ -46,13 +46,12 @@
 #define CLI_ST_TEST "--st-test"
 #define CLI_MT_TEST "--mt-test"
 #define CLI_THREADS "--threads"
-#define CLI_OLD_HARDWARE "--old-hardware"
+#define CLI_HARDWARE_LEVEL "--hardware-level"
 #define CLI_HELP "--help"
 #define CLI_VERSION "--version"
 #define CLI_BUILD "--build"
 
-#define CONFIG_MODERN_HARDWARE 9990
-#define CONFIG_OLD_HARDWARE 9991
+#define DEFAULT_CONFIG_HARDWARE 2
 
 // makes these variables global
 extern int alu_matrix_size;
@@ -82,9 +81,9 @@ typedef unsigned int MsgCode;
 #define MSG_GET_CLI_OPTIONS_VERSION 1010
 #define MSG_GET_CLI_OPTIONS_BUILD 1011
 #define MSG_HELP_TEXT 1012
-MsgCode get_cli_options(int, char**, bool*, bool*, bool*, bool*, int*);
+MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*);
 void show_score(float, float, int);
-void load_test_config(MsgCode);
+MsgCode load_test_config(int);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100

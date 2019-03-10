@@ -38,19 +38,16 @@ int main(int argc, char** argv) {
 
     #endif
     
-    MsgCode config = CONFIG_MODERN_HARDWARE;
+    int hardware_level = DEFAULT_CONFIG_HARDWARE;
     bool show_gui = true;
     bool st_test = true;
     bool mt_test = true;
-    bool old_hardware = false;
 
-    code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &old_hardware, &threads);
+    code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads);
     if (code) {printf("%s\n", get_string(code)); return code;}
 
-    if (old_hardware)
-        config = CONFIG_OLD_HARDWARE;
-        
-    load_test_config(config);
+    code = load_test_config(hardware_level);
+    if (code) {printf("%s\n", get_string(code)); return code;}
     
     // gets the scores fot the single and multithreaded tests
     if (st_test) {
@@ -73,7 +70,7 @@ int main(int argc, char** argv) {
 }
 
 // reads the options received via CLI
-MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bool* mt_test, bool* old_hardware, int* threads) {
+MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bool* mt_test, int* hardware_level, int* threads) {
     for (int i = 1; i < argc; i++) {
         // --show-gui
         if (strcmp(argv[i], CLI_SHOW_GUI) == 0) {
@@ -170,28 +167,23 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
             }
         }
 
-        // --old-hardware
-        if (strcmp(argv[i], CLI_OLD_HARDWARE) == 0) {
+        // --hardware-level
+        if (strcmp(argv[i], CLI_HARDWARE_LEVEL) == 0) {
             // check if the next argument exists before trying to access
             if (i + 1 < argc) {
                 i++;
-                // if the option is "on"
-                if (strcmp(argv[i], CLI_ON) == 0) {
-                    *old_hardware = true;
+                // converts the text to an integer value
+                *hardware_level = atoi(argv[i]);
+                // only values greater than zero are allowed
+                // also, atoi will return 0 if the text is not an integer
+                if (*hardware_level <= 0) {
+                    return MSG_GET_CLI_OPTIONS_INVALID_INT;
                 }
-                // if the option is "off"
-                else if (strcmp(argv[i], CLI_OFF) == 0) {
-                    *old_hardware = false;
-                }
-                // next argument is not "on"/"off"
-                else {
-                    return MSG_GET_CLI_OPTIONS_INVALID_ONOFF;
-                }
-                // no need to test the other if's, goes to the next argument
+                // no need to test the other if's, goes to the next argument 
                 continue;
             } else {
-                // did not find "on"/"off", reports the error
-                return MSG_GET_CLI_OPTIONS_MISSING_ONOFF;
+                // did not find a valid value, reports the error
+                return MSG_GET_CLI_OPTIONS_MISSING_INT;
             }
         }
 
@@ -229,10 +221,10 @@ void show_score(float singlethread_score, float multithread_score, int threads) 
 }
 
 // loads the test config
-void load_test_config(MsgCode config) {
+MsgCode load_test_config(int config) {
     switch (config) {
         // This configuration will use about 515MB of RAM
-        case CONFIG_MODERN_HARDWARE: {
+        case 2: {
             handicap = 1.0;
             alu_matrix_size = 256; // 256KB
             fpu_matrix_size = 256; // 256KB
@@ -240,11 +232,11 @@ void load_test_config(MsgCode config) {
             alu_job_size = 64 * alu_matrix_size; // 64 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 109,051,904 integer ops
             fpu_job_size = 32 * fpu_matrix_size; // 32 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 54,525,952 floating point ops
             mem_job_size = 32 * mem_matrix_size; // 32 times * 8192 rows * 8192 columns * 4 lines each time * 4 bytes per element = 32GB of data
-            break;
+            return SUCCESS;
         }
 
         // This configuration will use about 35MB of RAM
-        case CONFIG_OLD_HARDWARE: {
+        case 1: {
             handicap = 0.0625;
             alu_matrix_size = 256; // 256KB
             fpu_matrix_size = 256; // 256KB
@@ -252,7 +244,9 @@ void load_test_config(MsgCode config) {
             alu_job_size = 4 * alu_matrix_size; // 4 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 6,815,744 integer ops
             fpu_job_size = 2 * fpu_matrix_size; // 2 times * 256 rows * 256 columns * (8 sums + 8 subtractions + 8 multiplies + 2 division) = 3,407,872 floating point ops
             mem_job_size = 32 * mem_matrix_size; // 32 times * 2048 rows * 2048 columns * 4 lines each time * 4 bytes per element = 2GB of data
-            break;
+            return SUCCESS;
         }            
     };
+
+    return MSG_GET_CLI_OPTIONS_INVALID_INT;
 }

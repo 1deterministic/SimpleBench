@@ -10,7 +10,9 @@ It supports the following options:
 --st-test [on/off]: enable/disable the singlethread test
 --mt-test [on/off]: enable/disable the multithread test
 --threads [integer greater than zero]: sets the number of threads to run with
---old-hardware [on/off]: enable/disable a configuration better suited to old hardware
+--hardware-level [1-2]: chooses how taxing the benchmark will be
+      1: uses ~35MB of RAM
+      2: uses ~515MB of RAM
 --version: shows the benchmark version (not the program version)
 --build: shows the program version, changes here have no effect on the score system
 --help: shows this screen
