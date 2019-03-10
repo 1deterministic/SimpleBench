@@ -35,7 +35,7 @@
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
 // running Arch Linux 2019-03, linux kernel 5.0
 // generic build
-// cli options: "--mt-test off --hardware-level 3"
+// cli options: "--mt-test off --hardware-level 5"
 #define SCORE_CALIBRATION_FACTOR 75.407265
 
 #define CLI_ON "on"
@@ -50,7 +50,7 @@
 #define CLI_VERSION "--version"
 #define CLI_BUILD "--build"
 
-#define DEFAULT_CONFIG_HARDWARE 3
+#define DEFAULT_CONFIG_HARDWARE 5
 #define DEFAULT_SHOW_GUI true
 #define DEFAULT_ST_TEST true
 #define DEFAULT_MT_TEST true

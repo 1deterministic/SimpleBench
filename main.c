@@ -222,10 +222,13 @@ void show_score(float singlethread_score, float multithread_score, int threads) 
 
 // loads the test config
 void load_test_config(int config) {
-    handicap = 0.0625 * pow(4, config - 1);
-    alu_matrix_size = 128 * pow(2, config - 1);
-    fpu_matrix_size = 128 * pow(2, config - 1);
-    mem_matrix_size = 4096 * pow(2, config - 1);
+    // the sizes of the matrices changes with the hardware level used
+    // every step up on hardware level doubles the sizes of the matrices
+    // this increase the amount of work by 4 times, so the handicap is then increased by 4
+    handicap = 0.00390625 * pow(4, config - 1);
+    alu_matrix_size = 32 * pow(2, config - 1);
+    fpu_matrix_size = 32 * pow(2, config - 1);
+    mem_matrix_size = 1024 * pow(2, config - 1);
     alu_job_size = 4096;
     fpu_job_size = 2048;
     mem_job_size = 65536;

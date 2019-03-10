@@ -12,9 +12,12 @@ SimpleBench - a quick benchmark to evaluate the core system performance
 --mt-test [on/off]: enable/disable the multithread test
 --threads [integer greater than zero]: sets the number of threads to run with
 --hardware-level [integer greater than zero]: chooses how taxing the benchmark will be
-      1: 128MB of RAM, 256KB of cache, standard duration
-      2: 512MB of RAM, 1MB of cache, 4 times longer
-      3: 2GB of RAM, 4MB of cache, 16 times longer
+      1: 32MB of RAM, 64KB of cache, lenght 1
+      2: 64MB of RAM, 128KB of cache, lenght 4
+      3: 128MB of RAM, 256KB of cache, lenght 16
+      4: 512MB of RAM, 1MB of cache, lenght 64
+      5: 2GB of RAM, 4MB of cache, lenght 256 (this is the current default)
+      6: 8GB of RAM, 16MB of cache, lenght 1024 (HEDT users may want to use this one)
        :
       * every increase of 1 in the hardware level quadruples the requirements
       * there is some overhead in RAM requirement, you should have at least the amount required plus 5% FREE
