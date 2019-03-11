@@ -37,6 +37,8 @@
     #endif
 #endif
 
+#define BUILD_CODENAME "Absolution"
+
 // the time my machine (at the time) took to complete the single threaded test for hardware level 5
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
@@ -75,6 +77,7 @@ typedef unsigned int MsgCode;
 #define SUCCESS 0
 
 // main file
+#define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER 1015
 #define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION 1000
 #define MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD 1013
 #define MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL 1014

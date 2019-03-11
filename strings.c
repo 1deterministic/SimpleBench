@@ -20,6 +20,7 @@ String get_string(MsgCode msgcode) {
         case GUI_MEMORY_ALLOCATION_ERROR: return "GUI memory allocation error!";
         case CHRONOMETER_MEMORY_ALLOCATION_ERROR: return "Chronometer memory allocation error!";
 
+        case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER: return "SimpleBench";
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION: return "Benchmark Version";
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD: return "Program Build";
         case MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL: return "Hardware Level";

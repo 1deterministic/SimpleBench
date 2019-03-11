@@ -213,6 +213,7 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
 
 // shows the system score
 void show_score(float singlethread_score, float multithread_score, int threads, int hardware_level) {
+    printf("%-20s: %20s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER), BUILD_CODENAME);
     printf("%-20s: %20s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION), BENCHMARK_VERSION);
     printf("%-20s: %20s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD), BUILD_VERSION);
     printf("%-20s: %20d\n", get_string(MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL), hardware_level);
