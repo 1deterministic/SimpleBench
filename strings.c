@@ -65,7 +65,9 @@ String get_string(MsgCode msgcode) {
         "      * there is some overhead in RAM requirement, you should have at least the amount required plus 5% FREE\n"
         "--version: shows the benchmark version (not the program version)\n"
         "--build: shows the program version, changes here have no effect on the score system\n"
-        "--help: shows this screen"
+        "--help: shows this screen\n"
+        "\n"
+        "You can check some of my benchmark results on https://github.com/1deterministic/SimpleBench for comparison\n"
         ;
     };
 

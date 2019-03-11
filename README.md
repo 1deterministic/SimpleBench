@@ -6,7 +6,6 @@ SimpleBench is a quick benchmarking tool I wrote to evaluate the performance of 
 
 It supports the following options:
 ```
-SimpleBench - a quick benchmark to evaluate the core system performance
 --show-gui [on/off]: enable/disable the text feedback during the tests
 --st-test [on/off]: enable/disable the singlethread test
 --mt-test [on/off]: enable/disable the multithread test
