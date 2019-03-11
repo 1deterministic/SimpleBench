@@ -231,6 +231,6 @@ void load_test_config(int config) {
     fpu_matrix_size = 32 * pow(2, config - 1);
     mem_matrix_size = 1024 * pow(2, config - 1);
     alu_job_size = 8192;
-    fpu_job_size = 256;
+    fpu_job_size = 256; // this limits thread count, improve on future
     mem_job_size = 131072;
 }
