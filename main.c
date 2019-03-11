@@ -213,13 +213,13 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
 
 // shows the system score
 void show_score(float singlethread_score, float multithread_score, int threads, int hardware_level) {
-    printf("%-20s: %20s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER), BUILD_CODENAME);
-    printf("%-20s: %20s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION), BENCHMARK_VERSION);
-    printf("%-20s: %20s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD), BUILD_VERSION);
-    printf("%-20s: %20d\n", get_string(MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL), hardware_level);
-    printf("%-20s: %20.2f\n", get_string(MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE), singlethread_score);
-    printf("%-20s: %20.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE), multithread_score);
-    printf("%-20s: %20.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTIPLIER), (singlethread_score > 0.0) ? multithread_score / singlethread_score : 0.0);
+    printf("%-20s:\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER));
+    printf("%-20s: %-40s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION), BENCHMARK_VERSION);
+    printf("%-20s: %-40s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD), BUILD_VERSION" "BUILD_CODENAME);
+    printf("%-20s: %-40d\n", get_string(MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL), hardware_level);
+    printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE), singlethread_score);
+    printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE), multithread_score);
+    printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTIPLIER), (singlethread_score > 0.0) ? multithread_score / singlethread_score : 0.0);
 }
 
 // loads the test config

@@ -79,7 +79,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td>Linux 5.0</td><!--OS Kernel-->
         <td>5</td><!--Hardware Level-->
         <td>A0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
+        <td>1-Linux-64 Absolution</td><!--Build-->
         <td></td><!--CLI Options-->
     </tr>
     <tr> <!--Intel Celeron 430-->
@@ -104,7 +104,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td>Linux 4.9</td><!--OS Kernel-->
         <td>4</td><!--Hardware Level-->
         <td>A0</td><!--Version-->
-        <td>1-Linux-64</td><!--Build-->
+        <td>1-Linux-64 Absolution</td><!--Build-->
         <td>--hardware-level 4</td><!--CLI Options-->
     </tr>
     <tr> <!--Template-->
