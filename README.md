@@ -83,8 +83,8 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td></td><!--CLI Options-->
     </tr>
     <tr> <!--Intel Celeron 430-->
-        <td>30.73</td><!--ST Score-->
-        <td>30.73</td><!--MT Score-->
+        <td>31.31</td><!--ST Score-->
+        <td>31.31</td><!--MT Score-->
         <td>1.00</td><!--Multiplier-->
         <td>Intel</td><!--CPU Vendor-->
         <td>Celeron 430</td><!--CPU Model-->
@@ -92,7 +92,7 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td>1</td><!--CPU Threads-->
         <td>1800MHz</td><!--CPU All Core Turbo-->
         <td>1800MHz</td><!--CPU Single Core Turbo-->
-        <td></td><!--CPU Cache-->
+        <td>512KBM</td><!--CPU Cache-->
         <td>Markvision</td><!--RAM Vendor-->
         <td></td><!--RAM Model-->
         <td>2GB</td><!--RAM Amount-->
@@ -102,10 +102,10 @@ These are the systems I benchmarked so far (I plan to include more systems in th
         <td>Debian 9</td><!--Operating System-->
         <td>2019-03</td><!--OS Update-->
         <td>Linux 4.9</td><!--OS Kernel-->
-        <td>4</td><!--Hardware Level-->
+        <td>3</td><!--Hardware Level-->
         <td>A0</td><!--Version-->
         <td>1-Linux-64 Absolution</td><!--Build-->
-        <td>--hardware-level 4</td><!--CLI Options-->
+        <td>--hardware-level 3</td><!--CLI Options-->
     </tr>
     <tr> <!--Template-->
         <td></td><!--ST Score-->
