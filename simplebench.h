@@ -17,23 +17,27 @@
 // this is the actual program version
 #ifdef __linux__
     #ifdef __i386__
-        #define BUILD_VERSION "1-Linux-32"
+        #define BUILD_VERSION "2-Linux-x86-32-GCC"
     #elif __x86_64__
-        #define BUILD_VERSION "1-Linux-64"
+        #define BUILD_VERSION "2-Linux-x86-64-GCC"
+    #elif __arm__
+        #define BUILD_VERSION "2-Linux-ARM-32-GCC"
+    #elif __aarch64__
+        #define BUILD_VERSION "2-Linux-ARM-64-GCC"
     #endif
 
 #elif __MINGW32__ || __MINGW64__
     #ifdef __i386__
-        #define BUILD_VERSION "1-Windows-32-MINGW"
+        #define BUILD_VERSION "2-Windows-x86-32-MINGW"
     #elif __x86_64__
-        #define BUILD_VERSION "1-Windows-64-MINGW"
+        #define BUILD_VERSION "2-Windows-x86-64-MINGW"
     #endif
 
 #elif _WIN32
     #ifdef _M_IX86
-        #define BUILD_VERSION "1-Windows-32-MSVC"
+        #define BUILD_VERSION "2-Windows-x86-32-MSVC"
     #elif _M_AMD64
-        #define BUILD_VERSION "1-Windows-64-MSVC"
+        #define BUILD_VERSION "2-Windows-x86-64-MSVC"
     #endif
 #endif
 
