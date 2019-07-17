@@ -11,7 +11,7 @@
 
 #include <stdbool.h>
 
-// if I ever change this it means that scores from different versions are not comparable
+// if I ever change this it means that scores from different versions are not comparable: number means minor changes on the same algorithm, letter means substantial changes to the algorithm or a whole new one
 #define BENCHMARK_VERSION "A0"
 
 // this is the actual program version
@@ -43,7 +43,7 @@
 
 #define BUILD_CODENAME "Absolution"
 
-// the time my machine (at the time) took to complete the single threaded test for hardware level 5
+// the time my machine (at the time) took to complete the single threaded test for version A0 hardware level 5
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
 // running Arch Linux 2019-03, linux kernel 5.0
