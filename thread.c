@@ -2,10 +2,23 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#if __linux__ || __APPLE__
+#if __linux__
     #include <pthread.h>
     #include <unistd.h>
     #include <sched.h>
+
+#elif __APPLE__
+    #include <stdio.h>
+    #include <mach/thread_policy.h>
+    #include <mach/task_info.h>
+    #include <sys/types.h>
+    #include <sys/sysctl.h>
+    #include <unistd.h>
+    #include <sched.h>
+    #include <pthread.h>
+    #include <mach/thread_policy.h>
+    #include <mach/thread_act.h>
+    #define SYSCTL_CORE_COUNT "machdep.cpu.core_count"
 
 #elif __MINGW64__ || __MINGW32__ || _WIN32
     #include <windows.h>
@@ -31,23 +44,39 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
         pthread_t* thread_instance = (pthread_t*) malloc(sizeof(pthread_t));
         if (thread_instance == NULL)
             return THREAD_MEMORY_ALLOCATION_ERROR;
-        
-        cpu_set_t cpuset;
-        CPU_ZERO(&cpuset);
-        CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
-        
+
         // start the thread with the received parameters
         if (pthread_create(thread_instance, NULL, function, params)) {
             free(new_thread);
             return THREAD_PTHREAD_CREATION_ERROR;
         }
-        
-        // makes this thread run on the specified core
-        if (pthread_setaffinity_np(*thread_instance, sizeof(cpu_set_t), &cpuset)) {
-            pthread_cancel(*thread_instance);
-            free(new_thread);
-            return THREAD_PTHREAD_AFFINITY_ERROR;
-        }
+
+        #if __linux__
+            cpu_set_t cpuset;
+            CPU_ZERO(&cpuset);
+            CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
+            
+            // makes this thread run on the specified core
+            if (pthread_setaffinity_np(*thread_instance, sizeof(cpu_set_t), &cpuset)) {
+                pthread_cancel(*thread_instance);
+                free(new_thread);
+                return THREAD_PTHREAD_AFFINITY_ERROR;
+            }
+
+        #elif __APPLE__
+            // start the thread with the received parameters
+            if (pthread_create_suspended_np(thread_instance, NULL, function, params)) {
+                free(new_thread);
+                return THREAD_PTHREAD_CREATION_ERROR;
+            }
+
+            thread_affinity_policy_data_t policy_data = { core_number };
+            mach_port_t mach_thread = pthread_mach_thread_np(*thread_instance);
+            thread_policy_set((thread_t)thread_instance, THREAD_AFFINITY_POLICY, (thread_policy_t)&policy_data, 1);
+
+            thread_resume(mach_thread);
+
+        #endif
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
         HANDLE* thread_instance = (HANDLE*) malloc(sizeof(HANDLE));
@@ -76,6 +105,7 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
             free(new_thread);
             return THREAD_PTHREAD_PRIORITY_ERROR;
         }
+
     #endif
     
     set_thread_instance(&new_thread, thread_instance);
@@ -96,6 +126,7 @@ MsgCode del_threads(Thread** thread_array) {
         
         #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
+
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             HANDLE* thread_instance = get_thread_instance(&thread_element);
             CloseHandle(*thread_instance);
