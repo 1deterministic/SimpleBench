@@ -3,11 +3,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-struct group_prm {
-    void** functions;
-    void** parameters;
-};
-
 // test function ======================================================
 MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
     // seed for the random number generator
