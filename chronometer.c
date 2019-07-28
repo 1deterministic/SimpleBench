@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #include <pthread.h>
 
 #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -25,7 +25,7 @@ MsgCode create_chronometer(Chronometer** chronometer) {
     if (*chronometer == NULL)
         return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
 
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         struct timespec* start = (struct timespec*) malloc(sizeof(struct timespec));
         if (start == NULL)
             return 1;
@@ -62,7 +62,7 @@ MsgCode del_chronometer(Chronometer** chronometer) {
 
 // starts a Chronometer
 void start_chronometer(Chronometer** chronometer) {
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         struct timespec* start = get_chronometer_start(chronometer);
         clock_gettime(CLOCK_MONOTONIC_RAW, start);
 
@@ -77,7 +77,7 @@ void start_chronometer(Chronometer** chronometer) {
 float stop_chronometer(Chronometer** chronometer) {
     float time_delta;
 
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         struct timespec* start = get_chronometer_start(chronometer);
         struct timespec* stop = get_chronometer_stop(chronometer);
 

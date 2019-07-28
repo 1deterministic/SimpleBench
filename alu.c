@@ -3,7 +3,7 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #include <pthread.h>
     
 #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -62,7 +62,7 @@ MsgCode create_alu_params(ALUParams** alu_params) {
         }
     }
 
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL)
             return MEM_PTHREAD_LOCK_CREATION_ERROR;
@@ -99,7 +99,7 @@ MsgCode del_alu_params(ALUParams** alu_params) {
     int* job_size = get_alu_params_job_size(alu_params);
     int** matrix_a = get_alu_params_matrix_a(alu_params);
     int** matrix_b = get_alu_params_matrix_b(alu_params);
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_alu_params_lock(alu_params);
         pthread_mutex_destroy(lock);
 
@@ -167,7 +167,7 @@ void* alu_test(void* params) {
     int* job_size = get_alu_params_job_size(alu_params);
     int** matrix_a = get_alu_params_matrix_a(alu_params);
     int** matrix_b = get_alu_params_matrix_b(alu_params);
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_alu_params_lock(alu_params);
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -180,7 +180,7 @@ void* alu_test(void* params) {
     // repeats until all tasks were finished
     while (true) {
         // picks one available job from the pool
-        #ifdef __linux__
+        #if __linux__ || __APPLE__
             pthread_mutex_lock(lock);
             if (*job_size > 0) *job_size = *job_size - 1; else exit = true;
             pthread_mutex_unlock(lock);

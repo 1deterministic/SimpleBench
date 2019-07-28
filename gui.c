@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #include <unistd.h>
     #include <pthread.h>
 
@@ -139,7 +139,7 @@ void* gui(void* params) {
         printf("%s%5.2f%%\n", get_string(GUI_GUI_MEM_HEADER), 100.0 * ((float) (mem_job_size - *mem_job)) / ((float) mem_job_size));
         print_progress(*mem_job, mem_job_size);
 
-        #ifdef __linux__
+        #if __linux__ || __APPLE__
             sleep(1);
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             Sleep(1000);
@@ -150,7 +150,7 @@ void* gui(void* params) {
 
     printf("%s%d%s\n", get_string(GUI_GUI_FINISHED_MSG_1), *cores_used, get_string(GUI_GUI_FINISHED_MSG_2));
 
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         sleep(2);
     #elif __MINGW64__ || __MINGW32__ || _WIN32
         Sleep(2000);

@@ -1,4 +1,4 @@
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #define _GNU_SOURCE
     #include <pthread.h>
     #define THREAD_PRIORITY_ABOVE_NORMAL 0
@@ -15,8 +15,8 @@
 #define BENCHMARK_VERSION "A0"
 
 // this is the actual program version
-#ifdef __linux__
-    #ifdef __i386__
+#if __linux__
+    #if __i386__
         #define BUILD_VERSION "2-Linux-x86-32-GCC"
     #elif __x86_64__
         #define BUILD_VERSION "2-Linux-x86-64-GCC"
@@ -27,21 +27,25 @@
     #endif
 
 #elif __MINGW32__ || __MINGW64__
-    #ifdef __i386__
+    #if __i386__
         #define BUILD_VERSION "2-Windows-x86-32-MINGW"
     #elif __x86_64__
         #define BUILD_VERSION "2-Windows-x86-64-MINGW"
     #endif
 
 #elif _WIN32
-    #ifdef _M_IX86
+    #if _M_IX86
         #define BUILD_VERSION "2-Windows-x86-32-MSVC"
     #elif _M_AMD64
         #define BUILD_VERSION "2-Windows-x86-64-MSVC"
     #endif
+
+#elif __APPLE__
+    #define BUILD_VERSION "2-Mac-x86-64-GCC"
+
 #endif
 
-#define BUILD_CODENAME "Absolution"
+#define BUILD_CODENAME "Bring it on"
 
 // the time my machine (at the time) took to complete the single threaded test for version A0 hardware level 5
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)

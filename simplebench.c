@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+struct group_prm {
+    void** functions;
+    void** parameters;
+};
+
 // test function ======================================================
 MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
     // seed for the random number generator
@@ -43,7 +48,7 @@ MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
 
     code = create_gui_params(&gui_params, alu_params, fpu_params, mem_params, &threads);
     if (code) {cleanup(&thread_array, &gui_thread_array, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer); return code;}
-    
+
     // starts the gui thread
     if (show_gui) {
         code = add_thread(&gui_thread_array, 0, THREAD_PRIORITY_ABOVE_NORMAL, (void*) gui, (void*) gui_params);

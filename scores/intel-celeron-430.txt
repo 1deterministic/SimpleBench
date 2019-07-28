@@ -1,0 +1,7 @@
+SimpleBench Result  :
+Benchmark Version   : A0                                      
+Program Build       : 2-Linux-x86-64-GCC (Bring it on)        
+Hardware Level      : 4                                       
+SingleThread Score  : 30.32                                   
+MultiThread Score   : 30.32                                   
+Multiplier          : 1.00 

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #include <pthread.h>
     
 #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -63,7 +63,7 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
         }
     }
     
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL)
             return MEM_PTHREAD_LOCK_CREATION_ERROR;
@@ -100,7 +100,7 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
     int* job_size = get_fpu_params_job_size(fpu_params);
     float** matrix_a = get_fpu_params_matrix_a(fpu_params);
     float** matrix_b = get_fpu_params_matrix_b(fpu_params);
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
         pthread_mutex_destroy(lock);
 
@@ -168,7 +168,7 @@ void* fpu_test(void* params) {
     int* job_size = get_fpu_params_job_size(fpu_params);
     float** matrix_a = get_fpu_params_matrix_a(fpu_params);
     float** matrix_b = get_fpu_params_matrix_b(fpu_params);
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -181,7 +181,7 @@ void* fpu_test(void* params) {
     // repeats until all tasks were finished
     while (true) {
         // picks one available job from the pool
-        #ifdef __linux__
+        #if __linux__ || __APPLE__
             pthread_mutex_lock(lock);
             if (*job_size > 0) *job_size = *job_size - 1; else exit = true;
             pthread_mutex_unlock(lock);

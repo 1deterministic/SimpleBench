@@ -1,0 +1,10 @@
+# debian 10
+gcc
+mingw-w64 (for windows builds via mingw)
+libc6-dev-i386
+
+# windows 10
+visual studio with desktop c/c++ (for windows builds via msvc)
+
+# mac high sierra
+gcc installed via brew

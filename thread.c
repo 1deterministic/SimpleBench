@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #include <pthread.h>
     #include <unistd.h>
     #include <sched.h>
@@ -26,7 +26,7 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
     if (new_thread == NULL)
         return THREAD_MEMORY_ALLOCATION_ERROR;
 
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         //new_thread->thread_instance = (void*) ((pthread_t*) malloc(sizeof(pthread_t)));
         pthread_t* thread_instance = (pthread_t*) malloc(sizeof(pthread_t));
         if (thread_instance == NULL)
@@ -94,7 +94,7 @@ MsgCode del_threads(Thread** thread_array) {
         thread_element = *thread_array;
         *thread_array = get_next(&thread_element);
         
-        #ifdef __linux__
+        #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             HANDLE* thread_instance = get_thread_instance(&thread_element);
@@ -117,7 +117,7 @@ MsgCode wait_threads(Thread** thread_array) {
     Thread* thread_element = *thread_array;
     // will repeat until all threads were "joined"
     while (thread_element != NULL) {
-        #ifdef __linux__
+        #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
             if (pthread_join(*thread_instance, NULL))
                 return THREAD_PTHREAD_JOIN_ERROR;
@@ -142,7 +142,7 @@ MsgCode stop_threads(Thread** thread_array) {
     Thread* thread_element = *thread_array;
     // will repeat until all threads were removed
     while (thread_element!= NULL) {
-        #ifdef __linux__
+        #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
             pthread_cancel(*thread_instance);
 

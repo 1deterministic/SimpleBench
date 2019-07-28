@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-#ifdef __linux__
+#if __linux__ || __APPLE__
     #include <unistd.h>
     
 #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     float multithread_score = 0.0;
 
     // default configuration
-    #ifdef __linux__
+    #if __linux__ || __APPLE__
         int threads = sysconf(_SC_NPROCESSORS_ONLN);
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
@@ -215,7 +215,7 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
 void show_score(float singlethread_score, float multithread_score, int threads, int hardware_level) {
     printf("%-20s:\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER));
     printf("%-20s: %-40s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION), BENCHMARK_VERSION);
-    printf("%-20s: %-40s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD), BUILD_VERSION" "BUILD_CODENAME);
+    printf("%-20s: %-40s\n", get_string(MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_BUILD), BUILD_VERSION" ("BUILD_CODENAME")");
     printf("%-20s: %-40d\n", get_string(MSG_MAIN_SHOW_SCORE_HARDWARE_LEVEL), hardware_level);
     printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE), singlethread_score);
     printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE), multithread_score);
