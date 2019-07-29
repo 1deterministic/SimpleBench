@@ -2,29 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#if __linux__
-    #include <pthread.h>
-    #include <unistd.h>
-    #include <sched.h>
-
-#elif __APPLE__
-    #include <stdio.h>
-    #include <mach/thread_policy.h>
-    #include <mach/task_info.h>
-    #include <sys/types.h>
-    #include <sys/sysctl.h>
-    #include <unistd.h>
-    #include <sched.h>
-    #include <pthread.h>
-    #include <mach/thread_policy.h>
-    #include <mach/thread_act.h>
-    #define SYSCTL_CORE_COUNT "machdep.cpu.core_count"
-
-#elif __MINGW64__ || __MINGW32__ || _WIN32
-    #include <windows.h>
-
-#endif
-
 // struct of the Payload type
 struct pld {
     void* function;
@@ -32,7 +9,7 @@ struct pld {
     Payload* next;
 };
 
-// this will add a thread to a thread array
+// this will add a payload to a payload array
 MsgCode add_payload(Payload** payload_array, void* function, void* params) {
     // manually allocate memory the size of Thread
     Payload* new_payload = (Payload*) malloc(sizeof(Payload));
@@ -46,17 +23,17 @@ MsgCode add_payload(Payload** payload_array, void* function, void* params) {
     return SUCCESS;
 }
 
-// frees up all threads in a thread array
+// frees up all payloads in a payload array
 MsgCode del_payload(Payload** payload_array) {
     // auxiliary pointer
     Payload* payload_element = *payload_array;
-    // will repeat until all threads were removed
+    // will repeat until all payloads were removed
     while (*payload_array != NULL) {
-        // stores the current thread on a separate variable and advances the thread array to the next element
+        // stores the current payload on a separate variable and advances the payload array to the next element
         payload_element = *payload_array;
         *payload_array = get_payload_next(&payload_element);
 
-        // frees up the current thread
+        // frees up the current payload
         free(payload_element);
     }
     
