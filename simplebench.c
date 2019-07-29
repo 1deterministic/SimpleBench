@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 // test function ======================================================
-MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
+MsgCode test_system(float* score, int threads, bool pin_threads, float handicap, bool show_gui) {
     // seed for the random number generator
     srand((unsigned) time(NULL));
 
@@ -101,7 +101,7 @@ MsgCode test_system(float* score, int threads, float handicap, bool show_gui) {
 
     // creates a thread for every processor thread available running all tasks inside the payload
     for (int i = 0; i < threads; i++) {
-        code = add_thread(&thread_array, i, THREAD_PRIORITY_NORMAL, (void*) run_payload, (void*) payload);
+        code = add_thread(&thread_array, (pin_threads) ? i : -1, THREAD_PRIORITY_NORMAL, (void*) run_payload, (void*) payload);
         if (code) {
             stop_threads(&gui_thread_array);
             stop_threads(&thread_array);

@@ -14,7 +14,7 @@ MsgCode add_payload(Payload** payload_array, void* function, void* params) {
     // manually allocate memory the size of Thread
     Payload* new_payload = (Payload*) malloc(sizeof(Payload));
     if (new_payload == NULL)
-        return THREAD_MEMORY_ALLOCATION_ERROR;
+        return PAYLOAD_MEMORY_ALLOCATION_ERROR;
     
     set_payload_function(&new_payload, function);
     set_payload_params(&new_payload, params);

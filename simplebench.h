@@ -61,6 +61,7 @@
 #define CLI_ST_TEST "--st-test"
 #define CLI_MT_TEST "--mt-test"
 #define CLI_THREADS "--threads"
+#define CLI_PIN_THREADS "--pin-threads"
 #define CLI_HARDWARE_LEVEL "--hardware-level"
 #define CLI_HELP "--help"
 #define CLI_VERSION "--version"
@@ -70,6 +71,7 @@
 #define DEFAULT_SHOW_GUI true
 #define DEFAULT_ST_TEST true
 #define DEFAULT_MT_TEST true
+#define DEFAULT_PIN_THREADS false
 
 // makes these variables global
 extern int alu_matrix_size;
@@ -101,7 +103,7 @@ typedef unsigned int MsgCode;
 #define MSG_GET_CLI_OPTIONS_VERSION 1010
 #define MSG_GET_CLI_OPTIONS_BUILD 1011
 #define MSG_HELP_TEXT 1012
-MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*);
+MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*, bool*);
 void show_score(float, float, int, int);
 void load_test_config(int);
 
@@ -212,6 +214,8 @@ void* get_chronometer_start(Chronometer**);
 void set_chronometer_stop(Chronometer**, void*);
 void* get_chronometer_stop(Chronometer**);
 
+// Payload type
+#define PAYLOAD_MEMORY_ALLOCATION_ERROR 700
 typedef struct pld Payload;
 MsgCode add_payload(Payload**, void*, void*);
 MsgCode del_payload(Payload**);
@@ -224,7 +228,7 @@ Payload* get_payload_next(Payload**);
 void* run_payload(void*);
 
 // benchmark function
-MsgCode test_system(float*, int, float, bool);
+MsgCode test_system(float*, int, bool, float, bool);
 void cleanup(Thread**, Thread**, Payload**, ALUParams**, FPUParams**, MEMParams**, GUIParams**,  Chronometer**);
 
 // Strings file

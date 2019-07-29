@@ -9,14 +9,17 @@
     #include <unistd.h>
     
 #elif __MINGW64__ || __MINGW32__ || _WIN32
+
 #endif
 
 // normalizes the score
 float handicap;
+
 // size of the matrices being used
 int alu_matrix_size;
 int fpu_matrix_size;
 int mem_matrix_size;
+
 // size of the tasks
 int alu_job_size;
 int fpu_job_size;
@@ -43,23 +46,33 @@ int main(int argc, char** argv) {
     bool show_gui = DEFAULT_SHOW_GUI;
     bool st_test = DEFAULT_ST_TEST;
     bool mt_test = DEFAULT_MT_TEST;
+    bool pin_threads = DEFAULT_PIN_THREADS;
 
-    code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads);
-    if (code) {printf("%s\n", get_string(code)); return code;}
+    code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads, &pin_threads);
+    if (code) {
+        printf("%s\n", get_string(code)); 
+        return code;
+    }
 
     load_test_config(hardware_level);
     
     // gets the scores fot the single and multithreaded tests
     if (st_test) {
-        code = test_system(&singlethread_score, 1, handicap, show_gui);
-        if (code) {printf("%s\n", get_string(code)); return code;}
+        code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui);
+        if (code) {
+            printf("%s\n", get_string(code)); 
+            return code;
+        }
     }
     
     if (mt_test) {
         // skip the multithread test if the system only has 1
         if (threads > 1) {
-            code = test_system(&multithread_score, threads, handicap, show_gui);
-            if (code) {printf("%s\n", get_string(code)); return code;}
+            code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui);
+            if (code) {
+                printf("%s\n", get_string(code)); 
+                return code;
+            }
         } else {
             multithread_score = singlethread_score;
         }
@@ -70,7 +83,7 @@ int main(int argc, char** argv) {
 }
 
 // reads the options received via CLI
-MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bool* mt_test, int* hardware_level, int* threads) {
+MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bool* mt_test, int* hardware_level, int* threads, bool* pin_threads) {
     for (int i = 1; i < argc; i++) {
         // --show-gui
         if (strcmp(argv[i], CLI_SHOW_GUI) == 0) {
@@ -167,6 +180,31 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
             }
         }
 
+        // --pin-threads
+        if (strcmp(argv[i], CLI_PIN_THREADS) == 0) {
+            // check if the next argument exists before trying to access
+            if (i + 1 < argc) {
+                i++;
+                // if the option is "on"
+                if (strcmp(argv[i], CLI_ON) == 0) {
+                    *pin_threads = true;
+                }
+                // if the option is "off"
+                else if (strcmp(argv[i], CLI_OFF) == 0) {
+                    *pin_threads = false;
+                }
+                // next argument is not "on"/"off"
+                else {
+                    return MSG_GET_CLI_OPTIONS_INVALID_ONOFF;
+                }
+                // no need to test the other if's, goes to the next argument
+                continue;
+            } else {
+                // did not find "on"/"off", reports the error
+                return MSG_GET_CLI_OPTIONS_MISSING_ONOFF;
+            }
+        }
+
         // --hardware-level
         if (strcmp(argv[i], CLI_HARDWARE_LEVEL) == 0) {
             // check if the next argument exists before trying to access
@@ -232,6 +270,6 @@ void load_test_config(int config) {
     fpu_matrix_size = 32 * pow(2, config - 1);
     mem_matrix_size = 1024 * pow(2, config - 1);
     alu_job_size = 8192;
-    fpu_job_size = 256; // this limits thread count, improve on future
+    fpu_job_size = 256; // this limits thread count, improve in the future
     mem_job_size = 131072;
 }

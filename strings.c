@@ -3,6 +3,7 @@
 String get_string(MsgCode msgcode) {
     switch (msgcode) {
         case SUCCESS: return "Success!";
+
         case THREAD_MEMORY_ALLOCATION_ERROR: return "Thread memory allocation error!";
         case THREAD_PTHREAD_CREATION_ERROR: return "Thread creation error!";
         case THREAD_PTHREAD_AFFINITY_ERROR: return "Thread affinity setting error!";
@@ -19,6 +20,7 @@ String get_string(MsgCode msgcode) {
         case MEM_PTHREAD_LOCK_INIT_ERROR: return "MEM test lock initialization error!";
         case GUI_MEMORY_ALLOCATION_ERROR: return "GUI memory allocation error!";
         case CHRONOMETER_MEMORY_ALLOCATION_ERROR: return "Chronometer memory allocation error!";
+        case PAYLOAD_MEMORY_ALLOCATION_ERROR: return "Payload memory allocation error!";
 
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_HEADER: return "SimpleBench Result";
         case MSG_MAIN_SHOW_SCORE_SIMPLEBENCH_VERSION: return "Benchmark Version";
@@ -41,12 +43,12 @@ String get_string(MsgCode msgcode) {
         case GUI_SHOW_PROGRESS_FILLED: return "=";
         case GUI_SHOW_PROGRESS_NOT_FILLED: return "-";
         case GUI_GUI_HEADER_1: return "Testing the system with ";
-        case GUI_GUI_HEADER_2: return " core(s):";
+        case GUI_GUI_HEADER_2: return " thread(s):";
         case GUI_GUI_ALU_HEADER: return "ALU Test: ";
         case GUI_GUI_FPU_HEADER: return "FPU Test: ";
         case GUI_GUI_MEM_HEADER: return "MEM Test: ";
         case GUI_GUI_FINISHED_MSG_1: return "Finished the test with ";
-        case GUI_GUI_FINISHED_MSG_2: return " core(s)!";
+        case GUI_GUI_FINISHED_MSG_2: return " thread(s)!";
 
         case MSG_HELP_TEXT: return
         "SimpleBench - a quick benchmark to evaluate the core system performance\n"
@@ -54,6 +56,7 @@ String get_string(MsgCode msgcode) {
         "--st-test [on/off]: enable/disable the singlethread test\n"
         "--mt-test [on/off]: enable/disable the multithread test\n"
         "--threads [integer greater than zero]: sets the number of threads to run with\n"
+        "--pin-threads [on/off]: enable/disable pinning process threads to system threads, does not work on macOS\n"
         "--hardware-level [integer greater than zero]: chooses how taxing the benchmark will be\n"
         "      1: 32MB of RAM, 64KB of cache, lenght 1\n"
         "      2: 64MB of RAM, 128KB of cache, lenght 4\n"
@@ -70,6 +73,8 @@ String get_string(MsgCode msgcode) {
         "\n"
         "You can check some of my benchmark results on https://github.com/1deterministic/SimpleBench for comparison\n"
         ;
+
+        default: return "Unknown error!";
     };
 
     return "undefined";

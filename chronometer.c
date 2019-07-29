@@ -16,8 +16,6 @@ struct chronometer {
     void* stop;
 };
 
-//struct timespec
-
 // creates a Chronometer
 MsgCode create_chronometer(Chronometer** chronometer) {
     *chronometer = (Chronometer*) malloc(sizeof(Chronometer));
@@ -28,20 +26,20 @@ MsgCode create_chronometer(Chronometer** chronometer) {
     #if __linux__ || __APPLE__
         struct timespec* start = (struct timespec*) malloc(sizeof(struct timespec));
         if (start == NULL)
-            return 1;
+            return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
 
         struct timespec* stop = (struct timespec*) malloc(sizeof(struct timespec));
         if (stop == NULL)
-            return 1;
+            return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
 
     #elif __MINGW64__ || __MINGW32__ || _WIN32
         DWORD* start = (DWORD*) malloc(sizeof(DWORD));
         if (start == NULL)
-            return 1;
+            return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
 
         DWORD* stop = (DWORD*) malloc(sizeof(DWORD));
         if (stop == NULL)
-            return 1;
+            return CHRONOMETER_MEMORY_ALLOCATION_ERROR;
 
     #endif
 

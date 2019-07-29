@@ -45,22 +45,24 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
         if (thread_instance == NULL)
             return THREAD_MEMORY_ALLOCATION_ERROR;
 
-        // start the thread with the received parameters
-        if (pthread_create(thread_instance, NULL, function, params)) {
-            free(new_thread);
-            return THREAD_PTHREAD_CREATION_ERROR;
-        }
-
         #if __linux__
-            cpu_set_t cpuset;
-            CPU_ZERO(&cpuset);
-            CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
-            
-            // makes this thread run on the specified core
-            if (pthread_setaffinity_np(*thread_instance, sizeof(cpu_set_t), &cpuset)) {
-                pthread_cancel(*thread_instance);
+            // start the thread with the received parameters
+            if (pthread_create(thread_instance, NULL, function, params)) {
                 free(new_thread);
-                return THREAD_PTHREAD_AFFINITY_ERROR;
+                return THREAD_PTHREAD_CREATION_ERROR;
+            }
+
+            if (core_number >= 0) {
+                cpu_set_t cpuset;
+                CPU_ZERO(&cpuset);
+                CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
+                
+                // makes this thread run on the specified core
+                if (pthread_setaffinity_np(*thread_instance, sizeof(cpu_set_t), &cpuset)) {
+                    pthread_cancel(*thread_instance);
+                    free(new_thread);
+                    return THREAD_PTHREAD_AFFINITY_ERROR;
+                }
             }
 
         #elif __APPLE__
@@ -93,11 +95,13 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
             return THREAD_PTHREAD_CREATION_ERROR;
         }
         
-        // makes this thread run on the specified core
-        if (!SetThreadAffinityMask(*thread_instance, 1 << (core_number % info.dwNumberOfProcessors))) {
-            TerminateThread(*thread_instance, 0);
-            free(new_thread);
-            return THREAD_PTHREAD_AFFINITY_ERROR;
+        if (core_number >= 0) {
+            // makes this thread run on the specified core
+            if (!SetThreadAffinityMask(*thread_instance, 1 << (core_number % info.dwNumberOfProcessors))) {
+                TerminateThread(*thread_instance, 0);
+                free(new_thread);
+                return THREAD_PTHREAD_AFFINITY_ERROR;
+            }
         }
 
         if (!SetThreadPriority(*thread_instance, priority)) {
