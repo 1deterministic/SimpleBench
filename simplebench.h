@@ -212,6 +212,17 @@ void* get_chronometer_start(Chronometer**);
 void set_chronometer_stop(Chronometer**, void*);
 void* get_chronometer_stop(Chronometer**);
 
+typedef struct pld Payload;
+MsgCode add_payload(Payload**, void*, void*);
+MsgCode del_payload(Payload**);
+void set_payload_function(Payload**, void*);
+void* get_payload_function(Payload**);
+void set_payload_params(Payload**, void*);
+void* get_payload_params(Payload**);
+void set_payload_next(Payload**, Payload*);
+Payload* get_payload_next(Payload**);
+void* run_payload(void*);
+
 // benchmark function
 MsgCode test_system(float*, int, float, bool);
 void cleanup(Thread**, Thread**, ALUParams**, FPUParams**, MEMParams**, GUIParams**,  Chronometer**);
