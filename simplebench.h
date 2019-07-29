@@ -225,7 +225,7 @@ void* run_payload(void*);
 
 // benchmark function
 MsgCode test_system(float*, int, float, bool);
-void cleanup(Thread**, Thread**, ALUParams**, FPUParams**, MEMParams**, GUIParams**,  Chronometer**);
+void cleanup(Thread**, Thread**, Payload**, ALUParams**, FPUParams**, MEMParams**, GUIParams**,  Chronometer**);
 
 // Strings file
 typedef const char* String;
