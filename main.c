@@ -269,7 +269,7 @@ void load_test_config(int config) {
     alu_matrix_size = 16 * pow(2, config - 1); // 2 * 1/4/16/64/256/1024... KB
     fpu_matrix_size = 8 * pow(2, config - 1); // 2 * 0,256/1/4/16/64/256... KB
     mem_matrix_size = 1024 * pow(2, config - 1); // 2 * 4/16/64/256/1024/4096... MB
-    alu_job_size = 16384;
-    fpu_job_size = 4096;
-    mem_job_size = 8192;
+    alu_job_size = 65536;
+    fpu_job_size = 16384;
+    mem_job_size = 32768;
 }

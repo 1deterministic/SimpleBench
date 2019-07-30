@@ -47,12 +47,12 @@
 
 #define BUILD_CODENAME "Bring it on"
 
-// the time my machine (at the time) took to complete the single threaded test for version A0 hardware level 5
+// the time my machine (at the time) took to complete the single threaded test for version B0 hardware level 5
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
 // HyperX Fury 8GB DDR3 1333MHz Single Channel
-// running Arch Linux 2019-03, linux kernel 5.0
-// generic build, cli options: "--mt-test off"
-#define SCORE_CALIBRATION_FACTOR 148.173203
+// running Arch Linux 2019-07, linux kernel 5.2.4, mitigations=auto
+// generic build, cli options: "--mt-test off --pin-threads on"
+#define SCORE_CALIBRATION_FACTOR 226.456833
 
 #define CLI_ON "on"
 #define CLI_OFF "off"
