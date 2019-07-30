@@ -215,8 +215,11 @@ void* mem_test(void* params) {
             break;
         
         // copies an entire line of the matrix_a to the matrix_b
-        // 4 times to decrease the overhead of the loop
         // random lines to prevent caching
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));

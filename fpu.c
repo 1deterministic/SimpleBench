@@ -200,22 +200,13 @@ void* fpu_test(void* params) {
         
         for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
             for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-                result = sin(matrix_a[index_x][index_y]);
-                result = sin(matrix_b[index_x][index_y]);
-                result = sin(matrix_a[index_x][index_x]);
-                result = sin(matrix_b[index_x][index_x]);
-                result = cos(matrix_a[index_y][index_x]);
-                result = cos(matrix_b[index_y][index_x]);
-                result = cos(matrix_a[index_y][index_y]);
-                result = cos(matrix_b[index_y][index_y]);
-                result = sqrt(matrix_a[index_x][index_y]);
-                result = sqrt(matrix_b[index_x][index_y]);
-                result = sqrt(matrix_a[index_y][index_x]);
-                result = sqrt(matrix_b[index_y][index_x]);
-                result = sqrt(matrix_a[index_x][index_x]);
-                result = sqrt(matrix_b[index_x][index_x]);
-                result = sqrt(matrix_a[index_y][index_y]);
-                result = sqrt(matrix_b[index_y][index_y]);
+                result = 
+                    sin(matrix_a[index_x][index_y]) +
+                    sin(matrix_b[index_x][index_y]) +
+                    cos(matrix_a[index_x][index_y]) +
+                    cos(matrix_b[index_x][index_y]) +
+                    sqrt(matrix_a[index_x][index_y]) +
+                    sqrt(matrix_b[index_x][index_y]);
             }
         }
     }

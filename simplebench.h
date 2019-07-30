@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 // if I ever change this it means that scores from different versions are not comparable: number means minor changes on the same algorithm, letter means substantial changes to the algorithm or a whole new one
-#define BENCHMARK_VERSION "A0"
+#define BENCHMARK_VERSION "B0"
 
 // this is the actual program version
 #if __linux__

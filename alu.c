@@ -214,12 +214,8 @@ void* alu_test(void* params) {
                 result *= matrix_a[index_y][index_x] * matrix_b[index_y][index_x];
                 result *= matrix_a[index_x][index_x] * matrix_b[index_x][index_x];
                 result *= matrix_a[index_y][index_y] * matrix_b[index_y][index_y];
-                
-                if (matrix_a[index_x][index_y] > matrix_b[index_x][index_y]) {
-                    result /= matrix_a[index_x][index_y] / matrix_b[index_x][index_y];
-                } else {
-                    result /= matrix_b[index_x][index_y] / matrix_a[index_x][index_y];
-                }
+
+                result += matrix_a[index_x][index_y] / matrix_b[index_x][index_y];
             }
         }
     }
