@@ -3,8 +3,13 @@ gcc
 mingw-w64 (for windows builds via mingw)
 libc6-dev-i386
 
+# fedora 31
+gcc
+mingw32-gcc (for windows builds via mingw)
+mingw64-gcc (for windows builds via mingw)
+
 # windows 10
 visual studio with desktop c/c++ (for windows builds via msvc)
 
 # mac high sierra
-gcc installed via brew
+gcc (installed via brew)
