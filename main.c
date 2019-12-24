@@ -262,14 +262,19 @@ void show_score(float singlethread_score, float multithread_score, int threads, 
 
 // loads the test config
 void load_test_config(int config) {
-    // the sizes of the matrices changes with the hardware level used
-    // every step up on hardware level doubles the sizes of the matrices
-    // this increase the amount of work by 4 times, so the handicap is then increased by 4
+    // the matrices size changes with the hardware level used
+    // every step up on hardware level doubles them horizontally and vertically
+    // this increases the amount of work by 4 times, so the handicap is then increased by 4
     handicap = 0.00390625 * pow(4, config - 1);
-    alu_matrix_size = 16 * pow(2, config - 1); // 2 * 1/4/16/64/256/1024... KB
-    fpu_matrix_size = 8 * pow(2, config - 1); // 2 * 0,256/1/4/16/64/256... KB
-    mem_matrix_size = 1024 * pow(2, config - 1); // 2 * 4/16/64/256/1024/4096... MB
-    alu_job_size = 65536;
-    fpu_job_size = 16384;
-    mem_job_size = 32768;
+
+    // keep in mind there are always 2 of these matrices
+    alu_matrix_size = 128 * pow(2, config - 1); // 128k; 512k; 2M; 8M; [32M]; 64M...
+    fpu_matrix_size = 128 * pow(2, config - 1); // 128k; 512k; 2M; 8M; [32M]; 64M...
+    mem_matrix_size = 1024 * pow(2, config - 1); // 8M; 32M; 128M; 512M; [2G]; 8G...
+
+    // will repeat every operation this amount of times. Its better to scale the matrix sizes instead of the job sizes because it can scale memory usage down or up
+    // otherwise these tests would use too much memory on old systems and too little on newer systems
+    alu_job_size = 128;
+    fpu_job_size = 128;
+    mem_job_size = 1024;
 }

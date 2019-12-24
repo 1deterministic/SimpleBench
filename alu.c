@@ -200,22 +200,23 @@ void* alu_test(void* params) {
         
         for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
             for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-                result += matrix_a[index_x][index_y] + matrix_b[index_x][index_y];
-                result += matrix_a[index_y][index_x] + matrix_b[index_y][index_x];
-                result += matrix_a[index_x][index_x] + matrix_b[index_x][index_x];
-                result += matrix_a[index_y][index_y] + matrix_b[index_y][index_y];
-                
-                result -= matrix_a[index_x][index_y] - matrix_b[index_x][index_y];
-                result -= matrix_a[index_y][index_x] - matrix_b[index_y][index_x];
-                result -= matrix_a[index_x][index_x] - matrix_b[index_x][index_x];
-                result -= matrix_a[index_y][index_y] - matrix_b[index_y][index_y];
-                
-                result *= matrix_a[index_x][index_y] * matrix_b[index_x][index_y];
-                result *= matrix_a[index_y][index_x] * matrix_b[index_y][index_x];
-                result *= matrix_a[index_x][index_x] * matrix_b[index_x][index_x];
-                result *= matrix_a[index_y][index_y] * matrix_b[index_y][index_y];
-
-                result += matrix_a[index_x][index_y] / matrix_b[index_x][index_y];
+                result *= 
+                    (matrix_a[index_x][index_y] + matrix_b[index_x][index_y]) * 
+                    (matrix_a[index_y][index_x] + matrix_b[index_y][index_x]) *
+                    (matrix_a[index_x][index_x] + matrix_b[index_x][index_x]) *
+                    (matrix_a[index_y][index_y] + matrix_b[index_y][index_y]) *
+                    (matrix_a[index_x][index_y] - matrix_b[index_x][index_y]) * 
+                    (matrix_a[index_y][index_x] - matrix_b[index_y][index_x]) *
+                    (matrix_a[index_x][index_x] - matrix_b[index_x][index_x]) *
+                    (matrix_a[index_y][index_y] - matrix_b[index_y][index_y]) *
+                    (matrix_a[index_x][index_y] * matrix_b[index_x][index_y]) * 
+                    (matrix_a[index_y][index_x] * matrix_b[index_y][index_x]) *
+                    (matrix_a[index_x][index_x] * matrix_b[index_x][index_x]) *
+                    (matrix_a[index_y][index_y] * matrix_b[index_y][index_y]) *
+                    (matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) * 
+                    (matrix_a[index_y][index_x] / matrix_b[index_y][index_x]) *
+                    (matrix_a[index_x][index_x] / matrix_b[index_x][index_x]) *
+                    (matrix_a[index_y][index_y] / matrix_b[index_y][index_y]);
             }
         }
     }

@@ -58,8 +58,8 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
     for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
             // not using 0 to prevent having to deal with division by zero
-            matrix_a[index_x][index_y] = 0.1 + ((FLT_MAX - 1.0) * ((float) rand()) / ((float) RAND_MAX));
-            matrix_b[index_x][index_y] = 0.1 + ((FLT_MAX - 1.0) * ((float) rand()) / ((float) RAND_MAX));
+            matrix_a[index_x][index_y] = 0.1 + (FLT_MAX - 1.0) * ((float) rand() / (float) RAND_MAX);
+            matrix_b[index_x][index_y] = 0.1 + (FLT_MAX - 1.0) * ((float) rand() / (float) RAND_MAX);
         }
     }
     
@@ -200,13 +200,13 @@ void* fpu_test(void* params) {
         
         for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
             for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-                result = 
-                    sin(matrix_a[index_x][index_y]) +
-                    sin(matrix_b[index_x][index_y]) +
-                    cos(matrix_a[index_x][index_y]) +
-                    cos(matrix_b[index_x][index_y]) +
-                    sqrt(matrix_a[index_x][index_y]) +
-                    sqrt(matrix_b[index_x][index_y]);
+                result *= 
+                    sin(matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) * 
+                    cos(matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) * 
+                    sqrt(matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) *
+                    sin(matrix_b[index_x][index_y] / matrix_a[index_x][index_y]) * 
+                    cos(matrix_b[index_x][index_y] / matrix_a[index_x][index_y]) * 
+                    sqrt(matrix_b[index_x][index_y] / matrix_a[index_x][index_y]);
             }
         }
     }

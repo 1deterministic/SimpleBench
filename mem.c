@@ -214,16 +214,11 @@ void* mem_test(void* params) {
         if (exit)
             break;
         
-        // copies an entire line of the matrix_a to the matrix_b
-        // random lines to prevent caching
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
-        memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        for (int i = 0; i < 1024; i++) {
+            // copies an entire line of the matrix_a to the matrix_b
+            // random lines to prevent caching
+            memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        }
     }
     
     return NULL;

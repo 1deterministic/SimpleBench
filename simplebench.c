@@ -135,8 +135,13 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
         test_score = handicap * 100 * SCORE_CALIBRATION_FACTOR / total_time;
     }
 
+    // frees up all manually allocated memory
     cleanup(&thread_array, &gui_thread_array, &payload, &alu_params, &fpu_params, &mem_params, &gui_params, &chronometer);
-    // printf("TOTAL TIME: %f\n", total_time); // For calibration only
+
+    // shows the time it took to complete, for calibration only
+    printf("Total time: %f\n", total_time);
+
+    // returns the score
     *score = test_score;
     return SUCCESS;
 }
