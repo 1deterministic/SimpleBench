@@ -1,13 +1,6 @@
 # not commit the executable by default
 releases/
 
-simplebench-linux
-simplebench32-linux
-simplebench-windows.exe
-simplebench32-windows.exe
-
-.vscode/
-
 # old code for reference
 
 # Object files
