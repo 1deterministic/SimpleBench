@@ -187,7 +187,14 @@ MsgCode get_cli_options(int argc, char** argv, bool* show_gui, bool* st_test, bo
                 i++;
                 // if the option is "on"
                 if (strcmp(argv[i], CLI_ON) == 0) {
-                    *pin_threads = true;
+                    // macOS does not offer an interface to pin threads to cores
+                    #if __APPLE__
+                        return MSG_GET_CLI_OPTIONS_PINTHREADS_NOT_SUPPORTED;
+                    // otherwise should work fine
+                    #else
+                        *pin_threads = true;
+
+                    #endif
                 }
                 // if the option is "off"
                 else if (strcmp(argv[i], CLI_OFF) == 0) {
@@ -262,18 +269,18 @@ void show_score(float singlethread_score, float multithread_score, int threads, 
 
 // loads the test config
 void load_test_config(int config) {
-    // the matrices size changes with the hardware level used
-    // every step up on hardware level doubles them horizontally and vertically
+    // the matrix size changes with the hardware level used
+    // every step up on hardware level doubles it horizontally and vertically
     // this increases the amount of work by 4 times, so the handicap is then increased by 4
     handicap = 0.00390625 * pow(4, config - 1);
 
     // keep in mind there are always 2 of these matrices
-    alu_matrix_size = 128 * pow(2, config - 1); // 128k; 512k; 2M; 8M; [32M]; 64M...
-    fpu_matrix_size = 128 * pow(2, config - 1); // 128k; 512k; 2M; 8M; [32M]; 64M...
-    mem_matrix_size = 1024 * pow(2, config - 1); // 8M; 32M; 128M; 512M; [2G]; 8G...
+    alu_matrix_size = 128 * pow(2, config - 1); // 64k; 256k; 1M; 4M; [16M]; 64M...
+    fpu_matrix_size = 128 * pow(2, config - 1); // 64k; 256k; 1M; 4M; [16M]; 64M...
+    mem_matrix_size = 1024 * pow(2, config - 1); // 4M; 16M; 64M; 256M; [1G]; 4G...
 
-    // will repeat every operation this amount of times. Its better to scale the matrix sizes instead of the job sizes because it can scale memory usage down or up
-    // otherwise these tests would use too much memory on old systems and too little on newer systems
+    // will repeat every operation this amount of times. Its better to scale the matrix sizes instead of the job sizes because it can scale memory usage too
+    // otherwise these tests would use too much memory on old systems and too little memory on newer systems
     alu_job_size = 128;
     fpu_job_size = 128;
     mem_job_size = 1024;

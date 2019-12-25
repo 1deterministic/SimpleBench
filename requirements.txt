@@ -5,8 +5,17 @@ libc6-dev-i386
 
 # fedora 31
 gcc
+glibc-devel
+glibc-devel.i686 (for 32bit builds)
+glibc-static (for statically linked builds)
+glibc-static.i686 (for statically linked 32bit builds)
 mingw32-gcc (for windows builds via mingw)
 mingw64-gcc (for windows builds via mingw)
+mingw32-winpthreads (for statically linked windows 32bit builds)
+mingw32-winpthreads-static (for statically linked windows 32bit builds)
+mingw64-winpthreads (for statically linked windows builds)
+mingw64-winpthreads-static (for statically linked windows builds)
+wine (not sure, for statically linked windows builds)
 
 # windows 10
 visual studio with desktop c/c++ (for windows builds via msvc)

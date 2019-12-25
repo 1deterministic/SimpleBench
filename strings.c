@@ -37,6 +37,7 @@ String get_string(MsgCode msgcode) {
         case MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION: return "Option not recognized!";
         case MSG_GET_CLI_OPTIONS_VERSION: return "SimpleBench benchmark version: " BENCHMARK_VERSION;
         case MSG_GET_CLI_OPTIONS_BUILD: return "SimpleBench build version: " BUILD_VERSION;
+        case MSG_GET_CLI_OPTIONS_PINTHREADS_NOT_SUPPORTED: "This OS does not offer an interface to pin threads to specific cores!";
 
         case GUI_SHOW_PROGRESS_BRACKET_OPEN: return "[";
         case GUI_SHOW_PROGRESS_BRACKET_CLOSE: return "]";
@@ -58,15 +59,15 @@ String get_string(MsgCode msgcode) {
         "--threads [integer greater than zero]: sets the number of threads to run with\n"
         "--pin-threads [on/off]: enable/disable pinning process threads to system threads, does not work on macOS\n"
         "--hardware-level [integer greater than zero]: chooses how taxing the benchmark will be\n"
-        "      1: 16MB of RAM, 256 times smaller than the standard lenght\n"
-        "      2: 32MB of RAM, 64 times smaller than the standard lenght\n"
-        "      3: 128MB of RAM, 16 times smaller than the standard lenght\n"
-        "      4: 512MB of RAM, 4 times smaller than the standard lenght\n"
-        "      5: 2GB of RAM, standard lenght (default)\n"
-        "      6: 8GB of RAM, 4 times longer than the standard lenght\n"
+        "      1: 8.25MB of RAM, 1 lenght unit\n"
+        "      2: 33MB of RAM, 4 lenght units\n"
+        "      3: 132MB of RAM, 16 lenght units\n"
+        "      4: 528MB of RAM, 64 lenght units\n"
+        "      5: 2112MB of RAM, 256 lenght units\n"
+        "      6: 8448MB of RAM, 1024 lenght units\n"
         "       :\n"
         "      * every increase of 1 in the hardware level quadruples the requirements\n"
-        "      * there is some overhead in RAM requirement, you should have at least the amount required plus 5% FREE\n"
+        "      * at the moment there is no limit to the hardware level\n"
         "--version: shows the benchmark version (not the program version)\n"
         "--build: shows the program version, changes here have no effect on the score system\n"
         "--help: shows this screen\n"

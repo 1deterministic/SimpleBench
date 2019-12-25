@@ -17,31 +17,31 @@
 // this is the actual program version
 #if __linux__
     #if __i386__
-        #define BUILD_VERSION "2-Linux-x86-32-GCC"
+        #define BUILD_VERSION "2-linux-x86-gcc"
     #elif __x86_64__
-        #define BUILD_VERSION "2-Linux-x86-64-GCC"
+        #define BUILD_VERSION "2-linux-amd64-gcc"
     #elif __arm__
-        #define BUILD_VERSION "2-Linux-ARM-32-GCC"
+        #define BUILD_VERSION "2-linux-armv7-gcc"
     #elif __aarch64__
-        #define BUILD_VERSION "2-Linux-ARM-64-GCC"
+        #define BUILD_VERSION "2-linux-aarch64-gcc"
     #endif
 
 #elif __MINGW32__ || __MINGW64__
     #if __i386__
-        #define BUILD_VERSION "2-Windows-x86-32-MINGW"
+        #define BUILD_VERSION "2-windows-x86-mingw"
     #elif __x86_64__
-        #define BUILD_VERSION "2-Windows-x86-64-MINGW"
+        #define BUILD_VERSION "2-windows-amd64-mingw"
     #endif
 
 #elif _WIN32
     #if _M_IX86
-        #define BUILD_VERSION "2-Windows-x86-32-MSVC"
+        #define BUILD_VERSION "2-windows-x86-msvc"
     #elif _M_AMD64
-        #define BUILD_VERSION "2-Windows-x86-64-MSVC"
+        #define BUILD_VERSION "2-windows-amd64-msvc"
     #endif
 
 #elif __APPLE__
-    #define BUILD_VERSION "2-Mac-x86-64-GCC"
+    #define BUILD_VERSION "2-macos-amd64-gcc"
 
 #endif
 
@@ -49,10 +49,11 @@
 
 // the time my machine (at the time) took to complete the single threaded test for version B0 hardware level 5
 // Intel Xeon E3 1280 3.6/3.9GHz (stock)
-// HyperX Fury 8GB DDR3 1333MHz Single Channel
-// running Arch Linux 2019-07, linux kernel 5.2.4, mitigations=auto
-// generic build, cli options: "--mt-test off --pin-threads on"
-#define SCORE_CALIBRATION_FACTOR 226.456833
+// HyperX Fury/Risemode 16GB DDR3 1333MHz Dual Channel
+// running Fedora 31, linux kernel 5.3.16, mitigations=auto
+// generic build, cli options: "--mt-test off"
+#define SCORE_CALIBRATION_FACTOR 108.188438
+#define CALIBRATION_BUILD false
 
 #define CLI_ON "on"
 #define CLI_OFF "off"
@@ -102,6 +103,7 @@ typedef unsigned int MsgCode;
 #define MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION 1009
 #define MSG_GET_CLI_OPTIONS_VERSION 1010
 #define MSG_GET_CLI_OPTIONS_BUILD 1011
+#define MSG_GET_CLI_OPTIONS_PINTHREADS_NOT_SUPPORTED 1016
 #define MSG_HELP_TEXT 1012
 MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*, bool*);
 void show_score(float, float, int, int);
