@@ -179,7 +179,7 @@ void* mem_test(void* params) {
         if (exit)
             break;
 
-        for (int index = 0; index < mem_matrix_size / 16; index++) {
+        for (int index = 0; index < mem_matrix_size / 32; index++) {
             memcpy(array, matrix[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         }
     }
