@@ -47,12 +47,10 @@
 
 #define BUILD_CODENAME "Bring it on"
 
-// the time my machine (at the time) took to complete the single threaded test for version B0 hardware level 5
-// Intel Xeon E3 1280 3.6/3.9GHz (stock)
-// HyperX Fury/Risemode 16GB DDR3 1333MHz Dual Channel
+// the time a Sandy Bridge processor at 3GHz with 16GB of dual channel 1333MHz DDR3 memory takes to complete the single threaded test for version B0 hardware level 5 (default)
 // running Fedora 31, linux kernel 5.3.16, mitigations=auto
-// generic build, cli options: "--mt-test off"
-#define SCORE_CALIBRATION_FACTOR 108.188438
+// generic build, cli options: "--show-gui off --mt-test off --pin-threads on"
+#define SCORE_CALIBRATION_FACTOR 125.207169
 #define CALIBRATION_BUILD false
 
 #define CLI_ON "on"
@@ -134,10 +132,8 @@ MsgCode create_alu_params(ALUParams**);
 MsgCode del_alu_params(ALUParams**);
 void set_alu_params_job_size(ALUParams**, int*);
 int* get_alu_params_job_size(ALUParams**);
-void set_alu_params_matrix_a(ALUParams**, int**);
-int** get_alu_params_matrix_a(ALUParams**);
-void set_alu_params_matrix_b(ALUParams**, int**);
-int** get_alu_params_matrix_b(ALUParams**);
+void set_alu_params_matrix(ALUParams**, int**);
+int** get_alu_params_matrix(ALUParams**);
 void set_alu_params_lock(ALUParams**, void*);
 void* get_alu_params_lock(ALUParams**);
 void* alu_test(void*);
@@ -151,10 +147,8 @@ MsgCode create_fpu_params(FPUParams**);
 MsgCode del_fpu_params(FPUParams**);
 void set_fpu_params_job_size(FPUParams**, int*);
 int* get_fpu_params_job_size(FPUParams**);
-void set_fpu_params_matrix_a(FPUParams**, float**);
-float** get_fpu_params_matrix_a(FPUParams**);
-void set_fpu_params_matrix_b(FPUParams**, float**);
-float** get_fpu_params_matrix_b(FPUParams**);
+void set_fpu_params_matrix(FPUParams**, float**);
+float** get_fpu_params_matrix(FPUParams**);
 void set_fpu_params_lock(FPUParams**, void*);
 void* get_fpu_params_lock(FPUParams**);
 void* fpu_test(void*);
@@ -168,10 +162,8 @@ MsgCode create_mem_params(MEMParams**);
 MsgCode del_mem_params(MEMParams**);
 void set_mem_params_job_size(MEMParams**, int*);
 int* get_mem_params_job_size(MEMParams**);
-void set_mem_params_matrix_a(MEMParams**, int**);
-int** get_mem_params_matrix_a(MEMParams**);
-void set_mem_params_matrix_b(MEMParams**, int**);
-int** get_mem_params_matrix_b(MEMParams**);
+void set_mem_params_matrix(MEMParams**, int**);
+int** get_mem_params_matrix(MEMParams**);
 void set_mem_params_lock(MEMParams**, void*);
 void* get_mem_params_lock(MEMParams**);
 void* mem_test(void*);

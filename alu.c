@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <math.h>
 
 #if __linux__ || __APPLE__
     #include <pthread.h>
@@ -14,8 +15,7 @@
 // struct of the ALUParams type
 struct alu_prm {
     int* job_size;
-    int** matrix_a;
-    int** matrix_b;
+    int** matrix;
     void* lock;
 };
 
@@ -34,31 +34,21 @@ MsgCode create_alu_params(ALUParams** alu_params) {
     // sets the task counter to be equal to the number of tasks
     *job_size = alu_job_size;
     
-    // manually allocates the matrices
-    int** matrix_a = (int**) malloc(alu_matrix_size * sizeof(int*));
-    if (matrix_a == NULL)
-        return ALU_MEMORY_ALLOCATION_ERROR;
-
-    int** matrix_b = (int**) malloc(alu_matrix_size * sizeof(int*));
-    if (matrix_b == NULL)
+    // manually allocates the matrix
+    int** matrix = (int**) malloc(alu_matrix_size * sizeof(int*));
+    if (matrix == NULL)
         return ALU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < alu_matrix_size; index++) {
-        matrix_a[index] = (int*) malloc(alu_matrix_size * sizeof(int));
-        if (matrix_a[index] == NULL)
-            return ALU_MEMORY_ALLOCATION_ERROR;
-
-        matrix_b[index] = (int*) malloc(alu_matrix_size * sizeof(int));
-        if (matrix_b[index] == NULL)
+        matrix[index] = (int*) malloc(alu_matrix_size * sizeof(int));
+        if (matrix[index] == NULL)
             return ALU_MEMORY_ALLOCATION_ERROR;
     }
         
-    // fills the matrices
+    // fills the matrix
     for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-            // not using 0 to prevent having to deal with division by zero
-            matrix_a[index_x][index_y] = (rand() % (INT_MAX - 1)) + 1;
-            matrix_b[index_x][index_y] = (rand() % (INT_MAX - 1)) + 1;
+            matrix[index_x][index_y] = rand() % 10;
         }
     }
 
@@ -83,8 +73,7 @@ MsgCode create_alu_params(ALUParams** alu_params) {
     
     // fills the parameter values
     set_alu_params_job_size(alu_params, job_size);
-    set_alu_params_matrix_a(alu_params, matrix_a);
-    set_alu_params_matrix_b(alu_params, matrix_b);
+    set_alu_params_matrix(alu_params, matrix);
     set_alu_params_lock(alu_params, lock);
     
     return SUCCESS;
@@ -97,8 +86,7 @@ MsgCode del_alu_params(ALUParams** alu_params) {
 
     // creates local references to the pointers inside params
     int* job_size = get_alu_params_job_size(alu_params);
-    int** matrix_a = get_alu_params_matrix_a(alu_params);
-    int** matrix_b = get_alu_params_matrix_b(alu_params);
+    int** matrix = get_alu_params_matrix(alu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_alu_params_lock(alu_params);
         pthread_mutex_destroy(lock);
@@ -110,13 +98,11 @@ MsgCode del_alu_params(ALUParams** alu_params) {
     #endif
     free(lock);
     
-    // frees up the matrices
+    // frees up the matrix
     for (int index = 0; index < alu_matrix_size; index++) {
-        free(matrix_a[index]);
-        free(matrix_b[index]);
+        free(matrix[index]);
     }
-    free(matrix_a);
-    free(matrix_b);
+    free(matrix);
     
     // frees up the task counter
     free(job_size);
@@ -134,20 +120,12 @@ int* get_alu_params_job_size(ALUParams** alu_params) {
     return (*alu_params)->job_size;
 }
 
-void set_alu_params_matrix_a(ALUParams** alu_params, int** matrix_a) {
-    (*alu_params)->matrix_a = matrix_a;
+void set_alu_params_matrix(ALUParams** alu_params, int** matrix) {
+    (*alu_params)->matrix = matrix;
 }
 
-int** get_alu_params_matrix_a(ALUParams** alu_params) {
-    return (*alu_params)->matrix_a;
-}
-
-void set_alu_params_matrix_b(ALUParams** alu_params, int** matrix_b) {
-    (*alu_params)->matrix_b = matrix_b;
-}
-
-int** get_alu_params_matrix_b(ALUParams** alu_params) {
-    return (*alu_params)->matrix_b;
+int** get_alu_params_matrix(ALUParams** alu_params) {
+    return (*alu_params)->matrix;
 }
 
 void set_alu_params_lock(ALUParams** alu_params, void* lock) {
@@ -165,8 +143,7 @@ void* alu_test(void* params) {
     
     // creates local references to the pointers inside params
     int* job_size = get_alu_params_job_size(alu_params);
-    int** matrix_a = get_alu_params_matrix_a(alu_params);
-    int** matrix_b = get_alu_params_matrix_b(alu_params);
+    int** matrix = get_alu_params_matrix(alu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_alu_params_lock(alu_params);
 
@@ -175,7 +152,7 @@ void* alu_test(void* params) {
 
     #endif
     
-    int result = 1;
+    int result = 0;
     bool exit = false;
     // repeats until all tasks were finished
     while (true) {
@@ -200,23 +177,7 @@ void* alu_test(void* params) {
         
         for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
             for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-                result *= 
-                    (matrix_a[index_x][index_y] + matrix_b[index_x][index_y]) * 
-                    (matrix_a[index_y][index_x] + matrix_b[index_y][index_x]) *
-                    (matrix_a[index_x][index_x] + matrix_b[index_x][index_x]) *
-                    (matrix_a[index_y][index_y] + matrix_b[index_y][index_y]) *
-                    (matrix_a[index_x][index_y] - matrix_b[index_x][index_y]) * 
-                    (matrix_a[index_y][index_x] - matrix_b[index_y][index_x]) *
-                    (matrix_a[index_x][index_x] - matrix_b[index_x][index_x]) *
-                    (matrix_a[index_y][index_y] - matrix_b[index_y][index_y]) *
-                    (matrix_a[index_x][index_y] * matrix_b[index_x][index_y]) * 
-                    (matrix_a[index_y][index_x] * matrix_b[index_y][index_x]) *
-                    (matrix_a[index_x][index_x] * matrix_b[index_x][index_x]) *
-                    (matrix_a[index_y][index_y] * matrix_b[index_y][index_y]) *
-                    (matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) * 
-                    (matrix_a[index_y][index_x] / matrix_b[index_y][index_x]) *
-                    (matrix_a[index_x][index_x] / matrix_b[index_x][index_x]) *
-                    (matrix_a[index_y][index_y] / matrix_b[index_y][index_y]);
+                result = (matrix[index_x][index_y] * matrix[index_y][index_x]) / (index_x + index_y + 1);
             }
         }
     }

@@ -15,8 +15,7 @@
 // struct of the MEMParams type
 struct mem_prm {
     int* job_size;
-    int** matrix_a;
-    int** matrix_b;
+    int** matrix;
     void* lock;
 };
 
@@ -36,29 +35,20 @@ MsgCode create_mem_params(MEMParams** mem_params) {
     *job_size = mem_job_size;
     
     // manually allocates the matrices
-    int** matrix_a = (int**) malloc(mem_matrix_size * sizeof(int*));
-    if (matrix_a == NULL)
-        return MEM_MEMORY_ALLOCATION_ERROR;
-
-    int** matrix_b = (int**) malloc(mem_matrix_size * sizeof(int*));
-    if (matrix_b == NULL)
+    int** matrix = (int**) malloc(mem_matrix_size * sizeof(int*));
+    if (matrix == NULL)
         return MEM_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < mem_matrix_size; index++) {
-        matrix_a[index] = (int*) malloc(mem_matrix_size * sizeof(int));
-        if (matrix_a[index] == NULL)
-            return MEM_MEMORY_ALLOCATION_ERROR;
-
-        matrix_b[index] = (int*) malloc(mem_matrix_size * sizeof(int));
-        if (matrix_b[index] == NULL)
+        matrix[index] = (int*) malloc(mem_matrix_size * sizeof(int));
+        if (matrix[index] == NULL)
             return MEM_MEMORY_ALLOCATION_ERROR;
     }
     
     // fills the matrices
     for (int index_y = 0; index_y < mem_matrix_size; index_y++) {
         for (int index_x = 0; index_x < mem_matrix_size; index_x++) {
-            matrix_a[index_x][index_y] = rand() % INT_MAX;
-            matrix_b[index_x][index_y] = rand() % INT_MAX;
+            matrix[index_x][index_y] = rand() % INT_MAX;
         }
     }
 
@@ -83,8 +73,7 @@ MsgCode create_mem_params(MEMParams** mem_params) {
     
     // fills the parameter values
     set_mem_params_job_size(mem_params, job_size);
-    set_mem_params_matrix_a(mem_params, matrix_a);
-    set_mem_params_matrix_b(mem_params, matrix_b);
+    set_mem_params_matrix(mem_params, matrix);
     set_mem_params_lock(mem_params, lock);
     
     return SUCCESS;
@@ -97,8 +86,7 @@ MsgCode del_mem_params(MEMParams** mem_params) {
 
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);
-    int** matrix_a = get_mem_params_matrix_a(mem_params);
-    int** matrix_b = get_mem_params_matrix_b(mem_params);
+    int** matrix = get_mem_params_matrix(mem_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_mem_params_lock(mem_params);
         pthread_mutex_destroy(lock);
@@ -112,11 +100,9 @@ MsgCode del_mem_params(MEMParams** mem_params) {
     
     // frees up the matrices
     for (int index = 0; index < mem_matrix_size; index++) {
-        free(matrix_a[index]);
-        free(matrix_b[index]);
+        free(matrix[index]);
     }
-    free(matrix_a);
-    free(matrix_b);
+    free(matrix);
     
     // frees up the task counter
     free(job_size);
@@ -134,20 +120,12 @@ int* get_mem_params_job_size(MEMParams** mem_params) {
     return (*mem_params)->job_size;
 }
 
-void set_mem_params_matrix_a(MEMParams** mem_params, int** matrix_a) {
-    (*mem_params)->matrix_a = matrix_a;
+void set_mem_params_matrix(MEMParams** mem_params, int** matrix) {
+    (*mem_params)->matrix = matrix;
 }
 
-int** get_mem_params_matrix_a(MEMParams** mem_params) {
-    return (*mem_params)->matrix_a;
-}
-
-void set_mem_params_matrix_b(MEMParams** mem_params, int** matrix_b) {
-    (*mem_params)->matrix_b = matrix_b;
-}
-
-int** get_mem_params_matrix_b(MEMParams** mem_params) {
-    return (*mem_params)->matrix_b;
+int** get_mem_params_matrix(MEMParams** mem_params) {
+    return (*mem_params)->matrix;
 }
 
 void set_mem_params_lock(MEMParams** mem_params, void* lock) {
@@ -167,8 +145,7 @@ void* mem_test(void* params) {
     
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);
-    int** matrix_a = get_mem_params_matrix_a(mem_params);
-    int** matrix_b = get_mem_params_matrix_b(mem_params);
+    int** matrix = get_mem_params_matrix(mem_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_mem_params_lock(mem_params);
 
@@ -176,50 +153,38 @@ void* mem_test(void* params) {
         HANDLE* lock = get_mem_params_lock(mem_params);
 
     #endif
+
+    int* array = (int*) malloc(mem_matrix_size * sizeof(int));
+    if (array == NULL)
+        return NULL;
     
-    int line;
     bool exit = false;
     // repeats until all tasks were finished
     while (true) {
         // picks one available job from the pool
         #if __linux__ || __APPLE__
             pthread_mutex_lock(lock);
-            if (*job_size > 0) {
-                line = (mem_job_size - *job_size) % mem_matrix_size;
-                *job_size = *job_size - 1; 
-            } else {
-                exit = true;
-            }
+            if (*job_size > 0) *job_size = *job_size - 1; else exit = true;
             pthread_mutex_unlock(lock);
 
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             switch(WaitForSingleObject(*lock, INFINITE)) {
-                case WAIT_OBJECT_0: {
-                    if (*job_size > 0) {
-                        line = (mem_job_size - *job_size) % mem_matrix_size;
-                        *job_size = *job_size - 1; 
-                    } else {
-                        exit = true;
-                    }
-                    ReleaseMutex(*lock);
-                    break;    
-                }
+                case WAIT_OBJECT_0: if (*job_size > 0) *job_size = *job_size - 1; else exit = true; ReleaseMutex(*lock); break;
                 case WAIT_ABANDONED: exit = true; break;
                 default: exit = true; break;
             }
-
         #endif
 
         // do not break inside the mutex lock area
         if (exit)
             break;
-        
-        for (int i = 0; i < 1024; i++) {
-            // copies an entire line of the matrix_a to the matrix_b
-            // random lines to prevent caching
-            memcpy(matrix_b[line], matrix_a[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+
+        for (int index = 0; index < mem_matrix_size / 16; index++) {
+            memcpy(array, matrix[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         }
     }
     
+    free(array);
+
     return NULL;
 }

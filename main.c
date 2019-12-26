@@ -274,14 +274,11 @@ void load_test_config(int config) {
     // this increases the amount of work by 4 times, so the handicap is then increased by 4
     handicap = 0.00390625 * pow(4, config - 1);
 
-    // keep in mind there are always 2 of these matrices
     alu_matrix_size = 128 * pow(2, config - 1); // 64k; 256k; 1M; 4M; [16M]; 64M...
     fpu_matrix_size = 128 * pow(2, config - 1); // 64k; 256k; 1M; 4M; [16M]; 64M...
-    mem_matrix_size = 1024 * pow(2, config - 1); // 4M; 16M; 64M; 256M; [1G]; 4G...
+    mem_matrix_size = 1024 * pow(2, config - 1); // 4M; 16M; 64M; 256M; [1024M]; 4096M...
 
-    // will repeat every operation this amount of times. Its better to scale the matrix sizes instead of the job sizes because it can scale memory usage too
-    // otherwise these tests would use too much memory on old systems and too little memory on newer systems
-    alu_job_size = 128;
-    fpu_job_size = 128;
+    alu_job_size = 1024;
+    fpu_job_size = 1024;
     mem_job_size = 1024;
 }

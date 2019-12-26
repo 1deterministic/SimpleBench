@@ -15,8 +15,7 @@
 // struct of the FPUParams type
 struct fpu_prm {
     int* job_size;
-    float** matrix_a;
-    float** matrix_b;
+    float** matrix;
     void* lock;
 };
 
@@ -36,30 +35,20 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
     *job_size = fpu_job_size;
     
     // manually allocates the matrices
-    float** matrix_a = (float**) malloc(fpu_matrix_size * sizeof(float*));
-    if (matrix_a == NULL)
-        return FPU_MEMORY_ALLOCATION_ERROR;
-
-    float** matrix_b = (float**) malloc(fpu_matrix_size * sizeof(float*));
-    if (matrix_b == NULL)
+    float** matrix = (float**) malloc(fpu_matrix_size * sizeof(float*));
+    if (matrix == NULL)
         return FPU_MEMORY_ALLOCATION_ERROR;
     
     for (int index = 0; index < fpu_matrix_size; index++) {
-        matrix_a[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
-        if (matrix_a[index] == NULL)
-            return FPU_MEMORY_ALLOCATION_ERROR;
-
-        matrix_b[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
-        if (matrix_b[index] == NULL)
+        matrix[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
+        if (matrix[index] == NULL)
             return FPU_MEMORY_ALLOCATION_ERROR;
     }
 
     // fills the matrices
     for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-            // not using 0 to prevent having to deal with division by zero
-            matrix_a[index_x][index_y] = 0.1 + (FLT_MAX - 1.0) * ((float) rand() / (float) RAND_MAX);
-            matrix_b[index_x][index_y] = 0.1 + (FLT_MAX - 1.0) * ((float) rand() / (float) RAND_MAX);
+            matrix[index_x][index_y] = 10.0 * ((float) rand() / (float) RAND_MAX);
         }
     }
     
@@ -84,8 +73,7 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
     
     // fills the parameter values
     set_fpu_params_job_size(fpu_params, job_size);
-    set_fpu_params_matrix_a(fpu_params, matrix_a);
-    set_fpu_params_matrix_b(fpu_params, matrix_b);
+    set_fpu_params_matrix(fpu_params, matrix);
     set_fpu_params_lock(fpu_params, lock);
     
     return SUCCESS;
@@ -98,8 +86,7 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
 
     // creates local references to the pointers inside params
     int* job_size = get_fpu_params_job_size(fpu_params);
-    float** matrix_a = get_fpu_params_matrix_a(fpu_params);
-    float** matrix_b = get_fpu_params_matrix_b(fpu_params);
+    float** matrix = get_fpu_params_matrix(fpu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
         pthread_mutex_destroy(lock);
@@ -113,11 +100,9 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
     
     // frees up the matrices
     for (int index = 0; index < fpu_matrix_size; index++) {
-        free(matrix_a[index]);
-        free(matrix_b[index]);
+        free(matrix[index]);
     }
-    free(matrix_a);
-    free(matrix_b);
+    free(matrix);
     
     // frees up the task counter
     free(job_size);
@@ -135,20 +120,12 @@ int* get_fpu_params_job_size(FPUParams** fpu_params) {
     return (*fpu_params)->job_size;
 }
 
-void set_fpu_params_matrix_a(FPUParams** fpu_params, float** matrix_a) {
-    (*fpu_params)->matrix_a = matrix_a;
+void set_fpu_params_matrix(FPUParams** fpu_params, float** matrix) {
+    (*fpu_params)->matrix = matrix;
 }
 
-float** get_fpu_params_matrix_a(FPUParams** fpu_params) {
-    return (*fpu_params)->matrix_a;
-}
-
-void set_fpu_params_matrix_b(FPUParams** fpu_params, float** matrix_b) {
-    (*fpu_params)->matrix_b = matrix_b;
-}
-
-float** get_fpu_params_matrix_b(FPUParams** fpu_params) {
-    return (*fpu_params)->matrix_b;
+float** get_fpu_params_matrix(FPUParams** fpu_params) {
+    return (*fpu_params)->matrix;
 }
 
 void set_fpu_params_lock(FPUParams** fpu_params, void* lock) {
@@ -166,8 +143,7 @@ void* fpu_test(void* params) {
     
     // creates local references to the pointers inside params
     int* job_size = get_fpu_params_job_size(fpu_params);
-    float** matrix_a = get_fpu_params_matrix_a(fpu_params);
-    float** matrix_b = get_fpu_params_matrix_b(fpu_params);
+    float** matrix = get_fpu_params_matrix(fpu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
 
@@ -176,7 +152,7 @@ void* fpu_test(void* params) {
 
     #endif
     
-    float result = 1.0;
+    float result = 0.0;
     bool exit = false;
     // repeats until all tasks were finished
     while (true) {
@@ -197,16 +173,10 @@ void* fpu_test(void* params) {
         // do not break inside the mutex lock area
         if (exit)
             break;
-        
-        for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
-            for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-                result *= 
-                    sin(matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) * 
-                    cos(matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) * 
-                    sqrt(matrix_a[index_x][index_y] / matrix_b[index_x][index_y]) *
-                    sin(matrix_b[index_x][index_y] / matrix_a[index_x][index_y]) * 
-                    cos(matrix_b[index_x][index_y] / matrix_a[index_x][index_y]) * 
-                    sqrt(matrix_b[index_x][index_y] / matrix_a[index_x][index_y]);
+
+        for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
+            for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
+                result = sqrt(matrix[index_x][index_y] * matrix[index_y][index_x]) / 3.14159265;
             }
         }
     }
