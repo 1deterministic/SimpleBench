@@ -1,24 +1,27 @@
 # debian 10
 gcc
 mingw-w64 (for windows builds via mingw)
-libc6-dev-i386
+libc6-dev-i386 (for 32bit linux builds)
+https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz?revision=e09a1c45-0ed3-4a8e-b06b-db3978fd8d56&la=en&hash=93ED4444B8B3A812B893373B490B90BBB28FD2E3 extracted to /usr (cross compile to armv7)
+https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu.tar.xz?revision=2e88a73f-d233-4f96-b1f4-d8b36e9bb0b9&la=en&hash=167687FADA00B73D20EED2A67D0939A197504ACD extracted to /usr (cross compile to aarch64)
 
 # fedora 31
 gcc
 glibc-devel
-glibc-devel.i686 (for 32bit builds)
-glibc-static (for statically linked builds)
-glibc-static.i686 (for statically linked 32bit builds)
+glibc-devel.i686 (for 32bit linux builds)
+glibc-static (for statically linked linux builds)
+glibc-static.i686 (for statically linked 32bit linux builds)
 mingw32-gcc (for windows builds via mingw)
 mingw64-gcc (for windows builds via mingw)
-mingw32-winpthreads (for statically linked windows 32bit builds)
-mingw32-winpthreads-static (for statically linked windows 32bit builds)
+mingw32-winpthreads (for statically linke 32bit windows builds)
+mingw32-winpthreads-static (for statically linked 32bit windows builds)
 mingw64-winpthreads (for statically linked windows builds)
 mingw64-winpthreads-static (for statically linked windows builds)
-wine (not sure, for statically linked windows builds)
+https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz?revision=e09a1c45-0ed3-4a8e-b06b-db3978fd8d56&la=en&hash=93ED4444B8B3A812B893373B490B90BBB28FD2E3 extracted to /usr (cross compile to armv7)
+https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu.tar.xz?revision=2e88a73f-d233-4f96-b1f4-d8b36e9bb0b9&la=en&hash=167687FADA00B73D20EED2A67D0939A197504ACD extracted to /usr (cross compile to aarch64)
 
 # windows 10
-visual studio with desktop c/c++ (for windows builds via msvc)
+visual studio with desktop c/c++ (for windows builds via msvc, can generate different results)
 
 # mac high sierra
-gcc (installed via brew)
+gcc (installed via brew for consistency, llvm comes installed and aliased to gcc but can generate different results)
