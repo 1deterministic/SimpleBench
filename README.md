@@ -12,12 +12,12 @@ It supports the following options:
         --threads [integer greater than zero]: sets the number of threads to run with
         --pin-threads [on/off]: enable/disable pinning process threads to system threads, does not work on macOS
         --hardware-level [integer greater than zero]: chooses how taxing the benchmark will be
-              1: 8.25MB of RAM, 1 lenght unit
-              2: 33MB of RAM, 4 lenght units
-              3: 132MB of RAM, 16 lenght units
-              4: 528MB of RAM, 64 lenght units
-              5: 2112MB of RAM, 256 lenght units
-              6: 8448MB of RAM, 1024 lenght units
+              1: ~4MB of RAM, 1 lenght unit
+              2: ~16MB of RAM, 4 lenght units
+              3: ~64MB of RAM, 16 lenght units
+              4: ~256MB of RAM, 64 lenght units
+              5: ~1G of RAM, 256 lenght units
+              6: ~4GB of RAM, 1024 lenght units
                :
               * every increase of 1 in the hardware level quadruples the requirements
               * at the moment there is no limit to the hardware level
