@@ -45,10 +45,10 @@ MsgCode create_alu_params(ALUParams** alu_params) {
             return ALU_MEMORY_ALLOCATION_ERROR;
     }
         
-    // fills the matrix
+    // fills the matrix with random data
     for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-            matrix[index_x][index_y] = rand() % 10;
+            matrix[index_x][index_y] = rand();
         }
     }
 
@@ -175,9 +175,11 @@ void* alu_test(void* params) {
         if (exit)
             break;
         
-        for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
-            for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-                result = (matrix[index_x][index_y] * matrix[index_y][index_x]) / (index_x + index_y + 1);
+        for (int line = 0; line < alu_matrix_size; line++) {
+            for (int column = 0; column < alu_matrix_size; column++) {
+                for (int repeats = 0; repeats < 16; repeats++) {
+                    result += repeats * matrix[line][column] * matrix[column][line] / (line + column + 1);
+                }
             }
         }
     }

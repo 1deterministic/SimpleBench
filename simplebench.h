@@ -47,10 +47,10 @@
 
 #define BUILD_CODENAME "Bring it on"
 
-// the time a Sandy Bridge processor at 3GHz with 16GB of dual channel 1333MHz DDR3 memory takes to complete the single threaded test for version B0 hardware level 5 (default)
+// the time a Sandy Bridge processor at 3GHz with 16GB of dual channel 1333MHz DDR3 memory takes to complete the single threaded test for version B0 hardware level 5 (default) in seconds
 // running Fedora 31, linux kernel 5.3.16, mitigations=auto
-// generic build, cli options: "--show-gui off --mt-test off --pin-threads on"
-#define SCORE_CALIBRATION_FACTOR 190.121399
+// generic build, cli options: "--mt-test off --pin-threads on"
+#define SCORE_CALIBRATION_FACTOR 125.194183
 #define CALIBRATION_BUILD false
 
 #define CLI_ON "on"

@@ -45,10 +45,10 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
             return FPU_MEMORY_ALLOCATION_ERROR;
     }
 
-    // fills the matrices
+    // fills the matrix with random data
     for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
-            matrix[index_x][index_y] = 10.0 * ((float) rand() / (float) RAND_MAX);
+            matrix[index_x][index_y] = FLT_MAX * ((float) rand() / (float) RAND_MAX);
         }
     }
     
@@ -173,10 +173,10 @@ void* fpu_test(void* params) {
         // do not break inside the mutex lock area
         if (exit)
             break;
-
-        for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-            for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
-                result = sqrt(matrix[index_x][index_y] * matrix[index_y][index_x]) / 3.14159265;
+        
+        for (int line = 0; line < fpu_matrix_size; line++) {
+            for (int column = 0; column < fpu_matrix_size; column++) {
+                result += tan(sqrt(sin(matrix[line][column]) * cos(matrix[column][line])) / 3.14159265);
             }
         }
     }

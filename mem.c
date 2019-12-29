@@ -45,10 +45,10 @@ MsgCode create_mem_params(MEMParams** mem_params) {
             return MEM_MEMORY_ALLOCATION_ERROR;
     }
     
-    // fills the matrices
+    // fills the matrix with random data
     for (int index_y = 0; index_y < mem_matrix_size; index_y++) {
         for (int index_x = 0; index_x < mem_matrix_size; index_x++) {
-            matrix[index_x][index_y] = rand() % INT_MAX;
+            matrix[index_x][index_y] = rand();
         }
     }
 
@@ -179,7 +179,7 @@ void* mem_test(void* params) {
         if (exit)
             break;
 
-        for (int index = 0; index < mem_matrix_size / 32; index++) {
+        for (int line = 0; line < mem_matrix_size / 64; line++) {
             memcpy(array, matrix[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         }
     }
