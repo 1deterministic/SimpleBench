@@ -48,7 +48,7 @@ MsgCode create_mem_params(MEMParams** mem_params) {
     // fills the matrix with random data
     for (int index_y = 0; index_y < mem_matrix_size; index_y++) {
         for (int index_x = 0; index_x < mem_matrix_size; index_x++) {
-            matrix[index_x][index_y] = rand();
+            matrix[index_x][index_y] = INT_MAX;
         }
     }
 
