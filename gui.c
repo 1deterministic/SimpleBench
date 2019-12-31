@@ -78,7 +78,7 @@ MEMParams* get_gui_params_mem_params(GUIParams** gui_params) {
 }
 
 // shows the progress bar (helper to the gui thread)
-void print_progress(float current, float total) {
+void print_progress(int current, int total) {
     int width = 38;
 
     for (int i = 0; i < width; i++) {
@@ -114,14 +114,36 @@ void erase_lines(int count) {
 }
 
 void* gui(void* params) {
+    int alu_job_size = ALU_JOB_SIZE;
+    int fpu_job_size = FPU_JOB_SIZE;
+    int mem_job_size = MEM_JOB_SIZE;
+
     // converts back the params to the expected type
     GUIParams** gui_params = (GUIParams**) &params;
+    ALUParams* alu_params = NULL;
+    FPUParams* fpu_params = NULL;
+    MEMParams* mem_params = NULL;
 
-    ALUParams* alu_params = get_gui_params_alu_params(gui_params);
-    FPUParams* fpu_params = get_gui_params_fpu_params(gui_params);
-    MEMParams* mem_params = get_gui_params_mem_params(gui_params);
-    
-    int* cores_used = get_gui_params_cores(gui_params);
+    // waits until all init tasks are completed
+    while (alu_params == NULL || fpu_params == NULL || mem_params == NULL) {
+        // updates local references
+        alu_params = get_gui_params_alu_params(gui_params);
+        fpu_params = get_gui_params_fpu_params(gui_params);
+        mem_params = get_gui_params_mem_params(gui_params);
+
+        printf("Initializing test...\n");
+
+        #if __linux__ || __APPLE__
+            sleep(1);
+        #elif __MINGW64__ || __MINGW32__ || _WIN32
+            Sleep(1000);
+        #endif
+        
+        erase_lines(1);
+    }
+
+    // creates local references
+    int* cores_used = get_gui_params_cores(gui_params);;
     int* alu_job = get_alu_params_job_size(&alu_params);
     int* fpu_job = get_fpu_params_job_size(&fpu_params);
     int* mem_job = get_mem_params_job_size(&mem_params);
@@ -130,13 +152,13 @@ void* gui(void* params) {
     while (*alu_job > 0 || *fpu_job > 0 || *mem_job > 0) {
         printf("%s%d%s\n\n", get_string(GUI_GUI_HEADER_1), *cores_used, get_string(GUI_GUI_HEADER_2));
 
-        printf("%s%5.2f%%\n", get_string(GUI_GUI_ALU_HEADER), 100.0 * ((float) (alu_job_size - *alu_job)) / ((float) alu_job_size));
+        printf("%s%5.2f%%\n", get_string(GUI_GUI_ALU_HEADER), 100.0 * ((float) (alu_job_size - *alu_job)) / (float) alu_job_size);
         print_progress(*alu_job, alu_job_size);
 
-        printf("%s%5.2f%%\n", get_string(GUI_GUI_FPU_HEADER), 100.0 * ((float) (fpu_job_size - *fpu_job)) / ((float) fpu_job_size));
+        printf("%s%5.2f%%\n", get_string(GUI_GUI_FPU_HEADER), 100.0 * ((float) (fpu_job_size - *fpu_job)) / (float) fpu_job_size);
         print_progress(*fpu_job, fpu_job_size);
 
-        printf("%s%5.2f%%\n", get_string(GUI_GUI_MEM_HEADER), 100.0 * ((float) (mem_job_size - *mem_job)) / ((float) mem_job_size));
+        printf("%s%5.2f%%\n", get_string(GUI_GUI_MEM_HEADER), 100.0 * ((float) (mem_job_size - *mem_job)) / (float) mem_job_size);
         print_progress(*mem_job, mem_job_size);
 
         #if __linux__ || __APPLE__
@@ -151,9 +173,9 @@ void* gui(void* params) {
     printf("%s%d%s\n", get_string(GUI_GUI_FINISHED_MSG_1), *cores_used, get_string(GUI_GUI_FINISHED_MSG_2));
 
     #if __linux__ || __APPLE__
-        sleep(2);
+        sleep(1);
     #elif __MINGW64__ || __MINGW32__ || _WIN32
-        Sleep(2000);
+        Sleep(1000);
     #endif
 
     erase_lines(1);

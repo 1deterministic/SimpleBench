@@ -32,7 +32,7 @@ MsgCode create_alu_params(ALUParams** alu_params) {
         return ALU_MEMORY_ALLOCATION_ERROR;
 
     // sets the task counter to be equal to the number of tasks
-    *job_size = alu_job_size;
+    *job_size = ALU_JOB_SIZE;
     
     // manually allocates the matrix
     int** matrix = (int**) malloc(alu_matrix_size * sizeof(int*));
@@ -48,7 +48,7 @@ MsgCode create_alu_params(ALUParams** alu_params) {
     // fills the matrix with random data
     for (int index_y = 0; index_y < alu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < alu_matrix_size; index_x++) {
-            matrix[index_x][index_y] = rand() % 1000;
+            matrix[index_x][index_y] = rand() % INT_MAX;
         }
     }
 
@@ -177,9 +177,7 @@ void* alu_test(void* params) {
         
         for (int line = 0; line < alu_matrix_size; line++) {
             for (int column = 0; column < alu_matrix_size; column++) {
-                for (int repeats = 0; repeats < 16; repeats++) {
-                    result += repeats * matrix[line][column] * matrix[column][line] / (line + column + 1);
-                }
+                result += matrix[line][column] * matrix[column][line] * matrix[line][line] * matrix[column][column] / (line + column + 1);
             }
         }
     }

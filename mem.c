@@ -32,7 +32,7 @@ MsgCode create_mem_params(MEMParams** mem_params) {
         return MEM_MEMORY_ALLOCATION_ERROR;
 
     // sets the task counter to be equal to the number of tasks
-    *job_size = mem_job_size;
+    *job_size = MEM_JOB_SIZE;
     
     // manually allocates the matrices
     int** matrix = (int**) malloc(mem_matrix_size * sizeof(int*));
@@ -179,7 +179,7 @@ void* mem_test(void* params) {
         if (exit)
             break;
 
-        for (int line = 0; line < mem_matrix_size / 64; line++) {
+        for (int line = 0; line < mem_matrix_size / 1024; line++) {
             memcpy(array, matrix[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
         }
     }

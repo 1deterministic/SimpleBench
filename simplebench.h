@@ -77,9 +77,10 @@ extern int alu_matrix_size;
 extern int fpu_matrix_size;
 extern int mem_matrix_size;
 
-extern int alu_job_size;
-extern int fpu_job_size;
-extern int mem_job_size;
+// reference values for task sizes
+#define ALU_JOB_SIZE 262144;
+#define FPU_JOB_SIZE 131072;
+#define MEM_JOB_SIZE 65536;
 
 typedef unsigned int MsgCode;
 
@@ -192,7 +193,7 @@ void set_gui_params_fpu_params(GUIParams**, FPUParams*);
 FPUParams* get_gui_params_fpu_params(GUIParams**);
 void set_gui_params_mem_params(GUIParams**, MEMParams*);
 MEMParams* get_gui_params_mem_params(GUIParams**);
-void print_progress(float, float);
+void print_progress(int, int);
 void erase_lines(int);
 void* gui(void*);
 

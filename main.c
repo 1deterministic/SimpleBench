@@ -20,11 +20,6 @@ int alu_matrix_size;
 int fpu_matrix_size;
 int mem_matrix_size;
 
-// size of the tasks
-int alu_job_size;
-int fpu_job_size;
-int mem_job_size;
-
 int main(int argc, char** argv) {
     MsgCode code = SUCCESS;
 
@@ -48,37 +43,16 @@ int main(int argc, char** argv) {
     bool mt_test = DEFAULT_MT_TEST;
     bool pin_threads = DEFAULT_PIN_THREADS;
 
-    code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads, &pin_threads);
-    if (code) {
-        printf("%s\n", get_string(code)); 
-        return code;
-    }
+    if (!code) code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads, &pin_threads);
 
     load_test_config(hardware_level);
     
     // gets the scores fot the single and multithreaded tests
-    if (st_test) {
-        code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui);
-        if (code) {
-            printf("%s\n", get_string(code)); 
-            return code;
-        }
-    }
+    if (st_test) if (!code) code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui);
     
-    if (mt_test) {
-        // skip the multithread test if the system only has 1
-        if (threads > 1) {
-            code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui);
-            if (code) {
-                printf("%s\n", get_string(code)); 
-                return code;
-            }
-        } else {
-            multithread_score = singlethread_score;
-        }
-    }
+    if (mt_test) if (threads > 1) if (!code) code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui); else multithread_score = singlethread_score;
 
-    show_score(singlethread_score, multithread_score, threads, hardware_level);
+    if (!code) show_score(singlethread_score, multithread_score, threads, hardware_level); else printf("%s\n", get_string(code));
     return code;
 }
 
@@ -277,8 +251,4 @@ void load_test_config(int config) {
     alu_matrix_size = 16 * pow(2, config - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
     fpu_matrix_size = 16 * pow(2, config - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
     mem_matrix_size = 1024 * pow(2, config - 1); // 4K+4M; 8K+16M; 16K+64M; 32K+256M; [64K+1024M]; 128K+4096M...
-
-    alu_job_size = 8192;
-    fpu_job_size = 4096;
-    mem_job_size = 4096;
 }
