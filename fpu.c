@@ -16,11 +16,12 @@
 struct fpu_prm {
     int* job_size;
     float** matrix;
+    int* matrix_size;
     void* lock;
 };
 
 // creates a FPUParams type variable to be used in threads
-MsgCode create_fpu_params(FPUParams** fpu_params) {
+MsgCode create_fpu_params(FPUParams** fpu_params, int fpu_matrix_size) {
     // manually allocates memory to the FPUParams type
     *fpu_params = (FPUParams*) malloc(sizeof(FPUParams));
     if (*fpu_params == NULL)
@@ -51,6 +52,12 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
             matrix[index_x][index_y] = FLT_MAX * ((float) rand() / (float) RAND_MAX);
         }
     }
+
+    int* matrix_size = (int*) malloc(sizeof(int));
+    if (matrix_size == NULL)
+        return FPU_MEMORY_ALLOCATION_ERROR;
+
+    *matrix_size = fpu_matrix_size;
     
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
@@ -74,6 +81,7 @@ MsgCode create_fpu_params(FPUParams** fpu_params) {
     // fills the parameter values
     set_fpu_params_job_size(fpu_params, job_size);
     set_fpu_params_matrix(fpu_params, matrix);
+    set_fpu_params_matrix_size(fpu_params, matrix_size);
     set_fpu_params_lock(fpu_params, lock);
     
     return SUCCESS;
@@ -87,6 +95,7 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
     // creates local references to the pointers inside params
     int* job_size = get_fpu_params_job_size(fpu_params);
     float** matrix = get_fpu_params_matrix(fpu_params);
+    int* matrix_size = get_fpu_params_matrix_size(fpu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
         pthread_mutex_destroy(lock);
@@ -99,13 +108,14 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
     free(lock);
     
     // frees up the matrices
-    for (int index = 0; index < fpu_matrix_size; index++) {
+    for (int index = 0; index < *matrix_size; index++) {
         free(matrix[index]);
     }
     free(matrix);
     
     // frees up the task counter
     free(job_size);
+    free(matrix_size);
     // frees up the thread parameters
     free (*fpu_params);
 
@@ -128,6 +138,14 @@ float** get_fpu_params_matrix(FPUParams** fpu_params) {
     return (*fpu_params)->matrix;
 }
 
+void set_fpu_params_matrix_size(FPUParams** fpu_params, int* matrix_size) {
+    (*fpu_params)->matrix_size = matrix_size;
+}
+
+int* get_fpu_params_matrix_size(FPUParams** fpu_params) {
+    return (*fpu_params)->matrix_size;
+}
+
 void set_fpu_params_lock(FPUParams** fpu_params, void* lock) {
     (*fpu_params)->lock = lock;
 }
@@ -144,6 +162,7 @@ void* fpu_test(void* params) {
     // creates local references to the pointers inside params
     int* job_size = get_fpu_params_job_size(fpu_params);
     float** matrix = get_fpu_params_matrix(fpu_params);
+    int* matrix_size = get_fpu_params_matrix_size(fpu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
 
@@ -174,8 +193,8 @@ void* fpu_test(void* params) {
         if (exit)
             break;
         
-        for (int line = 0; line < fpu_matrix_size; line++) {
-            for (int column = 0; column < fpu_matrix_size; column++) {
+        for (int line = 0; line < *matrix_size; line++) {
+            for (int column = 0; column < *matrix_size; column++) {
                 result += sqrt(matrix[line][column] * matrix[column][line] * matrix[line][line] * matrix[column][column]) / 3.14159265;
             }
         }

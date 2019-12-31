@@ -16,11 +16,12 @@
 struct alu_prm {
     int* job_size;
     int** matrix;
+    int* matrix_size;
     void* lock;
 };
 
 // creates an ALUParams type variable to be used in threads
-MsgCode create_alu_params(ALUParams** alu_params) {
+MsgCode create_alu_params(ALUParams** alu_params, int alu_matrix_size) {
     // manually allocates memory to the ALUParams type
     *alu_params = (ALUParams*) malloc(sizeof(ALUParams));
     if (*alu_params == NULL)
@@ -52,6 +53,12 @@ MsgCode create_alu_params(ALUParams** alu_params) {
         }
     }
 
+    int* matrix_size = (int*) malloc(sizeof(int));
+    if (matrix_size == NULL)
+        return ALU_MEMORY_ALLOCATION_ERROR;
+
+    *matrix_size = alu_matrix_size;
+
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL)
@@ -74,6 +81,7 @@ MsgCode create_alu_params(ALUParams** alu_params) {
     // fills the parameter values
     set_alu_params_job_size(alu_params, job_size);
     set_alu_params_matrix(alu_params, matrix);
+    set_alu_params_matrix_size(alu_params, matrix_size);
     set_alu_params_lock(alu_params, lock);
     
     return SUCCESS;
@@ -87,6 +95,7 @@ MsgCode del_alu_params(ALUParams** alu_params) {
     // creates local references to the pointers inside params
     int* job_size = get_alu_params_job_size(alu_params);
     int** matrix = get_alu_params_matrix(alu_params);
+    int* matrix_size = get_alu_params_matrix_size(alu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_alu_params_lock(alu_params);
         pthread_mutex_destroy(lock);
@@ -99,13 +108,14 @@ MsgCode del_alu_params(ALUParams** alu_params) {
     free(lock);
     
     // frees up the matrix
-    for (int index = 0; index < alu_matrix_size; index++) {
+    for (int index = 0; index < *matrix_size; index++) {
         free(matrix[index]);
     }
     free(matrix);
     
     // frees up the task counter
     free(job_size);
+    free(matrix_size);
     // frees up the thread parameters
     free (*alu_params);
     
@@ -128,6 +138,14 @@ int** get_alu_params_matrix(ALUParams** alu_params) {
     return (*alu_params)->matrix;
 }
 
+void set_alu_params_matrix_size(ALUParams** alu_params, int* matrix_size) {
+    (*alu_params)->matrix_size = matrix_size;
+}
+
+int* get_alu_params_matrix_size(ALUParams** alu_params) {
+    return (*alu_params)->matrix_size;
+}
+
 void set_alu_params_lock(ALUParams** alu_params, void* lock) {
     (*alu_params)->lock = lock;
 }
@@ -144,6 +162,7 @@ void* alu_test(void* params) {
     // creates local references to the pointers inside params
     int* job_size = get_alu_params_job_size(alu_params);
     int** matrix = get_alu_params_matrix(alu_params);
+    int* matrix_size = get_alu_params_matrix_size(alu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_alu_params_lock(alu_params);
 
@@ -175,8 +194,8 @@ void* alu_test(void* params) {
         if (exit)
             break;
         
-        for (int line = 0; line < alu_matrix_size; line++) {
-            for (int column = 0; column < alu_matrix_size; column++) {
+        for (int line = 0; line < *matrix_size; line++) {
+            for (int column = 0; column < *matrix_size; column++) {
                 result += matrix[line][column] * matrix[column][line] * matrix[line][line] * matrix[column][column] / (line + column + 1);
             }
         }

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 // test function ======================================================
-MsgCode test_system(float* score, int threads, bool pin_threads, float handicap, bool show_gui) {
+MsgCode test_system(float* score, int threads, bool pin_threads, float handicap, bool show_gui, int alu_matrix_size, int fpu_matrix_size, int mem_matrix_size) {
     // seed for the random number generator
     srand((unsigned) time(NULL));
 
@@ -41,19 +41,19 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
     if (!code) code = create_chronometer(&chronometer);
 
     // creates the alu test parameters
-    if (!code) code = create_alu_params(&alu_params); 
+    if (!code) code = create_alu_params(&alu_params, alu_matrix_size); 
 
     // creates a payload containing the alu test and its parameters
     if (!code) code = add_payload(&payload, alu_test, alu_params);
 
     // creates the fpu test parameters
-    if (!code) code = create_fpu_params(&fpu_params); 
+    if (!code) code = create_fpu_params(&fpu_params, fpu_matrix_size); 
 
     // creates a payload containing the fpu test and its parameters
     if (!code) code = add_payload(&payload, fpu_test, fpu_params);
 
     // creates the mem test parameters
-    if (!code) code = create_mem_params(&mem_params);
+    if (!code) code = create_mem_params(&mem_params, mem_matrix_size);
 
     // creates a payload containing the mem test and its parameters
     if (!code) code = add_payload(&payload, mem_test, mem_params);
@@ -92,7 +92,7 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
         // invalidates the result
         test_score = 0.0;
     }
-
+    
     // returns the score
     *score = test_score;
     return code;

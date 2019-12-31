@@ -16,11 +16,12 @@
 struct mem_prm {
     int* job_size;
     int** matrix;
+    int* matrix_size;
     void* lock;
 };
 
 // creates a MEMParams type variable to be used in threads
-MsgCode create_mem_params(MEMParams** mem_params) {
+MsgCode create_mem_params(MEMParams** mem_params, int mem_matrix_size) {
     // manually allocates memory to the MEMParams type
     *mem_params = (MEMParams*) malloc(sizeof(MEMParams));
     if (*mem_params == NULL)
@@ -52,6 +53,12 @@ MsgCode create_mem_params(MEMParams** mem_params) {
         }
     }
 
+    int* matrix_size = (int*) malloc(sizeof(int));
+    if (matrix_size == NULL)
+        return MEM_MEMORY_ALLOCATION_ERROR;
+
+    *matrix_size = mem_matrix_size;
+
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL)
@@ -74,6 +81,7 @@ MsgCode create_mem_params(MEMParams** mem_params) {
     // fills the parameter values
     set_mem_params_job_size(mem_params, job_size);
     set_mem_params_matrix(mem_params, matrix);
+    set_mem_params_matrix_size(mem_params, matrix_size);
     set_mem_params_lock(mem_params, lock);
     
     return SUCCESS;
@@ -87,6 +95,7 @@ MsgCode del_mem_params(MEMParams** mem_params) {
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);
     int** matrix = get_mem_params_matrix(mem_params);
+    int* matrix_size = get_mem_params_matrix_size(mem_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_mem_params_lock(mem_params);
         pthread_mutex_destroy(lock);
@@ -99,13 +108,14 @@ MsgCode del_mem_params(MEMParams** mem_params) {
     free(lock);
     
     // frees up the matrices
-    for (int index = 0; index < mem_matrix_size; index++) {
+    for (int index = 0; index < *matrix_size; index++) {
         free(matrix[index]);
     }
     free(matrix);
     
     // frees up the task counter
     free(job_size);
+    free(matrix_size);
     // frees up the thread parameters
     free (*mem_params);
     
@@ -128,6 +138,14 @@ int** get_mem_params_matrix(MEMParams** mem_params) {
     return (*mem_params)->matrix;
 }
 
+void set_mem_params_matrix_size(MEMParams** mem_params, int* matrix_size) {
+    (*mem_params)->matrix_size = matrix_size;
+}
+
+int* get_mem_params_matrix_size(MEMParams** mem_params) {
+    return (*mem_params)->matrix_size;
+}
+
 void set_mem_params_lock(MEMParams** mem_params, void* lock) {
     (*mem_params)->lock = lock;
 }
@@ -146,6 +164,7 @@ void* mem_test(void* params) {
     // creates local references to the pointers inside params
     int* job_size = get_mem_params_job_size(mem_params);
     int** matrix = get_mem_params_matrix(mem_params);
+    int* matrix_size = get_mem_params_matrix_size(mem_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_mem_params_lock(mem_params);
 
@@ -154,7 +173,7 @@ void* mem_test(void* params) {
 
     #endif
 
-    int* array = (int*) malloc(mem_matrix_size * sizeof(int));
+    int* array = (int*) malloc(*matrix_size * sizeof(int));
     if (array == NULL)
         return NULL;
     
@@ -179,8 +198,8 @@ void* mem_test(void* params) {
         if (exit)
             break;
 
-        for (int line = 0; line < mem_matrix_size / 1024; line++) {
-            memcpy(array, matrix[rand() % mem_matrix_size], mem_matrix_size * sizeof(int));
+        for (int line = 0; line < *matrix_size / 1024; line++) {
+            memcpy(array, matrix[rand() % *matrix_size], *matrix_size * sizeof(int));
         }
     }
     

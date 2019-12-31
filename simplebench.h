@@ -72,11 +72,6 @@
 #define DEFAULT_MT_TEST true
 #define DEFAULT_PIN_THREADS false
 
-// makes these variables global
-extern int alu_matrix_size;
-extern int fpu_matrix_size;
-extern int mem_matrix_size;
-
 // reference values for task sizes
 #define ALU_JOB_SIZE 262144;
 #define FPU_JOB_SIZE 131072;
@@ -106,7 +101,6 @@ typedef unsigned int MsgCode;
 #define MSG_HELP_TEXT 1012
 MsgCode get_cli_options(int, char**, bool*, bool*, bool*, int*, int*, bool*);
 void show_score(float, float, int, int);
-void load_test_config(int);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100
@@ -129,12 +123,14 @@ Thread* get_next(Thread**);
 #define ALU_PTHREAD_LOCK_CREATION_ERROR 201
 #define ALU_PTHREAD_LOCK_INIT_ERROR 202
 typedef struct alu_prm ALUParams;
-MsgCode create_alu_params(ALUParams**);
+MsgCode create_alu_params(ALUParams**, int);
 MsgCode del_alu_params(ALUParams**);
 void set_alu_params_job_size(ALUParams**, int*);
 int* get_alu_params_job_size(ALUParams**);
 void set_alu_params_matrix(ALUParams**, int**);
 int** get_alu_params_matrix(ALUParams**);
+void set_alu_params_matrix_size(ALUParams**, int*);
+int* get_alu_params_matrix_size(ALUParams**);
 void set_alu_params_lock(ALUParams**, void*);
 void* get_alu_params_lock(ALUParams**);
 void* alu_test(void*);
@@ -144,12 +140,14 @@ void* alu_test(void*);
 #define FPU_PTHREAD_LOCK_CREATION_ERROR 301
 #define FPU_PTHREAD_LOCK_INIT_ERROR 302
 typedef struct fpu_prm FPUParams;
-MsgCode create_fpu_params(FPUParams**);
+MsgCode create_fpu_params(FPUParams**, int);
 MsgCode del_fpu_params(FPUParams**);
 void set_fpu_params_job_size(FPUParams**, int*);
 int* get_fpu_params_job_size(FPUParams**);
 void set_fpu_params_matrix(FPUParams**, float**);
 float** get_fpu_params_matrix(FPUParams**);
+void set_fpu_params_matrix_size(FPUParams**, int*);
+int* get_fpu_params_matrix_size(FPUParams**);
 void set_fpu_params_lock(FPUParams**, void*);
 void* get_fpu_params_lock(FPUParams**);
 void* fpu_test(void*);
@@ -159,12 +157,14 @@ void* fpu_test(void*);
 #define MEM_PTHREAD_LOCK_CREATION_ERROR 401
 #define MEM_PTHREAD_LOCK_INIT_ERROR 402
 typedef struct mem_prm MEMParams;
-MsgCode create_mem_params(MEMParams**);
+MsgCode create_mem_params(MEMParams**, int);
 MsgCode del_mem_params(MEMParams**);
 void set_mem_params_job_size(MEMParams**, int*);
 int* get_mem_params_job_size(MEMParams**);
 void set_mem_params_matrix(MEMParams**, int**);
 int** get_mem_params_matrix(MEMParams**);
+void set_mem_params_matrix_size(MEMParams**, int*);
+int* get_mem_params_matrix_size(MEMParams**);
 void set_mem_params_lock(MEMParams**, void*);
 void* get_mem_params_lock(MEMParams**);
 void* mem_test(void*);
@@ -223,7 +223,7 @@ Payload* get_payload_next(Payload**);
 void* run_payload(void*);
 
 // benchmark function
-MsgCode test_system(float*, int, bool, float, bool);
+MsgCode test_system(float*, int, bool, float, bool, int, int, int);
 void cleanup(Thread**, Thread**, Payload**, ALUParams**, FPUParams**, MEMParams**, GUIParams**,  Chronometer**);
 
 // Strings file

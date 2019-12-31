@@ -12,14 +12,6 @@
 
 #endif
 
-// normalizes the score
-float handicap;
-
-// size of the matrices being used
-int alu_matrix_size;
-int fpu_matrix_size;
-int mem_matrix_size;
-
 int main(int argc, char** argv) {
     MsgCode code = SUCCESS;
 
@@ -45,12 +37,19 @@ int main(int argc, char** argv) {
 
     if (!code) code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads, &pin_threads);
 
-    load_test_config(hardware_level);
+    // the matrix size changes with the hardware level used
+    // every step up on hardware level doubles it horizontally and vertically
+    // this increases the amount of work by 4 times, so the handicap is then increased by 4
+    float handicap = 0.00390625 * pow(4, hardware_level - 1);
+
+    int alu_matrix_size = 16 * pow(2, hardware_level - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
+    int fpu_matrix_size = 16 * pow(2, hardware_level - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
+    int mem_matrix_size = 1024 * pow(2, hardware_level - 1); // 4K+4M; 8K+16M; 16K+64M; 32K+256M; [64K+1024M]; 128K+4096M...
     
     // gets the scores fot the single and multithreaded tests
-    if (st_test) if (!code) code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui);
+    if (st_test) if (!code) code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui, alu_matrix_size, fpu_matrix_size, mem_matrix_size);
     
-    if (mt_test) if (threads > 1) if (!code) code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui); else multithread_score = singlethread_score;
+    if (mt_test) if (threads > 1) if (!code) code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui, alu_matrix_size, fpu_matrix_size, mem_matrix_size); else multithread_score = singlethread_score;
 
     if (!code) show_score(singlethread_score, multithread_score, threads, hardware_level); else printf("%s\n", get_string(code));
     return code;
@@ -239,16 +238,4 @@ void show_score(float singlethread_score, float multithread_score, int threads, 
     printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_SINGLETHREAD_SCORE), singlethread_score);
     printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTITHREAD_SCORE), multithread_score);
     printf("%-20s: %-40.2f\n", get_string(MSG_MAIN_SHOW_SCORE_MULTIPLIER), (singlethread_score > 0.0) ? multithread_score / singlethread_score : 0.0);
-}
-
-// loads the test config
-void load_test_config(int config) {
-    // the matrix size changes with the hardware level used
-    // every step up on hardware level doubles it horizontally and vertically
-    // this increases the amount of work by 4 times, so the handicap is then increased by 4
-    handicap = 0.00390625 * pow(4, config - 1);
-
-    alu_matrix_size = 16 * pow(2, config - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
-    fpu_matrix_size = 16 * pow(2, config - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
-    mem_matrix_size = 1024 * pow(2, config - 1); // 4K+4M; 8K+16M; 16K+64M; 32K+256M; [64K+1024M]; 128K+4096M...
 }
