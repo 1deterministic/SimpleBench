@@ -13,8 +13,9 @@ struct pld {
 MsgCode add_payload(Payload** payload_array, void* function, void* params) {
     // manually allocate memory the size of Thread
     Payload* new_payload = (Payload*) malloc(sizeof(Payload));
-    if (new_payload == NULL)
+    if (new_payload == NULL) {
         return PAYLOAD_MEMORY_ALLOCATION_ERROR;
+    }
     
     set_payload_function(&new_payload, function);
     set_payload_params(&new_payload, params);
@@ -65,11 +66,12 @@ Payload* get_payload_next(Payload** payload_element) {
     return (*payload_element)->next;
 }
 
+// function that the threads will run
 void* run_payload(void* params) {
     Payload** payload = (Payload**) &params;
     Payload* current = *payload;
 
-    void* (*function)(void*);
+    void* (*function)(void*); // don't ask me how this works xD
     void* parameters;
 
     while (current != NULL) {
@@ -80,4 +82,6 @@ void* run_payload(void* params) {
 
         current = get_payload_next(&current);
     }
+
+    return NULL;
 }

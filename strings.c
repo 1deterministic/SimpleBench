@@ -37,7 +37,7 @@ String get_string(MsgCode msgcode) {
         case MSG_GET_CLI_OPTIONS_UNKNOWN_OPTION: return "Option not recognized!";
         case MSG_GET_CLI_OPTIONS_VERSION: return "SimpleBench benchmark version: " BENCHMARK_VERSION;
         case MSG_GET_CLI_OPTIONS_BUILD: return "SimpleBench build version: " BUILD_VERSION;
-        case MSG_GET_CLI_OPTIONS_PINTHREADS_NOT_SUPPORTED: "This OS does not offer an interface to pin threads to specific cores!";
+        case MSG_GET_CLI_OPTIONS_PINTHREADS_NOT_SUPPORTED: return "This OS does not offer an interface to pin threads to specific cores!";
 
         case GUI_SHOW_PROGRESS_BRACKET_OPEN: return "[";
         case GUI_SHOW_PROGRESS_BRACKET_CLOSE: return "]";
@@ -50,6 +50,7 @@ String get_string(MsgCode msgcode) {
         case GUI_GUI_MEM_HEADER: return "MEM Test: ";
         case GUI_GUI_FINISHED_MSG_1: return "Finished the test with ";
         case GUI_GUI_FINISHED_MSG_2: return " thread(s)!";
+        case GUI_GUI_LOADING_TEST: return "Initializing test...\n";
 
         case MSG_HELP_TEXT: return
         "SimpleBench - a quick benchmark to evaluate the core system performance\n"

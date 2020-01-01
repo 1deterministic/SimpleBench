@@ -32,31 +32,51 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
     Chronometer* chronometer = NULL;
 
     // creates the gui parameters
-    if (!code) code = create_gui_params(&gui_params, alu_params, fpu_params, mem_params, &threads);
+    if (!code) {
+        code = create_gui_params(&gui_params, alu_params, fpu_params, mem_params, &threads);
+    }
 
     // starts the gui thread
-    if (show_gui) if (!code) code = add_thread(&gui_thread_array, 0, THREAD_PRIORITY_ABOVE_NORMAL, (void*) gui, (void*) gui_params);
+    if (show_gui) {
+        if (!code) {
+            code = add_thread(&gui_thread_array, 0, THREAD_PRIORITY_ABOVE_NORMAL, (void*) gui, (void*) gui_params);
+        }
+    }
 
     // creates a chronometer
-    if (!code) code = create_chronometer(&chronometer);
+    if (!code) {
+        code = create_chronometer(&chronometer);
+    }
 
     // creates the alu test parameters
-    if (!code) code = create_alu_params(&alu_params, alu_matrix_size); 
+    if (!code) {
+        code = create_alu_params(&alu_params, alu_matrix_size); 
+    }
 
     // creates a payload containing the alu test and its parameters
-    if (!code) code = add_payload(&payload, alu_test, alu_params);
+    if (!code) {
+        code = add_payload(&payload, alu_test, alu_params);
+    }
 
     // creates the fpu test parameters
-    if (!code) code = create_fpu_params(&fpu_params, fpu_matrix_size); 
+    if (!code) {
+        code = create_fpu_params(&fpu_params, fpu_matrix_size); 
+    }
 
     // creates a payload containing the fpu test and its parameters
-    if (!code) code = add_payload(&payload, fpu_test, fpu_params);
+    if (!code) {
+        code = add_payload(&payload, fpu_test, fpu_params);
+    }
 
     // creates the mem test parameters
-    if (!code) code = create_mem_params(&mem_params, mem_matrix_size);
+    if (!code) {
+        code = create_mem_params(&mem_params, mem_matrix_size);
+    }
 
     // creates a payload containing the mem test and its parameters
-    if (!code) code = add_payload(&payload, mem_test, mem_params);
+    if (!code) {
+        code = add_payload(&payload, mem_test, mem_params);
+    }
 
     set_gui_params_alu_params(&gui_params, alu_params);
     set_gui_params_fpu_params(&gui_params, fpu_params);
@@ -67,16 +87,22 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
 
     // creates a thread for every processor thread available running all tasks inside the payload
     for (int i = 0; i < threads; i++) {
-        if (!code) code = add_thread(&thread_array, (pin_threads) ? i : -1, THREAD_PRIORITY_NORMAL, (void*) run_payload, (void*) payload);
+        if (!code) {
+            code = add_thread(&thread_array, (pin_threads) ? i : -1, THREAD_PRIORITY_NORMAL, (void*) run_payload, (void*) payload);
+        }
     }
     // waits for all compute threads to finish
-    if (!code) code = wait_threads(&thread_array);
+    if (!code) {
+        code = wait_threads(&thread_array);
+    }
 
     // stops the chronometer
     total_time += stop_chronometer(&chronometer);
     
     // once all threads finished, wait for the gui thread to finish too
-    if (!code) code = wait_threads(&gui_thread_array);
+    if (!code) {
+        code = wait_threads(&gui_thread_array);
+    }
 
     // double check if all tasks really finished
     if (!code && (*get_alu_params_job_size(&alu_params) <= 0) && (*get_fpu_params_job_size(&fpu_params) <= 0) && (*get_mem_params_job_size(&mem_params) <= 0)) {

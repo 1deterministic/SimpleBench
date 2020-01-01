@@ -3,13 +3,10 @@
 #include <float.h>
 #include <stdbool.h>
 #include <math.h>
-
 #if __linux__ || __APPLE__
     #include <pthread.h>
-    
-#elif __MINGW64__ || __MINGW32__ || _WIN32
+#elif _WIN32
     #include <windows.h>
-
 #endif
 
 // struct of the FPUParams type
@@ -24,28 +21,29 @@ struct fpu_prm {
 MsgCode create_fpu_params(FPUParams** fpu_params, int fpu_matrix_size) {
     // manually allocates memory to the FPUParams type
     *fpu_params = (FPUParams*) malloc(sizeof(FPUParams));
-    if (*fpu_params == NULL)
+    if (*fpu_params == NULL) {
         return FPU_MEMORY_ALLOCATION_ERROR;
-    
+    }
+        
     // manually allocates memory to the task counter
     int* job_size = (int*) malloc(sizeof(int));
-    if (job_size == NULL)
+    if (job_size == NULL) {
         return FPU_MEMORY_ALLOCATION_ERROR;
-
+    }
     // sets the task counter to be equal to the number of tasks
     *job_size = FPU_JOB_SIZE;
     
-    // manually allocates the matrices
+    // manually allocates the matrix
     float** matrix = (float**) malloc(fpu_matrix_size * sizeof(float*));
-    if (matrix == NULL)
+    if (matrix == NULL) {
         return FPU_MEMORY_ALLOCATION_ERROR;
-    
+    }
     for (int index = 0; index < fpu_matrix_size; index++) {
         matrix[index] = (float*) malloc(fpu_matrix_size * sizeof(float));
-        if (matrix[index] == NULL)
+        if (matrix[index] == NULL) {
             return FPU_MEMORY_ALLOCATION_ERROR;
+        }
     }
-
     // fills the matrix with random data
     for (int index_y = 0; index_y < fpu_matrix_size; index_y++) {
         for (int index_x = 0; index_x < fpu_matrix_size; index_x++) {
@@ -53,29 +51,30 @@ MsgCode create_fpu_params(FPUParams** fpu_params, int fpu_matrix_size) {
         }
     }
 
+    // allocates memory to hold the matrix size
     int* matrix_size = (int*) malloc(sizeof(int));
-    if (matrix_size == NULL)
+    if (matrix_size == NULL) {
         return FPU_MEMORY_ALLOCATION_ERROR;
-
+    }
     *matrix_size = fpu_matrix_size;
     
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
-        if (lock == NULL)
+        if (lock == NULL) {
             return MEM_PTHREAD_LOCK_CREATION_ERROR;
-        
-        if (pthread_mutex_init(lock, NULL))
+        }
+        if (pthread_mutex_init(lock, NULL)) {
             return MEM_PTHREAD_LOCK_INIT_ERROR;
-
+        }
     #elif __MINGW64__ || __MINGW32__ || _WIN32
         HANDLE* lock = (HANDLE*) malloc(sizeof(HANDLE));
-        if (lock == NULL)
+        if (lock == NULL) {
             return MEM_PTHREAD_LOCK_CREATION_ERROR;
-        
+        }
         *lock = CreateMutex(NULL, FALSE, NULL);
-        if (*lock == NULL)
+        if (*lock == NULL) {
             return MEM_PTHREAD_LOCK_INIT_ERROR;
-
+        }
     #endif
     
     // fills the parameter values
@@ -89,8 +88,9 @@ MsgCode create_fpu_params(FPUParams** fpu_params, int fpu_matrix_size) {
 
 // deletes a FPUParams
 MsgCode del_fpu_params(FPUParams** fpu_params) {
-    if (*fpu_params == NULL)
+    if (*fpu_params == NULL) {
         return SUCCESS;
+    }
 
     // creates local references to the pointers inside params
     int* job_size = get_fpu_params_job_size(fpu_params);
@@ -98,25 +98,23 @@ MsgCode del_fpu_params(FPUParams** fpu_params) {
     int* matrix_size = get_fpu_params_matrix_size(fpu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
-        pthread_mutex_destroy(lock);
-
-    #elif __MINGW64__ || __MINGW32__ || _WIN32
+    #elif _WIN32
         HANDLE* lock = get_fpu_params_lock(fpu_params);
-        CloseHandle(*lock);
+    #endif
 
+    // frees up everything
+    #if __linux__ || __APPLE__
+        pthread_mutex_destroy(lock);
+    #elif _WIN32
+        CloseHandle(*lock);
     #endif
     free(lock);
-    
-    // frees up the matrices
     for (int index = 0; index < *matrix_size; index++) {
         free(matrix[index]);
     }
     free(matrix);
-    
-    // frees up the task counter
     free(job_size);
     free(matrix_size);
-    // frees up the thread parameters
     free (*fpu_params);
 
     return SUCCESS;
@@ -165,10 +163,8 @@ void* fpu_test(void* params) {
     int* matrix_size = get_fpu_params_matrix_size(fpu_params);
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = get_fpu_params_lock(fpu_params);
-
     #elif __MINGW64__ || __MINGW32__ || _WIN32
         HANDLE* lock = get_fpu_params_lock(fpu_params);
-
     #endif
     
     float result = 0.0;
@@ -178,21 +174,37 @@ void* fpu_test(void* params) {
         // picks one available job from the pool
         #if __linux__ || __APPLE__
             pthread_mutex_lock(lock);
-            if (*job_size > 0) *job_size = *job_size - 1; else exit = true;
+            if (*job_size > 0) {
+                *job_size = *job_size - 1;
+            } else {
+                exit = true;
+            }
             pthread_mutex_unlock(lock);
-
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             switch(WaitForSingleObject(*lock, INFINITE)) {
-                case WAIT_OBJECT_0: if (*job_size > 0) *job_size = *job_size - 1; else exit = true; ReleaseMutex(*lock); break;
-                case WAIT_ABANDONED: exit = true; break;
-                default: exit = true; break;
+                case WAIT_OBJECT_0: {
+                    if (*job_size > 0) {
+                        *job_size = *job_size - 1;
+                    } else {
+                        exit = true;
+                    }
+                    ReleaseMutex(*lock);
+                    break;
+                } 
+                case WAIT_ABANDONED: {
+                    exit = true; break;
+                } 
+                default: {
+                    exit = true; break;
+                }
             }
         #endif
 
         // do not break inside the mutex lock area
-        if (exit)
+        if (exit) {
             break;
-        
+        }
+            
         for (int line = 0; line < *matrix_size; line++) {
             for (int column = 0; column < *matrix_size; column++) {
                 result += sqrt(matrix[line][column] * matrix[column][line] * matrix[line][line] * matrix[column][column]) / 3.14159265;

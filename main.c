@@ -7,51 +7,77 @@
 
 #if __linux__ || __APPLE__
     #include <unistd.h>
-    
-#elif __MINGW64__ || __MINGW32__ || _WIN32
-
+#elif _WIN32
 #endif
 
 int main(int argc, char** argv) {
+    // default return code is success
     MsgCode code = SUCCESS;
 
+    // scores start at 0
     float singlethread_score = 0.0;
     float multithread_score = 0.0;
 
     // default configuration
-    #if __linux__ || __APPLE__
-        int threads = sysconf(_SC_NPROCESSORS_ONLN);
-
-    #elif __MINGW64__ || __MINGW32__ || _WIN32
-        SYSTEM_INFO info;
-        GetSystemInfo(&info);
-        int threads = info.dwNumberOfProcessors;
-
-    #endif
-    
     int hardware_level = DEFAULT_CONFIG_HARDWARE;
     bool show_gui = DEFAULT_SHOW_GUI;
     bool st_test = DEFAULT_ST_TEST;
     bool mt_test = DEFAULT_MT_TEST;
     bool pin_threads = DEFAULT_PIN_THREADS;
+    int threads = DEFAULT_THREADS;
 
-    if (!code) code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads, &pin_threads);
+    // auto detect number of threads
+    #if __linux__ || __APPLE__
+        threads = sysconf(_SC_NPROCESSORS_ONLN);
+    #elif _WIN32
+        SYSTEM_INFO info;
+        GetSystemInfo(&info);
+        threads = info.dwNumberOfProcessors;
+    #endif
+
+    // read command line options
+    if (!code) {
+        code = get_cli_options(argc, argv, &show_gui, &st_test, &mt_test, &hardware_level, &threads, &pin_threads);
+    }
+        
 
     // the matrix size changes with the hardware level used
     // every step up on hardware level doubles it horizontally and vertically
     // this increases the amount of work by 4 times, so the handicap is then increased by 4
     float handicap = 0.00390625 * pow(4, hardware_level - 1);
-
     int alu_matrix_size = 16 * pow(2, hardware_level - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
     int fpu_matrix_size = 16 * pow(2, hardware_level - 1); // 1K; 4K; 16K; 64K; [256K]; 1M...
-    int mem_matrix_size = 1024 * pow(2, hardware_level - 1); // 4K+4M; 8K+16M; 16K+64M; 32K+256M; [64K+1024M]; 128K+4096M...
+    int mem_matrix_size = 1024 * pow(2, hardware_level - 1); // 4M; 16M; 64M; 256M; [1024M]; 4096M...
     
-    // gets the scores fot the single and multithreaded tests
-    if (st_test) if (!code) code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui, alu_matrix_size, fpu_matrix_size, mem_matrix_size);
+    // runs the singlethreaded test
+    if (st_test) {
+        if (!code) {
+            code = test_system(&singlethread_score, 1, pin_threads, handicap, show_gui, alu_matrix_size, fpu_matrix_size, mem_matrix_size);
+        }
+    }
     
-    if (mt_test) if (threads > 1) if (!code) code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui, alu_matrix_size, fpu_matrix_size, mem_matrix_size); else multithread_score = singlethread_score;
+    // runs the multithreaded test
+    if (mt_test) {
+        // but only if set to run with more than 1 thread
+        if (threads > 1) {
+            if (!code) {
+                code = test_system(&multithread_score, threads, pin_threads, handicap, show_gui, alu_matrix_size, fpu_matrix_size, mem_matrix_size); 
+            }
+        // else just replicates the singlethreaded score as the multithreaded score
+        } else {
+            multithread_score = singlethread_score;
+        }
+        
+    }
 
-    if (!code) show_score(singlethread_score, multithread_score, threads, hardware_level); else printf("%s\n", get_string(code));
+    // show score if no errors occurred
+    if (!code) {
+        show_score(singlethread_score, multithread_score, threads, hardware_level); 
+    } else {
+        printf("%s\n", get_string(code));
+    }
+
+    // also return any errors to the terminal emulator
     return code;
 }
 

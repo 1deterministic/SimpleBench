@@ -1,50 +1,59 @@
+#include <stdbool.h>
+
 #if __linux__ || __APPLE__
     #define _GNU_SOURCE
     #include <pthread.h>
     #define THREAD_PRIORITY_ABOVE_NORMAL 0
     #define THREAD_PRIORITY_NORMAL 0
-
 #elif __MINGW64__ || __MINGW32__ || _WIN32
     #include <windows.h>
-
 #endif
-
-#include <stdbool.h>
 
 // if I ever change this it means that scores from different versions are not comparable: number means minor changes on the same algorithm, letter means substantial changes to the algorithm or a whole new one
 #define BENCHMARK_VERSION "B0"
+// this is the actual program version, changes here won't affect system scores
+#define BUILD_NUMBER "2"
 
-// this is the actual program version
 #if __linux__
+    #define BUILD_OS "linux"
     #if __i386__
-        #define BUILD_VERSION "2-linux-x86-gcc"
+        #define BUILD_ARCH "x86"
     #elif __x86_64__
-        #define BUILD_VERSION "2-linux-amd64-gcc"
+        #define BUILD_ARCH "amd64"
     #elif __arm__
-        #define BUILD_VERSION "2-linux-armv7-gcc"
+        #define BUILD_ARCH "armv7"
     #elif __aarch64__
-        #define BUILD_VERSION "2-linux-aarch64-gcc"
+        #define BUILD_ARCH "aarch64"
     #endif
-
-#elif __MINGW32__ || __MINGW64__
-    #if __i386__
-        #define BUILD_VERSION "2-windows-x86-mingw"
-    #elif __x86_64__
-        #define BUILD_VERSION "2-windows-amd64-mingw"
-    #endif
-
 #elif _WIN32
-    #if _M_IX86
-        #define BUILD_VERSION "2-windows-x86-msvc"
-    #elif _M_AMD64
-        #define BUILD_VERSION "2-windows-amd64-msvc"
+    #define BUILD_OS "windows"
+    #if _M_IX86 || __i386__
+        #define BUILD_ARCH "x86"
+    #elif _M_AMD64 || __x86_64__
+        #define BUILD_ARCH "amd64"
     #endif
-
 #elif __APPLE__
-    #define BUILD_VERSION "2-macos-amd64-gcc"
-
+    #define BUILD_OS "macos"
+    #define BUILD_ARCH "amd64"
+#else
+    #define BUILD_OS "unknown"
+    #define BUILD_ARCH "unknown"
 #endif
 
+#if _MSC_VER
+    #define BUILD_CC "msvc"
+#elif __GNUC__ 
+    #define BUILD_CC "gcc"
+#elif __clang__
+    #define BUILD_CC "clang"
+#elif __MINGW32__ || __MINGW64__
+    #define BUILD_CC "mingw"
+#else
+    #define BUILD_CC "unknown"
+#endif
+
+
+#define BUILD_VERSION BUILD_NUMBER"-"BUILD_OS"-"BUILD_ARCH"-"BUILD_CC
 #define BUILD_CODENAME "Bring it on"
 
 // the time a Sandy Bridge processor at 3GHz with 16GB of dual channel 1333MHz DDR3 memory takes to complete the single threaded test for version B0 hardware level 5 (default) in seconds
@@ -71,6 +80,8 @@
 #define DEFAULT_ST_TEST true
 #define DEFAULT_MT_TEST true
 #define DEFAULT_PIN_THREADS false
+#define DEFAULT_THREADS 4
+#define DEFAULT_TERMINAL_WIDTH 80
 
 // reference values for task sizes
 #define ALU_JOB_SIZE 262144;
@@ -182,6 +193,7 @@ void* mem_test(void*);
 #define GUI_GUI_MEM_HEADER 5008
 #define GUI_GUI_FINISHED_MSG_1 5009
 #define GUI_GUI_FINISHED_MSG_2 5010
+#define GUI_GUI_LOADING_TEST 5011
 typedef struct gui_prm GUIParams;
 MsgCode create_gui_params(GUIParams**, ALUParams*, FPUParams*, MEMParams*, int*);
 MsgCode del_gui_params(GUIParams**);

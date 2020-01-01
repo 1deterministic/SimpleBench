@@ -1,12 +1,10 @@
 #include "simplebench.h"
 #include <stdlib.h>
 #include <stdbool.h>
-
 #if __linux__
     #include <pthread.h>
     #include <unistd.h>
     #include <sched.h>
-
 #elif __APPLE__
     #include <stdio.h>
     #include <mach/thread_policy.h>
@@ -19,10 +17,8 @@
     #include <mach/thread_policy.h>
     #include <mach/thread_act.h>
     #define SYSCTL_CORE_COUNT "machdep.cpu.core_count"
-
-#elif __MINGW64__ || __MINGW32__ || _WIN32
+#elif _WIN32
     #include <windows.h>
-
 #endif
 
 // struct of the Thread type
@@ -36,27 +32,26 @@ struct thd {
 MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* function, void* params) {
     // manually allocate memory the size of Thread
     Thread* new_thread = (Thread*) malloc(sizeof(Thread));
-    if (new_thread == NULL)
+    if (new_thread == NULL) {
         return THREAD_MEMORY_ALLOCATION_ERROR;
-
+    }
+        
     #if __linux__ || __APPLE__
         //new_thread->thread_instance = (void*) ((pthread_t*) malloc(sizeof(pthread_t)));
         pthread_t* thread_instance = (pthread_t*) malloc(sizeof(pthread_t));
-        if (thread_instance == NULL)
+        if (thread_instance == NULL) {
             return THREAD_MEMORY_ALLOCATION_ERROR;
-
+        }
         #if __linux__
             // start the thread with the received parameters
             if (pthread_create(thread_instance, NULL, function, params)) {
                 free(new_thread);
                 return THREAD_PTHREAD_CREATION_ERROR;
             }
-
             if (core_number >= 0) {
                 cpu_set_t cpuset;
                 CPU_ZERO(&cpuset);
                 CPU_SET(core_number % sysconf(_SC_NPROCESSORS_ONLN), &cpuset);
-                
                 // makes this thread run on the specified core
                 if (pthread_setaffinity_np(*thread_instance, sizeof(cpu_set_t), &cpuset)) {
                     pthread_cancel(*thread_instance);
@@ -64,37 +59,31 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
                     return THREAD_PTHREAD_AFFINITY_ERROR;
                 }
             }
-
         #elif __APPLE__
             // start the thread with the received parameters
             if (pthread_create_suspended_np(thread_instance, NULL, function, params)) {
                 free(new_thread);
                 return THREAD_PTHREAD_CREATION_ERROR;
             }
-
             thread_affinity_policy_data_t policy_data = { core_number };
             mach_port_t mach_thread = pthread_mach_thread_np(*thread_instance);
             thread_policy_set((thread_t)thread_instance, THREAD_AFFINITY_POLICY, (thread_policy_t)&policy_data, 1);
-
             thread_resume(mach_thread);
-
         #endif
 
-    #elif __MINGW64__ || __MINGW32__ || _WIN32
+    #elif _WIN32
         HANDLE* thread_instance = (HANDLE*) malloc(sizeof(HANDLE));
-        if (thread_instance == NULL)
+        if (thread_instance == NULL) {
             return THREAD_PTHREAD_CREATION_ERROR;
-
+        }
         SYSTEM_INFO info; 
         GetSystemInfo(&info);
-        
         // start the thread with the received parameters
         *thread_instance = CreateThread(NULL, 0, function, params, 0, NULL);
         if (!*thread_instance) {
             free(new_thread);
             return THREAD_PTHREAD_CREATION_ERROR;
         }
-        
         if (core_number >= 0) {
             // makes this thread run on the specified core
             if (!SetThreadAffinityMask(*thread_instance, 1 << (core_number % info.dwNumberOfProcessors))) {
@@ -103,13 +92,11 @@ MsgCode add_thread(Thread** thread_array, int core_number, int priority, void* f
                 return THREAD_PTHREAD_AFFINITY_ERROR;
             }
         }
-
         if (!SetThreadPriority(*thread_instance, priority)) {
             TerminateThread(*thread_instance, 0);
             free(new_thread);
             return THREAD_PTHREAD_PRIORITY_ERROR;
         }
-
     #endif
     
     set_thread_instance(&new_thread, thread_instance);
@@ -130,11 +117,9 @@ MsgCode del_threads(Thread** thread_array) {
         
         #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
-
-        #elif __MINGW64__ || __MINGW32__ || _WIN32
+        #elif _WIN32
             HANDLE* thread_instance = get_thread_instance(&thread_element);
             CloseHandle(*thread_instance);
-
         #endif
 
         // frees up the current thread
@@ -154,14 +139,14 @@ MsgCode wait_threads(Thread** thread_array) {
     while (thread_element != NULL) {
         #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
-            if (pthread_join(*thread_instance, NULL))
+            if (pthread_join(*thread_instance, NULL)) {
                 return THREAD_PTHREAD_JOIN_ERROR;
-
-        #elif __MINGW64__ || __MINGW32__ || _WIN32
+            }
+        #elif _WIN32
             HANDLE* thread_instance = get_thread_instance(&thread_element);
-            if(WaitForSingleObject(*thread_instance, INFINITE) == WAIT_FAILED)
+            if(WaitForSingleObject(*thread_instance, INFINITE) == WAIT_FAILED) {
                 return THREAD_PTHREAD_JOIN_ERROR;
-                
+            }                
         #endif
         
         // goes to the next
@@ -180,11 +165,9 @@ MsgCode stop_threads(Thread** thread_array) {
         #if __linux__ || __APPLE__
             pthread_t* thread_instance = get_thread_instance(&thread_element);
             pthread_cancel(*thread_instance);
-
         #elif __MINGW64__ || __MINGW32__ || _WIN32
             HANDLE* thread_instance = get_thread_instance(&thread_element);
             TerminateThread(*thread_instance, 0);
-
         #endif
 
         // goes to the next
