@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-
 #if __linux__ || __APPLE__
     #include <unistd.h>
 #elif _WIN32

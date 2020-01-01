@@ -42,10 +42,10 @@
 
 #if _MSC_VER
     #define BUILD_CC "msvc"
-#elif __GNUC__ 
-    #define BUILD_CC "gcc"
 #elif __clang__
     #define BUILD_CC "clang"
+#elif __GNUC__ 
+    #define BUILD_CC "gcc"
 #elif __MINGW32__ || __MINGW64__
     #define BUILD_CC "mingw"
 #else
