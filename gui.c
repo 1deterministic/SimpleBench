@@ -82,17 +82,20 @@ void print_progress(int current, int total) {
 
     for (int i = 0; i < width; i++) {
         // the first character of the progress bar is [
-        if (i == 0)
+        if (i == 0) {
             printf("%s", get_string(GUI_SHOW_PROGRESS_BRACKET_OPEN));
         // all subsequent chars are '=' until the current progression is reached
-        if (i <= (int) width * ((float) (total - current)) / ((float) total))
+        }  else if (i <= (int) width * ((float) (total - current)) / ((float) total)) {
             printf("%s", get_string(GUI_SHOW_PROGRESS_FILLED));
         // after that, fill with '-'
-        else
+        } else {
             printf("%s", get_string(GUI_SHOW_PROGRESS_NOT_FILLED));
+        }
+        
         // close with ]
-        if (i == (width - 1))
+        if (i == (width - 1)) {
             printf("%s\n", get_string(GUI_SHOW_PROGRESS_BRACKET_CLOSE));
+        }
     }
 }
 
@@ -118,27 +121,30 @@ void* gui(void* params) {
     int fpu_job_size = FPU_JOB_SIZE;
     int mem_job_size = MEM_JOB_SIZE;
 
-    // converts back the params to the expected type
+    // converts the parameters back to the expected type
     GUIParams** gui_params = (GUIParams**) &params;
-    ALUParams* alu_params = NULL;
-    FPUParams* fpu_params = NULL;
-    MEMParams* mem_params = NULL;
+    ALUParams* alu_params = get_gui_params_alu_params(gui_params);
+    FPUParams* fpu_params = get_gui_params_fpu_params(gui_params);
+    MEMParams* mem_params = get_gui_params_mem_params(gui_params);
 
     // waits until all init tasks are completed
     while (alu_params == NULL || fpu_params == NULL || mem_params == NULL) {
-        // updates local references
+        // updates local references to check again
         alu_params = get_gui_params_alu_params(gui_params);
         fpu_params = get_gui_params_fpu_params(gui_params);
         mem_params = get_gui_params_mem_params(gui_params);
 
+        // loading message
         printf("%s", get_string(GUI_GUI_LOADING_TEST));
 
+        // waits a seconf
         #if __linux__ || __APPLE__
             sleep(1);
         #elif _WIN32
             Sleep(1000);
         #endif
         
+        // erase the printed text and try again
         erase_lines(1);
     }
 

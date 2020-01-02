@@ -115,10 +115,10 @@ void show_score(float, float, int, int);
 
 // Thread type
 #define THREAD_MEMORY_ALLOCATION_ERROR 100
-#define THREAD_PTHREAD_CREATION_ERROR 101
-#define THREAD_PTHREAD_AFFINITY_ERROR 102
-#define THREAD_PTHREAD_JOIN_ERROR 103
-#define THREAD_PTHREAD_PRIORITY_ERROR 104
+#define THREAD_THREAD_CREATION_ERROR 101
+#define THREAD_THREAD_AFFINITY_ERROR 102
+#define THREAD_THREAD_JOIN_ERROR 103
+#define THREAD_THREAD_PRIORITY_ERROR 104
 typedef struct thd Thread;
 MsgCode add_thread(Thread**, int, int, void*, void*);
 MsgCode del_threads(Thread**);
@@ -131,8 +131,8 @@ Thread* get_next(Thread**);
 
 // ALUParams type
 #define ALU_MEMORY_ALLOCATION_ERROR 200
-#define ALU_PTHREAD_LOCK_CREATION_ERROR 201
-#define ALU_PTHREAD_LOCK_INIT_ERROR 202
+#define ALU_THREAD_LOCK_CREATION_ERROR 201
+#define ALU_THREAD_LOCK_INIT_ERROR 202
 typedef struct alu_prm ALUParams;
 MsgCode create_alu_params(ALUParams**, int);
 MsgCode del_alu_params(ALUParams**);
@@ -148,8 +148,8 @@ void* alu_test(void*);
 
 // FPUParams type
 #define FPU_MEMORY_ALLOCATION_ERROR 300
-#define FPU_PTHREAD_LOCK_CREATION_ERROR 301
-#define FPU_PTHREAD_LOCK_INIT_ERROR 302
+#define FPU_THREAD_LOCK_CREATION_ERROR 301
+#define FPU_THREAD_LOCK_INIT_ERROR 302
 typedef struct fpu_prm FPUParams;
 MsgCode create_fpu_params(FPUParams**, int);
 MsgCode del_fpu_params(FPUParams**);
@@ -165,8 +165,8 @@ void* fpu_test(void*);
 
 // MEMParams type
 #define MEM_MEMORY_ALLOCATION_ERROR 400
-#define MEM_PTHREAD_LOCK_CREATION_ERROR 401
-#define MEM_PTHREAD_LOCK_INIT_ERROR 402
+#define MEM_THREAD_LOCK_CREATION_ERROR 401
+#define MEM_THREAD_LOCK_INIT_ERROR 402
 typedef struct mem_prm MEMParams;
 MsgCode create_mem_params(MEMParams**, int);
 MsgCode del_mem_params(MEMParams**);

@@ -75,6 +75,7 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
         code = add_payload(&payload, mem_test, mem_params);
     }
 
+    // sends these to the gui thread for it to display progress
     set_gui_params_alu_params(&gui_params, alu_params);
     set_gui_params_fpu_params(&gui_params, fpu_params);
     set_gui_params_mem_params(&gui_params, mem_params);
@@ -101,9 +102,10 @@ MsgCode test_system(float* score, int threads, bool pin_threads, float handicap,
         code = wait_threads(&gui_thread_array);
     }
 
-    // double check if all tasks really finished
+    // double check if all tasks really finished (could have crashed halfway)
     if (!code && (*get_alu_params_job_size(&alu_params) <= 0) && (*get_fpu_params_job_size(&fpu_params) <= 0) && (*get_mem_params_job_size(&mem_params) <= 0)) {
-        test_score = handicap * 100 * SCORE_CALIBRATION_FACTOR / total_time;
+        // only then calculate the test score
+        test_score = handicap * 100.0 * SCORE_CALIBRATION_FACTOR / total_time;
     }
 
     // frees up all manually allocated memory

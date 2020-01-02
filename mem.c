@@ -60,19 +60,19 @@ MsgCode create_mem_params(MEMParams** mem_params, int mem_matrix_size) {
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL) {
-            return MEM_PTHREAD_LOCK_CREATION_ERROR;
+            return MEM_THREAD_LOCK_CREATION_ERROR;
         }
         if (pthread_mutex_init(lock, NULL)) {
-            return MEM_PTHREAD_LOCK_INIT_ERROR;
+            return MEM_THREAD_LOCK_INIT_ERROR;
         }
     #elif _WIN32
         HANDLE* lock = (HANDLE*) malloc(sizeof(HANDLE));
         if (lock == NULL) {
-            return MEM_PTHREAD_LOCK_CREATION_ERROR;
+            return MEM_THREAD_LOCK_CREATION_ERROR;
         }
         *lock = CreateMutex(NULL, FALSE, NULL);
         if (*lock == NULL) {
-            return MEM_PTHREAD_LOCK_INIT_ERROR;
+            return MEM_THREAD_LOCK_INIT_ERROR;
         }
     #endif
     

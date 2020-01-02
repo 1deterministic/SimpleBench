@@ -61,19 +61,19 @@ MsgCode create_fpu_params(FPUParams** fpu_params, int fpu_matrix_size) {
     #if __linux__ || __APPLE__
         pthread_mutex_t* lock = (pthread_mutex_t*) malloc(sizeof(pthread_mutex_t));
         if (lock == NULL) {
-            return MEM_PTHREAD_LOCK_CREATION_ERROR;
+            return FPU_THREAD_LOCK_CREATION_ERROR;
         }
         if (pthread_mutex_init(lock, NULL)) {
-            return MEM_PTHREAD_LOCK_INIT_ERROR;
+            return FPU_THREAD_LOCK_INIT_ERROR;
         }
     #elif __MINGW64__ || __MINGW32__ || _WIN32
         HANDLE* lock = (HANDLE*) malloc(sizeof(HANDLE));
         if (lock == NULL) {
-            return MEM_PTHREAD_LOCK_CREATION_ERROR;
+            return FPU_THREAD_LOCK_CREATION_ERROR;
         }
         *lock = CreateMutex(NULL, FALSE, NULL);
         if (*lock == NULL) {
-            return MEM_PTHREAD_LOCK_INIT_ERROR;
+            return FPU_THREAD_LOCK_INIT_ERROR;
         }
     #endif
     

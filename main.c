@@ -70,7 +70,6 @@ int main(int argc, char** argv) {
         } else {
             multithread_score = singlethread_score;
         }
-        
     }
 
     // show score if no errors occurred
