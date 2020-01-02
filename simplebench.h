@@ -5,7 +5,7 @@
     #include <pthread.h>
     #define THREAD_PRIORITY_ABOVE_NORMAL 0
     #define THREAD_PRIORITY_NORMAL 0
-#elif __MINGW64__ || __MINGW32__ || _WIN32
+#elif _WIN32
     #include <windows.h>
 #endif
 

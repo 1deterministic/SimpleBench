@@ -4,12 +4,16 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 #if __linux__ || __APPLE__
     #include <unistd.h>
 #elif _WIN32
 #endif
 
 int main(int argc, char** argv) {
+    // seed for the random number generator
+    srand((unsigned) time(NULL));
+
     // default return code is success
     MsgCode code = SUCCESS;
 

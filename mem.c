@@ -154,8 +154,6 @@ void* get_mem_params_lock(MEMParams** mem_params) {
 
 // the function that will test the system memory
 void* mem_test(void* params) {
-    srand((unsigned) time(NULL));
-
     // converts back the params to the expected type
     MEMParams** mem_params = (MEMParams**) &params;
     

@@ -5,9 +5,6 @@
 
 // test function ======================================================
 MsgCode test_system(float* score, int threads, bool pin_threads, float handicap, bool show_gui, int alu_matrix_size, int fpu_matrix_size, int mem_matrix_size) {
-    // seed for the random number generator
-    srand((unsigned) time(NULL));
-
     // the score obtained
     float total_time = 0.0;
     float test_score = 0.0;
