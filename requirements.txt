@@ -21,7 +21,7 @@ https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-a
 https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu.tar.xz?revision=2e88a73f-d233-4f96-b1f4-d8b36e9bb0b9&la=en&hash=167687FADA00B73D20EED2A67D0939A197504ACD extracted to /usr (cross compile to aarch64)
 
 # windows 10
-visual studio with desktop c/c++ (for windows builds via msvc, can generate different results)
+visual studio with desktop c/c++ (for windows builds via msvc, will generate different results)
 
 # mac high sierra
-gcc (installed via brew for consistency, llvm comes installed and aliased to gcc but can generate different results)
+gcc (installed via brew for consistency, clang comes preinstalled and aliased to gcc but will generate different results)

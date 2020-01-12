@@ -28,7 +28,7 @@ It supports the following options:
 
 SimpleBench is not a stress test and not is not a reliable benchmarking tool for any kind of advanced features the processor may have. 
 
-Also, the algorithm is not complex so the compiler optimizations will basically skip all work it should have done. If you want to build from the sources, disable any optimizations to have a meaningful score. There are scripts to build with the correct compiler flags included in the source folder too.
+Also, the algorithm is not complex so the compiler optimizations will basically skip all work it should have done. If you want to build from the sources, disable any optimizations to have a meaningful score. There are scripts to build with the correct compiler flags included in the source folder too. Also, don't compare builds from different compilers as -O0 applies different levels of  optimizations depending on them. Clang and MSVC seem to have some sort of optimization at -O0 that is not present on GCC|MinGW, yielding better scores.
 
 [These are the systems I benchmarked so far (I plan to include more systems in the future).](./SCORES.md)
 
